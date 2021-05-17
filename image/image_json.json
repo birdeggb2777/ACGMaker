@@ -1,0 +1,75 @@
+{
+    "image_json": [{
+            "title": "cow",
+            "title_tw": "乳牛",
+            "classtype": "image",
+            "classtype_tw": "圖片",
+            "path": "./image/animal/cow.png",
+            "url": "https://pixabay.com/zh/photos/cow-cartoon-character-drawing-funny-6091"
+        },
+        {
+            "title": "hedgehog",
+            "title_tw": "刺蝟",
+            "classtype": "image",
+            "classtype_tw": "圖片",
+            "path": "./image/animal/hedgehog.png",
+            "url": "https://pixabay.com/zh/photos/hedgehog-cartoon-character-drawing-5655/"
+        },
+        {
+            "title": "rhino",
+            "title_tw": "犀牛",
+            "classtype": "image",
+            "classtype_tw": "圖片",
+            "path": "./image/animal/rhino.png",
+            "url": "https://pixabay.com/zh/photos/rhino-cartoon-character-drawing-6098/"
+        },
+        {
+            "title": "sheep",
+            "title_tw": "綿羊",
+            "classtype": "image",
+            "classtype_tw": "圖片",
+            "path": "./image/animal/sheep.png",
+            "url": "https://pixabay.com/zh/photos/sheep-cartoon-character-drawing-6101/"
+        },
+        {
+            "title": "tiger",
+            "title_tw": "老虎",
+            "classtype": "image",
+            "classtype_tw": "圖片",
+            "path": "./image/animal/tiger.png",
+            "url": "https://pixabay.com/zh/photos/tiger-cartoon-character-drawing-6094/"
+        },
+        {
+            "title": "killer_whale",
+            "title_tw": "虎鯨",
+            "classtype": "image",
+            "classtype_tw": "圖片",
+            "path": "./image/animal/killer_whale.png",
+            "url": "https://pixabay.com/zh/photos/killer-whale-orcinus-orca-wal-16470/"
+        },
+        {
+            "title": "fish",
+            "title_tw": "魚",
+            "classtype": "image",
+            "classtype_tw": "圖片",
+            "path": "./image/animal/fish.png",
+            "url": "https://pixabay.com/zh/photos/fish-drawing-keyboard-935589"
+
+        },
+        {
+            "title": "Caterpillar",
+            "title_tw": "毛毛蟲",
+            "classtype": "image",
+            "classtype_tw": "圖片",
+            "path": "./image/animal/Caterpillar.png",
+            "url": "Me"
+        }, {
+            "title": "octopus",
+            "title_tw": "章魚",
+            "classtype": "image",
+            "classtype_tw": "圖片",
+            "path": "./image/animal/octopus.png",
+            "url": "Me"
+        }
+    ]
+}

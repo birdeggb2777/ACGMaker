@@ -1,0 +1,27 @@
+{
+    "background_json": [{
+            "title": "ambience",
+            "title_tw": "木屋",
+            "classtype": "background",
+            "classtype_tw": "背景",
+            "path": "./image/background/ambience.jpg",
+            "url": "https://pixabay.com/zh/photos/ambience-live-villa-country-house-5849795/"
+        },
+        {
+            "title": "christmas",
+            "title_tw": "聖誕",
+            "classtype": "background",
+            "classtype_tw": "背景",
+            "path": "./image/background/christmas.jpg",
+            "url": "https://pixabay.com/zh/photos/christmas-background-5816370/"
+        },
+        {
+            "title": "temple",
+            "title_tw": "聖殿",
+            "classtype": "background",
+            "classtype_tw": "背景",
+            "path": "./image/background/temple.jpg",
+            "url": "Me"
+        }
+    ]
+}

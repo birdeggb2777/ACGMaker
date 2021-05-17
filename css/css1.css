@@ -1,0 +1,25 @@
+.blackboard {
+    border-width: 3px;
+    border-style: dashed;
+    border-color: #1f1d1b;
+}
+
+.orangeboard {
+    border-width: 3px;
+    border-style: dashed;
+    border-color: #c77a2d;
+}
+
+#left_out {
+    float: left;
+    width: 270;
+    height: 600;
+}
+
+#selectObjectDiv {
+    overflow-y: scroll;
+    overflow-x: scroll;
+    /*float: left;
+      width: 270;
+      height: 300;*/
+}
