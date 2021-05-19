@@ -12,7 +12,16 @@
 
 #left_out {
     float: left;
-    width: 270;
+    width: 350;
+    height: 600;
+}
+#game {
+    float: left;
+}
+
+#right_out {
+    float: left;
+    width: 350;
     height: 600;
 }
 

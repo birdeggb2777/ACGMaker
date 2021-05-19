@@ -6,11 +6,13 @@ function getClass(str) {
     return document.getElementsByClassName(str);
 }
 
+
 function getObjById(id) {
     for (var i = 0; i < AllObjList.length; i++) {
         if (AllObjList[i].id == id) return AllObjList[i];
     }
 }
+
 
 function pounch(obj, obj2) {
     function pounch1(x, y, w, h, x2, y2, w2, h2) {
@@ -27,122 +29,6 @@ function pounch(obj, obj2) {
 
 var GameWorld = [];
 GameWorld.tool = [];
-GameWorld.tool.deleteSelect = function (number, cell_id, obj) {
-    if (number == 1) {
-        if (getByid(cell_id + ".select:1") || getByid(cell_id + ".select:2") || getByid(cell_id + ".select:3") || getByid(cell_id + ".select:4")) {
-            if (getByid(cell_id + ".select:1")) {
-                var node = getByid(cell_id + ".select:1");
-                if (node.parentNode) {
-                    node.parentNode.removeChild(node);
-                }
-            }
-            if (getByid(cell_id + ".select:2")) {
-                var node = getByid(cell_id + ".select:2");
-                if (node.parentNode) {
-                    node.parentNode.removeChild(node);
-                }
-            }
-            if (getByid(cell_id + ".select:3")) {
-                var node = getByid(cell_id + ".select:3");
-                if (node.parentNode) {
-                    node.parentNode.removeChild(node);
-                }
-            }
-            if (getByid(cell_id + ".select:4")) {
-                var node = getByid(cell_id + ".select:4");
-                if (node.parentNode) {
-                    node.parentNode.removeChild(node);
-                }
-            }
-            obj.span.splice(5, 1);
-            obj.span.splice(4, 1);
-            obj.span.splice(3, 1);
-            obj.span.splice(2, 1);
-            obj.span.splice(1, 1);
-            obj.span.splice(0, 1);
-            obj.select.splice(5, 1);
-            obj.select.splice(4, 1);
-            obj.select.splice(3, 1);
-            obj.select.splice(2, 1);
-            obj.select.splice(1, 1);
-            obj.select.splice(0, 1);
-        }
-    } if (number == 2) {
-        if (getByid(cell_id + ".select:2") || getByid(cell_id + ".select:3")) {
-            if (getByid(cell_id + ".select:2")) {
-                var node = getByid(cell_id + ".select:2");
-                if (node.parentNode) {
-                    //console.log(333);
-                    node.parentNode.removeChild(node);
-                }
-            }
-            if (getByid(cell_id + ".select:3")) {
-                var node = getByid(cell_id + ".select:3");
-                if (node.parentNode) {
-                    //console.log(333);
-                    node.parentNode.removeChild(node);
-
-                }
-            }
-        }
-        if (getByid(cell_id + ".select:4")) {
-            var node = getByid(cell_id + ".select:4");
-            if (node.parentNode) {
-                node.parentNode.removeChild(node);
-            }
-        }
-
-        obj.span.splice(5, 1);
-        obj.span.splice(4, 1);
-        obj.span.splice(3, 1);
-        obj.span.splice(2, 1);
-        //obj.span.splice(1, 1);
-        //obj.span.splice(0, 1);
-        obj.select.splice(5, 1);
-        obj.select.splice(4, 1);
-        obj.select.splice(3, 1);
-        obj.select.splice(2, 1);
-    } if (number == 3) {
-        if (getByid(cell_id + ".select:3")) {
-            if (getByid(cell_id + ".select:3")) {
-                var node = getByid(cell_id + ".select:3");
-                if (node.parentNode) {
-                    //console.log(333);
-                    node.parentNode.removeChild(node);
-
-                }
-            }
-        }
-        if (getByid(cell_id + ".select:4")) {
-            var node = getByid(cell_id + ".select:4");
-            if (node.parentNode) {
-                node.parentNode.removeChild(node);
-            }
-        }
-        obj.span.splice(5, 1);
-        obj.span.splice(4, 1);
-        obj.span.splice(3, 1);
-        // obj.span.splice(2, 1);
-        obj.select.splice(5, 1);
-        obj.select.splice(4, 1);
-        obj.select.splice(3, 1);
-
-    }
-    if (number == 4) {
-        if (getByid(cell_id + ".select:4")) {
-            var node = getByid(cell_id + ".select:4");
-            if (node.parentNode) {
-                node.parentNode.removeChild(node);
-            }
-        }
-        obj.span.splice(5, 1);
-        obj.span.splice(4, 1);
-
-        obj.select.splice(5, 1);
-        obj.select.splice(4, 1);
-
-    }
-}
 GameWorld.tool.AutoSelect = function (obj) {
     for (var i = 0; i < obj.select.length; i++) {
         //var choose = getByid(obj.select.id);
@@ -157,174 +43,6 @@ GameWorld.tool.AutoSelect = function (obj) {
             }
         }
     }
-}
-GameWorld.tool.alert = function (id) {
-    var choose = getByid(id);
-    var cell_id = getByid(id).getAttribute("alt");
-    choose = choose.options[choose.selectedIndex].text;
-
-    var obj = getObjById(getByid(id).getAttribute("objid"));
-    // console.log(obj);
-    var cell = getByid(getByid(id).getAttribute("alt"));//(cell_id + ".span" + obj.span.length)
-    var span = getByid(getByid(id).getAttribute("alt") + ".span:" + 0);
-
-    if (!span.innerHTM) span.innerHTM = "";
-    obj.span.push(span.innerHTML);
-    obj.select.push({ id: id, choose: choose });
-    var selectHTML = "objid='" + obj.id + "' id='" + cell_id + ".select:4'  alt='" + cell_id + "' onchange='GameWorld.tool.alert(this.id)'";
-    GameWorld.tool.deleteSelect(4, cell_id, obj);
-    // if (choose == "示意文字") {
-    // var span = getByid(getByid(id).getAttribute("alt") + ".span:" + 0);
-    if (choose == "test") {
-        setTimeout(function () {
-            var span = getByid(getByid(id).getAttribute("alt") + ".span:" + 0);
-            // span.innerHTML = span.innerHTM + "<select " + selectHTML + "><option>不做任何事</option><option>test</option></select> ";
-            // }
-            obj.span.push(span.innerHTML);
-            obj.select.push({ id: id, choose: choose });
-            setTimeout(function () {
-                ObjSelect(obj);
-            }, 10);
-        }, 10);
-        var obj2 = {
-            id: "" + getByid(id).getAttribute("alt"),
-            KeyDown: function KeyDown(KeyboardKeys) {
-                var key = KeyboardKeys.which
-                if (key === 65 && obj.select[1].choose == "a") {
-                    alert("test");
-                } else if (key === 87 && obj.select[1].choose == "w") {
-                    alert("test");
-                } else if (key === 83 && obj.select[1].choose == "s") {
-                    alert("test");
-                } else if (key === 68 && obj.select[1].choose == "d") {
-                    alert("test");
-                }
-            }
-        };
-        obj.event.push(obj2);
-        window.addEventListener("keydown", obj2.KeyDown, true);
-        //document.getElementById("myBtn").addEventListener("click", displayDate);
-    }
-}
-
-GameWorld.tool.action = function (id) {
-    var choose = getByid(id);
-    var cell_id = getByid(id).getAttribute("alt");
-    choose = choose.options[choose.selectedIndex].text;
-
-    var obj = getObjById(getByid(id).getAttribute("objid"));
-    // console.log(obj);
-    var cell = getByid(getByid(id).getAttribute("alt"));//(cell_id + ".span" + obj.span.length)
-    var span = getByid(getByid(id).getAttribute("alt") + ".span:" + 0);
-
-    if (!span.innerHTM) span.innerHTM = "";
-    obj.span.push(span.innerHTML);
-    obj.select.push({ id: id, choose: choose });
-    var selectHTML = "objid='" + obj.id + "' id='" + cell_id + ".select:3'  alt='" + cell_id + "' onchange='GameWorld.tool.alert(this.id)'";
-    GameWorld.tool.deleteSelect(3, cell_id, obj);
-    if (choose == "示意文字") {
-        setTimeout(function () {
-            var span = getByid(getByid(id).getAttribute("alt") + ".span:" + 0);
-            span.innerHTML = span.innerHTM + "<select " + selectHTML + "><option>不做任何事</option><option>test</option></select> ";
-            obj.span.push(span.innerHTML);
-            obj.select.push({ id: id, choose: choose });
-        }, 10);
-        setTimeout(function () {
-            ObjSelect(obj);
-            //alert("");
-            //     GameWorld.tool.AutoSelect(obj);
-        }, 10);
-    }
-
-}
-
-GameWorld.tool.addEventKey = function (id) {
-    var choose = getByid(id);
-    var cell_id = getByid(id).getAttribute("alt");
-    choose = choose.options[choose.selectedIndex].text;
-
-    var obj = getObjById(getByid(id).getAttribute("objid"));
-    // console.log(obj);
-    var cell = getByid(getByid(id).getAttribute("alt"));//(cell_id + ".span" + obj.span.length)
-    var span = getByid(getByid(id).getAttribute("alt") + ".span:" + 0);
-    //console.log(getByid(id).getAttribute("alt") + ".span:" + 0, getByid(getByid(id).getAttribute("alt") + ".span:" + 0));
-    if (!span.innerHTM) span.innerHTM = "";
-    obj.span.push(span.innerHTML);
-    obj.select.push({ id: id, choose: choose });
-
-    //  if (choose == "示意文字") {
-    var selectHTML = "objid='" + obj.id + "' id='" + cell_id + ".select:2'  alt='" + cell_id + "' onchange='GameWorld.tool.action(this.id)'";
-    //   } else {
-    //   var selectHTML = "objid='" + obj.id + "' id='" + cell_id + ".select:2'  alt='" + cell_id + "' onchange='GameWorld.tool.alert(this.id)'";
-    //console.log(getByid(cell_id + ".select:2"));
-    //  }
-    console.log(getByid(cell_id + ".select:2"));
-    //choose==a
-    GameWorld.tool.deleteSelect(2, cell_id, obj);
-
-    //obj.select.splice(1, 1);
-    //obj.span.splice(1, 1);
-    console.log("" + span.innerHTML);
-
-    setTimeout(function () {
-        var span = getByid(getByid(id).getAttribute("alt") + ".span:" + 0);
-        span.innerHTML = span.innerHTM + "<select " + selectHTML + "><option>無</option><option>示意文字</option><option>x增加</option><option>x減少</option>" +
-            "<option>y增加</option><option>y減少</option></select> ";
-        obj.span.push(span.innerHTML);
-        obj.select.push({ id: id, choose: choose });
-
-        setTimeout(function () {
-            ObjSelect(obj);
-            //alert("");
-            //     GameWorld.tool.AutoSelect(obj);
-        }, 10);
-    }, 10);
-    // alert("");
-}
-
-GameWorld.tool.addEventSpan = function (id, cellid) {
-    //console.log(id);
-    var choose = getByid(id);
-    var cell_id = getByid(id).getAttribute("alt");
-    choose = choose.options[choose.selectedIndex].text;
-
-    var obj = getObjById(getByid(id).getAttribute("objid"));
-    // console.log(obj);
-    var cell = getByid(getByid(id).getAttribute("alt"));//(cell_id + ".span" + obj.span.length)
-    var span = getByid(getByid(id).getAttribute("alt") + ".span:" + 0);
-    if (!span.innerHTM) span.innerHTM = "";
-    var selectHTML = "objid='" + obj.id + "' id='" + cell_id + ".select:1'  alt='" + cell_id + "' onchange='GameWorld.tool.addEventKey(this.id)'";
-
-    if (choose == "按下") {
-        GameWorld.tool.deleteSelect(1, cell_id, obj);
-
-        setTimeout(function () {
-            var span = getByid(getByid(id).getAttribute("alt") + ".span:" + 0);
-            span.innerHTML = span.innerHTM + "<select " + selectHTML + "><option>無</option><option>w</option><option>a</option><option>s</option><option>d</option></select > ";
-            obj.span.push(span.innerHTML);
-            obj.select.push({ id: id, choose: choose });
-            setTimeout(function () {
-                ObjSelect(obj);
-                //     GameWorld.tool.AutoSelect(obj);
-            }, 10);
-        }, 10);
-    } else if (choose == "碰到") {
-        GameWorld.tool.deleteSelect(1, cell_id, obj);
-        obj.select.push({ id: id, choose: choose });
-    } else if (choose == "沒事發生") {
-        GameWorld.tool.deleteSelect(1, cell_id, obj);
-        //var obj = getObjById(getByid(id).getAttribute("objid"));
-        // console.log(obj);
-        // var cell = getByid(getByid(id).getAttribute("alt"));//(cell_id + ".span" + obj.span.length)
-        // var span = getByid(getByid(id).getAttribute("alt") + ".span:" + 0);
-        // if (!span.innerHTM) span.innerHTM = "";
-        span.innerHTML = span.innerHTM + "";
-        obj.span = [];
-        obj.select.push({ id: id, choose: choose });
-        // obj.span.push(span.innerHTML);
-    }
-
-
 }
 
 let image_json;
@@ -357,7 +75,7 @@ function ObjSelect(obj, move) {
     // /Table.className = "table table-dark table-striped";
     Table.setAttribute("border", 2);
     Table.style = "table-layout:fixed;"
-    Table.width = "200";
+    Table.width = "300";
     var cells = Table.insertRow(0);
     cells = cells.insertCell(0);
     cells.style = "word-break:break-word; word-wrap:break-word;"
@@ -403,36 +121,10 @@ function ObjSelect(obj, move) {
     cells.style = "word-break:break-word; word-wrap:break-word;"
     cells.innerHTML = "上下反轉: " + "<input type='button'  value='" + obj.flipy + "' size='8' onclick='ChooseObj.flipy=this.value=!(ChooseObj.flipy);refleshGame();'/>";
 
-    //obj.event.length;
-    var cell_id = "ID:" + obj.id + ".event:" + 0;//obj.event.length;
     cells = Table.insertRow(8);
     cells = cells.insertCell(0);
-    cells.id = cell_id;
-
     cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = "當: " + "<select objid='" + obj.id + "' id='" + cell_id + ".select:0'  alt='" + cell_id + "' onchange='GameWorld.tool.addEventSpan(this.id)'>" +
-        "<option>沒事發生</option><option>按下</option><option>碰到</option></select>";
-    //GameWorld.tool.AutoSelect(obj);
-    //cells.innerHTML.onchange = function () {
-    //    alert("");
-    //     GameWorld.tool.AutoSelect(obj);
-    // }
-    if (obj.span && obj.span[0]) {
-        for (sp = 0; sp < obj.span.length; sp++) {
-            cells.innerHTML += obj.span[sp];
-        }
-        cells.innerHTML += "<span id='" + cell_id + ".span:" + 0 + "'></span>";
-    } else {
-        cells.innerHTML += "<span id='" + cell_id + ".span:" + 0 + "'></span>";
-    }
-    //console.log(cells.innerHTML);
-    //console.log(getByid("ID:1.event:0.select:0"));
-    setTimeout(function () {
-        GameWorld.tool.AutoSelect(obj);
-    }, 10);
-
-
-    //cells.span = getByid(cell_id + ".span");
+    cells.innerHTML = "類別: " + "<input type='text'  value='" + obj.class + "' size='8' onchange='ChooseObj.class=this.value;refleshGame();'/>";
 
     /*var cells = Table.insertRow(2);
     cells = cells.insertCell(0);
@@ -443,6 +135,108 @@ function ObjSelect(obj, move) {
 
     getByid("selectObjectDiv").appendChild(Table);
     getByid("ObjTable").parentNode.replaceChild(Table, getByid("ObjTable"));
+    var button_tmp2 = document.createElement("BUTTON");
+    button_tmp2.id = "RefleshImgButton";
+    button_tmp2.style.float = "right middle";
+    button_tmp2.innerText = "刷新";
+    button_tmp2.obj = obj;
+    button_tmp2.onclick = function () { (ObjSelect(this.obj)) };
+
+    getByid('selectObjectDiv').appendChild(button_tmp2);
+    getByid("RefleshImgButton").parentNode.replaceChild(button_tmp2, getByid("RefleshImgButton"));
+
+
+    var eTable = document.createElement("table");
+    eTable.id = "ObjEventTable";
+    // /Table.className = "table table-dark table-striped";
+    eTable.setAttribute("border", 2);
+
+    getByid("selectObjectEventDiv").appendChild(eTable);
+    getByid("ObjEventTable").parentNode.replaceChild(eTable, getByid("ObjEventTable"));
+
+    eTable.style = "table-layout:fixed;"
+    eTable.width = "300";
+    var cells = eTable.insertRow(0);
+    cells = cells.insertCell(0);
+    cells.style = "word-break:break-word; word-wrap:break-word;"
+    cells.innerHTML = "事件: ";//+ obj.name;
+    /*
+    var cells = Table.insertRow(1);
+    cells = cells.insertCell(0);
+    cells.style = "word-break:break-word; word-wrap:break-word;"
+    cells.innerHTML = "中文名稱: " + obj.title_tw;
+    */
+    cells = eTable.insertRow(1);
+    cells = cells.insertCell(0);
+    cells.style = "word-break:break-word; word-wrap:break-word;"
+    cells.innerHTML = `如果按住<select id="` + obj.id + `_keydowning"><option>w</option><option>a</option><option>s</option><option>d</option></select>
+    <select id="`+ obj.id + `_keydowning_direction"><option>往右移動</option><option>往左移動</option><option>往上移動</option><option>往下移動</option></select>
+    <select id="`+ obj.id + `_keydowning_move"><option>0</option><option>1</option><option>2</option><option>3</option></select>格。
+    <button onclick="KeyDowningMoveRegistered(`+ obj.id + `)";>ok</button>
+    `;
+
+    cells = eTable.insertRow(2);
+    cells = cells.insertCell(0);
+    cells.style = "word-break:break-word; word-wrap:break-word;"
+    cells.innerHTML = `如果碰到
+    <input id="`+ obj.id + `_pounching_obj" size='6' type='text' value='輸入類別'/>
+    廣播<input id="`+ obj.id + `_pounching_broadcast" size='6' type='text' value='事件2'/>
+    <button onclick="KeyPounchRegistered(`+ obj.id + `)";>ok</button>
+    `;
+
+    cells = eTable.insertRow(3);
+    cells = cells.insertCell(0);
+    cells.style = "word-break:break-word; word-wrap:break-word;"
+    cells.innerHTML = `如果按下<select><option>w</option><option>a</option><option>s</option><option>d</option></select>
+    廣播<input size='6' type='text' value='事件1'/>
+    <button>ok</button>
+    `;
+    cells = eTable.insertRow(4);
+    cells = cells.insertCell(0);
+    cells.style = "word-break:break-word; word-wrap:break-word;"
+    cells.innerHTML = `如果收到廣播<input size='6' type='text' value='事件1'/>
+    <select><option>取消隱形</option><option>隱形</option><option>銷毀</option><option>左右反轉</option></select>
+    <button>ok</button>   `;
+
+
+
+    var eTable2 = document.createElement("table");
+    eTable2.id = "ObjEventTable2";
+    // /Table.className = "table table-dark table-striped";
+    eTable2.setAttribute("border", 2);
+
+    getByid("selectObjectEventDiv").appendChild(eTable2);
+    getByid("ObjEventTable2").parentNode.replaceChild(eTable2, getByid("ObjEventTable2"));
+
+
+
+    eTable2.style = "table-layout:fixed;"
+    eTable2.width = "300";
+
+    var eventobj = getObjById(obj.id).event;
+    for (var e1 = 0; e1 < eventobj.length; e1++) {
+        var cells = eTable2.insertRow(e1);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        if (eventobj[e1][0] == 'KeyDowningMoveRegistered') {
+            cells.innerHTML = "如果按住" + eventobj[e1][1] + eventobj[e1][2] + eventobj[e1][3];//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id="button_event"+e1;
+            button_tmp.obj=eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText="刪除";
+            button_tmp.onclick=function(){
+                this.obj[0]="delete";
+            getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event"+e1).parentNode.replaceChild(button_tmp, getByid("button_event"+e1));
+        }
+    }
+
+
+
+
     if (!move) {
         var image_tmp = document.createElement("IMG");
         image_tmp.id = "selectObjImg";
@@ -458,6 +252,127 @@ function ObjSelect(obj, move) {
 
 
 }
+
+function WindowRegisterKeyDowning() {
+
+    function KeyDown(KeyboardKeys) {
+        var key = KeyboardKeys.which;
+        for (var i = 0; i < AllObjList.length; i++) {
+            if (AllObjList[i].event) {
+                for (var e1 = 0; e1 < AllObjList[i].event.length; e1++) {
+                    if (AllObjList[i].event[e1][0] == 'KeyDowningMoveRegistered' &&
+                        key == keyCode[AllObjList[i].event[e1][1]]) {
+                        AllObjList[i].event[e1][4] = true;
+                        if (AllObjList[i].event[e1][2] == "往右移動") {
+                            // AllObjList[i].x+=parseInt(AllObjList[i].event[e1][3]);
+                        }
+                        else if (AllObjList[i].event[e1][2] == "往左移動") {
+                            // AllObjList[i].x-=AllObjList[i].event[e1][3];
+                        }
+                        else if (AllObjList[i].event[e1][2] == "往上移動") {
+                            // AllObjList[i].y-=AllObjList[i].event[e1][3];
+                        }
+                        else if (AllObjList[i].event[e1][2] == "往下移動") {
+                            // AllObjList[i].y+=AllObjList[i].event[e1][3];
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    function KeyUp(KeyboardKeys) {
+        var key = KeyboardKeys.which;
+        for (var i = 0; i < AllObjList.length; i++) {
+            if (AllObjList[i].event) {
+                for (var e1 = 0; e1 < AllObjList[i].event.length; e1++) {
+                    if (AllObjList[i].event[e1][0] == 'KeyDowningMoveRegistered' &&
+                        key == keyCode[AllObjList[i].event[e1][1]]) {
+                        AllObjList[i].event[e1][4] = false;
+                        if (AllObjList[i].event[e1][2] == "往右移動") {
+                            // AllObjList[i].x+=parseInt(AllObjList[i].event[e1][3]);
+                        }
+                        else if (AllObjList[i].event[e1][2] == "往左移動") {
+                            // AllObjList[i].x-=AllObjList[i].event[e1][3];
+                        }
+                        else if (AllObjList[i].event[e1][2] == "往上移動") {
+                            // AllObjList[i].y-=AllObjList[i].event[e1][3];
+                        }
+                        else if (AllObjList[i].event[e1][2] == "往下移動") {
+                            // AllObjList[i].y+=AllObjList[i].event[e1][3];
+                        }
+                    }
+                }
+            }
+        }
+    }
+    setInterval(function () {
+        for (var i = 0; i < AllObjList.length; i++) {
+            if (AllObjList[i].event) {
+                for (var e1 = 0; e1 < AllObjList[i].event.length; e1++) {
+                    if (AllObjList[i].event[e1][0] == 'KeyDowningMoveRegistered' &&
+                        AllObjList[i].event[e1][4] == true) {
+                        //AllObjList[i].event[e1][3]=true;
+                        if (AllObjList[i].event[e1][2] == "往右移動") {
+                            AllObjList[i].x += parseInt(AllObjList[i].event[e1][3]);
+                        }
+                        else if (AllObjList[i].event[e1][2] == "往左移動") {
+                            AllObjList[i].x -= parseInt(AllObjList[i].event[e1][3]);
+                        }
+                        else if (AllObjList[i].event[e1][2] == "往上移動") {
+                            AllObjList[i].y -= parseInt(AllObjList[i].event[e1][3]);
+                        }
+                        else if (AllObjList[i].event[e1][2] == "往下移動") {
+                            AllObjList[i].y += parseInt(AllObjList[i].event[e1][3]);
+                        }
+                    }
+                }
+            }
+        }
+    }, 10);
+
+    setInterval(function () {
+        for (var i = 0; i < AllObjList.length; i++) {
+            if (AllObjList[i].event) {
+                for (var e1 = 0; e1 < AllObjList[i].event.length; e1++) {
+                    if (AllObjList[i].event[e1][0] == 'KeyPounchRegistered') {
+                        for (var j = 0; j < AllObjList.length; j++) {
+                            if (AllObjList[j].class == AllObjList[i].event[e1][1] && i != j) {
+                                if (pounch(AllObjList[i], AllObjList[j]) == true) {
+                                    alert(AllObjList[i].event[e1][2]);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }, 10);
+
+    window.addEventListener("keydown", KeyDown, true);
+    window.addEventListener("keyup", KeyUp, true);
+}
+setInterval(function () {
+    refleshGame();
+}, 10);
+WindowRegisterKeyDowning();
+
+
+function KeyPounchRegistered(id) {
+    var obj = getObjById(id);
+    obj.event.push(['KeyPounchRegistered',
+        getByid(id + "_pounching_obj").value, getByid(id + "_pounching_broadcast").value, false]);
+    getByid("RefleshImgButton").onclick();
+}
+function KeyDowningMoveRegistered(id) {
+
+    var obj = getObjById(id);
+    obj.event.push(['KeyDowningMoveRegistered',
+        getByid(id + "_keydowning").value, getByid(id + "_keydowning_direction").value, getByid(id + "_keydowning_move").value, false]);
+
+    getByid("RefleshImgButton").onclick();
+}
+
 
 function ImgObjChoose(obj) {
     var Table = document.createElement("table");
@@ -508,6 +423,7 @@ function ImgObjChoose(obj) {
     button_tmp.id = "EditImgButton";
     button_tmp.style.float = "right middle";
     button_tmp.innerText = "修改圖片";
+
     getByid('selectObjectDiv').appendChild(button_tmp);
     getByid("EditImgButton").parentNode.replaceChild(button_tmp, getByid("EditImgButton"));
 
@@ -689,6 +605,8 @@ window.onload = function () {
                     event: [],
                     span: [],
                     select: [],
+                    broadcast: [],
+                    class: "角色",
                     rotate: 0
                 }
                 AllObjList.push(tempObject);
@@ -717,6 +635,8 @@ window.onload = function () {
                     event: [],
                     span: [],
                     select: [],
+                    broadcast: [],
+                    class: "場景",
                     rotate: 0
                 };
                 AllObjList.push(tempObject);
@@ -763,3 +683,5 @@ window.onload = function () {
         }
     })
 }
+
+var keyCode = { backspace: 8, tab: 9, enter: 13, shift: 16, ctrl: 17, alt: 18, pausebreak: 19, capslock: 20, esc: 27, space: 32, pageup: 33, pagedown: 34, end: 35, home: 36, leftarrow: 37, uparrow: 38, rightarrow: 39, downarrow: 40, insert: 45, delete: 46, 0: 48, 1: 49, 2: 50, 3: 51, 4: 52, 5: 53, 6: 54, 7: 55, 8: 56, 9: 57, a: 65, b: 66, c: 67, d: 68, e: 69, f: 70, g: 71, h: 72, i: 73, j: 74, k: 75, l: 76, m: 77, n: 78, o: 79, p: 80, q: 81, r: 82, s: 83, t: 84, u: 85, v: 86, w: 87, x: 88, y: 89, z: 90, leftwindowkey: 91, rightwindowkey: 92, selectkey: 93, numpad0: 96, numpad1: 97, numpad2: 98, numpad3: 99, numpad4: 100, numpad5: 101, numpad6: 102, numpad7: 103, numpad8: 104, numpad9: 105, multiply: 106, add: 107, subtract: 109, decimalpoint: 110, divide: 111, f1: 112, f2: 113, f3: 114, f4: 115, f5: 116, f6: 117, f7: 118, f8: 119, f9: 120, f10: 121, f11: 122, f12: 123, numlock: 144, scrolllock: 145, semicolon: 186, equalsign: 187, comma: 188, dash: 189, period: 190, forwardslash: 191, graveaccent: 192, openbracket: 219, backslash: 220, closebracket: 221, singlequote: 222 };
