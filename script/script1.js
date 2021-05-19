@@ -13,6 +13,11 @@ function getObjById(id) {
     }
 }
 
+function getObjByClass(class1) {
+    for (var i = 0; i < AllObjList.length; i++) {
+        if (AllObjList[i].class == class1) return AllObjList[i];
+    }
+}
 
 function pounch(obj, obj2) {
     function pounch1(x, y, w, h, x2, y2, w2, h2) {
@@ -28,6 +33,7 @@ function pounch(obj, obj2) {
 }
 
 var GameWorld = [];
+GameWorld.broadcast = [];
 GameWorld.tool = [];
 GameWorld.tool.AutoSelect = function (obj) {
     for (var i = 0; i < obj.select.length; i++) {
@@ -155,7 +161,7 @@ function ObjSelect(obj, move) {
     getByid("ObjEventTable").parentNode.replaceChild(eTable, getByid("ObjEventTable"));
 
     eTable.style = "table-layout:fixed;"
-    eTable.width = "300";
+    eTable.width = "320";
     var cells = eTable.insertRow(0);
     cells = cells.insertCell(0);
     cells.style = "word-break:break-word; word-wrap:break-word;"
@@ -171,7 +177,7 @@ function ObjSelect(obj, move) {
     cells.style = "word-break:break-word; word-wrap:break-word;"
     cells.innerHTML = `如果按住<select id="` + obj.id + `_keydowning"><option>w</option><option>a</option><option>s</option><option>d</option></select>
     <select id="`+ obj.id + `_keydowning_direction"><option>往右移動</option><option>往左移動</option><option>往上移動</option><option>往下移動</option></select>
-    <select id="`+ obj.id + `_keydowning_move"><option>0</option><option>1</option><option>2</option><option>3</option></select>格。
+    <select id="`+ obj.id + `_keydowning_move"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>7</option><option>10</option><option>15</option><option>20</option></select>格。
     <button onclick="KeyDowningMoveRegistered(`+ obj.id + `)";>ok</button>
     `;
 
@@ -187,18 +193,33 @@ function ObjSelect(obj, move) {
     cells = eTable.insertRow(3);
     cells = cells.insertCell(0);
     cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = `如果按下<select><option>w</option><option>a</option><option>s</option><option>d</option></select>
-    廣播<input size='6' type='text' value='事件1'/>
-    <button>ok</button>
+    cells.innerHTML = `如果按下<select id="` + obj.id + `_keydownBroadcast" ><option>w</option><option>a</option><option>s</option><option>d</option></select>
+    廣播<input  id="`+ obj.id + `_keydownBroadcast_broadcast" size='6' type='text' value='事件1'/>
+    <button  onclick="KeyDownBroadcastRegistered(`+ obj.id + `)">ok</button>
     `;
+
+    cells = eTable.insertRow(3);
+    cells = cells.insertCell(0);
+    cells.style = "word-break:break-word; word-wrap:break-word;"
+    cells.innerHTML = `如果按下<select id="` + obj.id + `_keydown" ><option>w</option><option>a</option><option>s</option><option>d</option></select>
+    <select id="`+ obj.id + `_keydown_action" ><option>取消隱形</option><option>隱形</option><option>銷毀</option><option>左右正向</option><option>左右反向</option><option>左右反轉</option><option>上下正向</option><option>上下反向</option><option>上下反轉</option></select>
+    <button  onclick="KeyDownEventRegistered(`+ obj.id + `)">ok</button>
+    `;
+
     cells = eTable.insertRow(4);
     cells = cells.insertCell(0);
     cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = `如果收到廣播<input size='6' type='text' value='事件1'/>
-    <select><option>取消隱形</option><option>隱形</option><option>銷毀</option><option>左右反轉</option></select>
-    <button>ok</button>   `;
+    cells.innerHTML = `如果收到廣播<input id="` + obj.id + `_broadcast_get" size='6' type='text' value='事件1'/>
+    <select id="`+ obj.id + `_broadcast_action" ><option>取消隱形</option><option>隱形</option><option>銷毀</option><option>左右正向</option><option>左右反向</option><option>左右反轉</option><option>上下正向</option><option>上下反向</option><option>上下反轉</option><option>產生分身</option></select>
+    <button onclick="broadcastRegistered(`+ obj.id + `)">ok</button>   `;
 
-
+    cells = eTable.insertRow(5);
+    cells = cells.insertCell(0);
+    cells.style = "word-break:break-word; word-wrap:break-word;"
+    cells.innerHTML = `如果分身產生
+    <select id="`+ obj.id + `_clonemove" ><option>移動到</option></select>
+    <input id="`+ obj.id + `_clonemove_obj" size='6' type='text' value='輸入類別'/>
+    <button onclick="cloneActionRegistered(`+ obj.id + `)">ok</button>   `;
 
     var eTable2 = document.createElement("table");
     eTable2.id = "ObjEventTable2";
@@ -221,16 +242,86 @@ function ObjSelect(obj, move) {
         if (eventobj[e1][0] == 'KeyDowningMoveRegistered') {
             cells.innerHTML = "如果按住" + eventobj[e1][1] + eventobj[e1][2] + eventobj[e1][3];//+
             var button_tmp = document.createElement("BUTTON");
-            button_tmp.id="button_event"+e1;
-            button_tmp.obj=eventobj[e1];
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
             button_tmp.style.float = "right middle";
-            button_tmp.innerText="刪除";
-            button_tmp.onclick=function(){
-                this.obj[0]="delete";
-            getByid("RefleshImgButton").onclick();
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
             }
             cells.appendChild(button_tmp);
-            getByid("button_event"+e1).parentNode.replaceChild(button_tmp, getByid("button_event"+e1));
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }
+        if (eventobj[e1][0] == 'KeyPounchRegistered') {
+            cells.innerHTML = "如果碰到" + eventobj[e1][1] + ":廣播" + eventobj[e1][2];//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }
+        if (eventobj[e1][0] == 'KeyDownBroadcastRegistered') {
+            cells.innerHTML = "如果按下" + eventobj[e1][1] + ",廣播:" + eventobj[e1][2];//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }
+        if (eventobj[e1][0] == 'KeyDownEventRegistered') {
+            cells.innerHTML = "如果按下" + eventobj[e1][1] + ",執行:" + eventobj[e1][2];//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }
+        if (eventobj[e1][0] == 'cloneActionRegistered') {
+            cells.innerHTML = "如果分身產生," + eventobj[e1][1] + ":" + eventobj[e1][2];//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }
+        if (eventobj[e1][0] == 'broadcastRegistered') {
+            cells.innerHTML = "如果收到廣播" + eventobj[e1][1] + ":" + eventobj[e1][2];//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
         }
     }
 
@@ -263,18 +354,42 @@ function WindowRegisterKeyDowning() {
                     if (AllObjList[i].event[e1][0] == 'KeyDowningMoveRegistered' &&
                         key == keyCode[AllObjList[i].event[e1][1]]) {
                         AllObjList[i].event[e1][4] = true;
-                        if (AllObjList[i].event[e1][2] == "往右移動") {
-                            // AllObjList[i].x+=parseInt(AllObjList[i].event[e1][3]);
+                    }
+                    if (AllObjList[i].event[e1][0] == 'KeyDownEventRegistered' &&
+                        key == keyCode[AllObjList[i].event[e1][1]]) {
+                        if (AllObjList[i].event[e1][2] == "隱形") {
+                            AllObjList[i].display = false;
                         }
-                        else if (AllObjList[i].event[e1][2] == "往左移動") {
-                            // AllObjList[i].x-=AllObjList[i].event[e1][3];
+                        else if (AllObjList[i].event[e1][2] == "取消隱形") {
+                            AllObjList[i].display = true;
                         }
-                        else if (AllObjList[i].event[e1][2] == "往上移動") {
-                            // AllObjList[i].y-=AllObjList[i].event[e1][3];
+                        else if (AllObjList[i].event[e1][2] == "銷毀") {
+                            AllObjList[i].class = "delete";
                         }
-                        else if (AllObjList[i].event[e1][2] == "往下移動") {
-                            // AllObjList[i].y+=AllObjList[i].event[e1][3];
+                        else if (AllObjList[i].event[e1][2] == "左右正向") {
+                            AllObjList[i].flipx = false;
                         }
+                        else if (AllObjList[i].event[e1][2] == "左右反向") {
+                            AllObjList[i].flipx = true;
+                        }
+                        else if (AllObjList[i].event[e1][2] == "左右反轉") {
+                            AllObjList[i].flipx = !AllObjList[i].flipx;
+                        }
+                        else if (AllObjList[i].event[e1][2] == "上下正向") {
+                            AllObjList[i].flipy = false;
+                        }
+                        else if (AllObjList[i].event[e1][2] == "上下反向") {
+                            AllObjList[i].flipy = true;
+                        }
+                        else if (AllObjList[i].event[e1][2] == "上下反轉") {
+                            AllObjList[i].flipy = !AllObjList[i].flipy;
+                        }
+                        //getByid("RefleshImgButton").onclick();
+                    }
+                    if (AllObjList[i].event[e1][0] == 'KeyDownBroadcastRegistered' &&
+                        key == keyCode[AllObjList[i].event[e1][1]]) {
+                        GameWorld.broadcast.push(AllObjList[i].event[e1][2]);
+                        //alert(i);
                     }
                 }
             }
@@ -289,20 +404,9 @@ function WindowRegisterKeyDowning() {
                     if (AllObjList[i].event[e1][0] == 'KeyDowningMoveRegistered' &&
                         key == keyCode[AllObjList[i].event[e1][1]]) {
                         AllObjList[i].event[e1][4] = false;
-                        if (AllObjList[i].event[e1][2] == "往右移動") {
-                            // AllObjList[i].x+=parseInt(AllObjList[i].event[e1][3]);
-                        }
-                        else if (AllObjList[i].event[e1][2] == "往左移動") {
-                            // AllObjList[i].x-=AllObjList[i].event[e1][3];
-                        }
-                        else if (AllObjList[i].event[e1][2] == "往上移動") {
-                            // AllObjList[i].y-=AllObjList[i].event[e1][3];
-                        }
-                        else if (AllObjList[i].event[e1][2] == "往下移動") {
-                            // AllObjList[i].y+=AllObjList[i].event[e1][3];
-                        }
                     }
                 }
+                //getByid("RefleshImgButton").onclick();
             }
         }
     }
@@ -325,6 +429,7 @@ function WindowRegisterKeyDowning() {
                         else if (AllObjList[i].event[e1][2] == "往下移動") {
                             AllObjList[i].y += parseInt(AllObjList[i].event[e1][3]);
                         }
+                       // getByid("RefleshImgButton").onclick();
                     }
                 }
             }
@@ -339,7 +444,8 @@ function WindowRegisterKeyDowning() {
                         for (var j = 0; j < AllObjList.length; j++) {
                             if (AllObjList[j].class == AllObjList[i].event[e1][1] && i != j) {
                                 if (pounch(AllObjList[i], AllObjList[j]) == true) {
-                                    alert(AllObjList[i].event[e1][2]);
+                                    GameWorld.broadcast.push(AllObjList[i].event[e1][2]);
+                                    //alert(AllObjList[i].event[e1][2]);
                                 }
                             }
                         }
@@ -347,6 +453,73 @@ function WindowRegisterKeyDowning() {
                 }
             }
         }
+        for (var i = 0; i < AllObjList.length; i++) {
+            if (AllObjList[i].event) {
+                for (var e1 = 0; e1 < AllObjList[i].event.length; e1++) {
+                    if (AllObjList[i].event[e1][0] == 'broadcastRegistered') {
+                        for (var g = 0; g < GameWorld.broadcast.length; g++) {
+                            if (GameWorld.broadcast[g] == AllObjList[i].event[e1][1]) {
+                                if (AllObjList[i].event[e1][2] == "隱形") {
+                                    AllObjList[i].display = false;
+                                }
+                                else if (AllObjList[i].event[e1][2] == "取消隱形") {
+                                    AllObjList[i].display = true;
+                                }
+                                else if (AllObjList[i].event[e1][2] == "銷毀") {
+                                    AllObjList[i].class = "delete";
+                                }
+                                else if (AllObjList[i].event[e1][2] == "左右正向") {
+                                    AllObjList[i].flipx = false;
+                                }
+                                else if (AllObjList[i].event[e1][2] == "左右反向") {
+                                    AllObjList[i].flipx = true;
+                                }
+                                else if (AllObjList[i].event[e1][2] == "左右反轉") {
+                                    AllObjList[i].flipx = !AllObjList[i].flipx;
+                                }
+                                else if (AllObjList[i].event[e1][2] == "上下正向") {
+                                    AllObjList[i].flipy = false;
+                                }
+                                else if (AllObjList[i].event[e1][2] == "上下反向") {
+                                    AllObjList[i].flipy = true;
+                                }
+                                else if (AllObjList[i].event[e1][2] == "上下反轉") {
+                                    AllObjList[i].flipy = !AllObjList[i].flipy;
+                                }
+                                else if (AllObjList[i].event[e1][2] == "產生分身"&&!AllObjList[i].clone) {
+                                    var clone = JSON.parse(JSON.stringify(AllObjList[i]));
+                                    id_length++;
+                                    clone.id=id_length;//
+                                    clone.clone=true;
+                                    clone.img=AllObjList[i].img;
+                                    //clone.event[e1][2]="delete";
+                                    //clone.event=AllObjList[i].event;
+                                    //console.log(clone);
+                                    for (var ec = 0; ec < clone.event.length; ec++) {
+                                        if (clone.event[ec][0] == 'KeyDownBroadcastRegistered') {
+                                            clone.event[ec][0]="delete";
+                                        }
+                                    }
+                                    AllObjList.push(clone);
+                                    console.log(i);
+                                    for (var ec = 0; ec < clone.event.length; ec++) {
+                                        if (clone.event[ec][0] == 'cloneActionRegistered') {
+                                            var move2obj=getObjByClass(clone.event[ec][2])
+                                            clone.x=move2obj.x;
+                                            clone.y=move2obj.y;
+                                        }
+                                    }
+                                }
+                                getByid("RefleshImgButton").onclick();
+                                //alert('');
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        GameWorld.broadcast = [];
+        //broadcast
     }, 10);
 
     window.addEventListener("keydown", KeyDown, true);
@@ -357,6 +530,32 @@ setInterval(function () {
 }, 10);
 WindowRegisterKeyDowning();
 
+
+function cloneActionRegistered(id) {
+    var obj = getObjById(id);
+    obj.event.push(['cloneActionRegistered',
+        getByid(id + "_clonemove").value, getByid(id + "_clonemove_obj").value, false]);
+    getByid("RefleshImgButton").onclick();
+}
+function KeyDownEventRegistered(id) {
+    var obj = getObjById(id);
+    obj.event.push(['KeyDownEventRegistered',
+        getByid(id + "_keydown").value, getByid(id + "_keydown_action").value, false]);
+    getByid("RefleshImgButton").onclick();
+}
+
+function KeyDownBroadcastRegistered(id) {
+    var obj = getObjById(id);
+    obj.event.push(['KeyDownBroadcastRegistered',
+        getByid(id + "_keydownBroadcast").value, getByid(id + "_keydownBroadcast_broadcast").value, false]);
+    getByid("RefleshImgButton").onclick();
+}
+function broadcastRegistered(id) {
+    var obj = getObjById(id);
+    obj.event.push(['broadcastRegistered',
+        getByid(id + "_broadcast_get").value, getByid(id + "_broadcast_action").value, false]);
+    getByid("RefleshImgButton").onclick();
+}
 
 function KeyPounchRegistered(id) {
     var obj = getObjById(id);
@@ -602,6 +801,7 @@ window.onload = function () {
                     height: imgListSize[1],
                     flipx: false,
                     flipy: false,
+                    display: 0,
                     event: [],
                     span: [],
                     select: [],
@@ -632,6 +832,7 @@ window.onload = function () {
                     height: GameObj.height,
                     flipx: false,
                     flipy: false,
+                    display: 0,
                     event: [],
                     span: [],
                     select: [],
