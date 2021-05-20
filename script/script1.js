@@ -57,6 +57,7 @@ imgListSize.width = imgListSize[0];
 imgListSize.height = imgListSize[1];
 let ImgListDiv = getByid("ImgListDiv");
 let BackgroundListDiv = getByid("BackgroundListDiv");
+let WaterBallListDiv = getByid("WaterBallListDiv");
 let MouseDrag = false;
 let NowChoose = null;
 let AllObjList = []
@@ -65,6 +66,7 @@ let GameObj = {}
 let ChooseObj = null;
 let MouseLeftClick = false;
 let MouseRightClick = false;
+let checkPouch = false;
 GameObj.width = 750;
 GameObj.height = 550;
 
@@ -73,6 +75,12 @@ getByid("imgListOpetion").onchange = function () {
     else ImgListDiv.style.display = "none";
     if (getByid("Background_Choose").selected == true) BackgroundListDiv.style.display = "";
     else BackgroundListDiv.style.display = "none";
+    if (getByid("WaterBall_Choose").selected == true) WaterBallListDiv.style.display = "";
+    else WaterBallListDiv.style.display = "none";
+}
+
+getByid("EventListOpetion").onchange = function () {
+    getByid("RefleshImgButton").onclick();
 }
 
 function ObjSelect(obj, move) {
@@ -120,12 +128,14 @@ function ObjSelect(obj, move) {
     cells = Table.insertRow(6);
     cells = cells.insertCell(0);
     cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = "左右反轉: " + "<input type='button'  value='" + obj.flipx + "' size='8' onclick='ChooseObj.flipx=this.value=!(ChooseObj.flipx);refleshGame();'/>";
+    cells.innerHTML = "左右反轉: " + "<input type='button'  value='" + obj.flipx + "' size='8' onclick='ChooseObj.flipx=this.value=!(ChooseObj.flipx);refleshGame();'/>" +
+        "上下反轉: " + "<input type='button'  value='" + obj.flipy + "' size='8' onclick='ChooseObj.flipy=this.value=!(ChooseObj.flipy);refleshGame();'/>";
 
     cells = Table.insertRow(7);
     cells = cells.insertCell(0);
     cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = "上下反轉: " + "<input type='button'  value='" + obj.flipy + "' size='8' onclick='ChooseObj.flipy=this.value=!(ChooseObj.flipy);refleshGame();'/>";
+    cells.innerHTML = "繪圖優先度：" + "<input type='button'  value='" + obj.layer + "' size='8' onclick='ChooseObj.layer=this.value=!(ChooseObj.layer);refleshGame();'/>"
+        + ",顯示隱藏：<input type='button'  value='" + obj.display + "' size='8' onclick='ChooseObj.display=this.value=!(ChooseObj.display);refleshGame();'/>";
 
     cells = Table.insertRow(8);
     cells = cells.insertCell(0);
@@ -165,62 +175,97 @@ function ObjSelect(obj, move) {
     var cells = eTable.insertRow(0);
     cells = cells.insertCell(0);
     cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = "事件: ";//+ obj.name;
+    if (getByid("Event_Choose").selected == true)
+        cells.innerHTML = "一般事件: ";//+ obj.name;
+    if (getByid("CloneEvent_Choose").selected == true)
+        cells.innerHTML = "分身事件: ";//+ obj.name;
+    if (getByid("SpecialEvent_Choose").selected == true)
+        cells.innerHTML = "特殊事件: ";//+ obj.name;
     /*
     var cells = Table.insertRow(1);
     cells = cells.insertCell(0);
     cells.style = "word-break:break-word; word-wrap:break-word;"
     cells.innerHTML = "中文名稱: " + obj.title_tw;
     */
-    cells = eTable.insertRow(1);
-    cells = cells.insertCell(0);
-    cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = `如果按住<select id="` + obj.id + `_keydowning"><option>w</option><option>a</option><option>s</option><option>d</option></select>
+    if (getByid("Event_Choose").selected == true) {
+        cells = eTable.insertRow(1);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        cells.innerHTML = `如果按住<select id="` + obj.id + `_keydowning"><option>w</option><option>a</option><option>s</option><option>d</option></select>
     <select id="`+ obj.id + `_keydowning_direction"><option>往右移動</option><option>往左移動</option><option>往上移動</option><option>往下移動</option></select>
     <select id="`+ obj.id + `_keydowning_move"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>7</option><option>10</option><option>15</option><option>20</option></select>格。
     <button onclick="KeyDowningMoveRegistered(`+ obj.id + `)";>ok</button>
     `;
 
-    cells = eTable.insertRow(2);
-    cells = cells.insertCell(0);
-    cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = `如果碰到
+        cells = eTable.insertRow(2);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        cells.innerHTML = `如果碰到
     <input id="`+ obj.id + `_pounching_obj" size='6' type='text' value='輸入類別'/>
     廣播<input id="`+ obj.id + `_pounching_broadcast" size='6' type='text' value='事件2'/>
     <button onclick="KeyPounchRegistered(`+ obj.id + `)";>ok</button>
     `;
 
-    cells = eTable.insertRow(3);
-    cells = cells.insertCell(0);
-    cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = `如果按下<select id="` + obj.id + `_keydownBroadcast" ><option>w</option><option>a</option><option>s</option><option>d</option></select>
+        cells = eTable.insertRow(3);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        cells.innerHTML = `如果按下<select id="` + obj.id + `_keydownBroadcast" ><option>w</option><option>a</option><option>s</option><option>d</option><option>space</option></select>
     廣播<input  id="`+ obj.id + `_keydownBroadcast_broadcast" size='6' type='text' value='事件1'/>
     <button  onclick="KeyDownBroadcastRegistered(`+ obj.id + `)">ok</button>
     `;
 
-    cells = eTable.insertRow(3);
-    cells = cells.insertCell(0);
-    cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = `如果按下<select id="` + obj.id + `_keydown" ><option>w</option><option>a</option><option>s</option><option>d</option></select>
+        cells = eTable.insertRow(3);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        cells.innerHTML = `如果按下<select id="` + obj.id + `_keydown" ><option>w</option><option>a</option><option>s</option><option>d</option></select>
     <select id="`+ obj.id + `_keydown_action" ><option>取消隱形</option><option>隱形</option><option>銷毀</option><option>左右正向</option><option>左右反向</option><option>左右反轉</option><option>上下正向</option><option>上下反向</option><option>上下反轉</option></select>
     <button  onclick="KeyDownEventRegistered(`+ obj.id + `)">ok</button>
     `;
 
-    cells = eTable.insertRow(4);
-    cells = cells.insertCell(0);
-    cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = `如果收到廣播<input id="` + obj.id + `_broadcast_get" size='6' type='text' value='事件1'/>
+        cells = eTable.insertRow(4);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        cells.innerHTML = `如果收到廣播<input id="` + obj.id + `_broadcast_get" size='6' type='text' value='事件1'/>
     <select id="`+ obj.id + `_broadcast_action" ><option>取消隱形</option><option>隱形</option><option>銷毀</option><option>左右正向</option><option>左右反向</option><option>左右反轉</option><option>上下正向</option><option>上下反向</option><option>上下反轉</option><option>產生分身</option></select>
     <button onclick="broadcastRegistered(`+ obj.id + `)">ok</button>   `;
 
-    cells = eTable.insertRow(5);
-    cells = cells.insertCell(0);
-    cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = `如果分身產生
+
+
+    }
+    if (getByid("CloneEvent_Choose").selected == true) {
+        cells = eTable.insertRow(1);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        cells.innerHTML = `如果分身產生
     <select id="`+ obj.id + `_clonemove" ><option>移動到</option></select>
     <input id="`+ obj.id + `_clonemove_obj" size='6' type='text' value='輸入類別'/>
     <button onclick="cloneActionRegistered(`+ obj.id + `)">ok</button>   `;
 
+        cells = eTable.insertRow(2);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        cells.innerHTML = `如果分身產生,等待
+    <input id="`+ obj.id + `_clonewait_time" size='3' type='text' value='100'/>毫秒後
+    <select id="`+ obj.id + `_clonewait_action" ><option>取消隱形</option><option>隱形</option><option>銷毀</option><option>左右正向</option><option>左右反向</option><option>左右反轉</option><option>上下正向</option><option>上下反向</option><option>上下反轉</option></select>
+    <button onclick="cloneWaitRegistered(`+ obj.id + `)">ok</button>   `;
+
+        cells = eTable.insertRow(3);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        cells.innerHTML = `如果分身產生,等待
+<input id="`+ obj.id + `_clonewaitbroadcast_time" size='3' type='text' value='100'/>毫秒後,廣播
+<input  id="`+ obj.id + `_clonewaitbroadcast_broadcast" size='6' type='text' value='事件1'/>
+<button onclick="cloneWaitBroadcastnRegistered(`+ obj.id + `)">ok</button>   `;
+    }
+
+    if (getByid("SpecialEvent_Choose").selected == true) {
+        cells = eTable.insertRow(1);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        cells.innerHTML = `如果碰到<input  id="` + obj.id + `_pounchstop_obj" size='6' type='text' value='障礙物'/>,停止前進
+    <button  onclick="pounchStopRegistered(`+ obj.id + `)">ok</button>
+    `;
+    }
     var eTable2 = document.createElement("table");
     eTable2.id = "ObjEventTable2";
     // /Table.className = "table table-dark table-striped";
@@ -323,6 +368,48 @@ function ObjSelect(obj, move) {
             cells.appendChild(button_tmp);
             getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
         }
+        if (eventobj[e1][0] == 'cloneWaitRegistered') {
+            cells.innerHTML = "如果分身產生,等待" + eventobj[e1][1] + "毫秒後," + eventobj[e1][2];//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }
+        if (eventobj[e1][0] == 'cloneWaitBroadcastnRegistered') {
+            cells.innerHTML = "如果分身產生,等待" + eventobj[e1][1] + "毫秒後,廣播:" + eventobj[e1][2];//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }
+        if (eventobj[e1][0] == 'pounchStopRegistered') {
+            cells.innerHTML = "如果碰到" + eventobj[e1][1] + "停止前進";//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }
     }
 
 
@@ -349,6 +436,7 @@ function WindowRegisterKeyDowning() {
     function KeyDown(KeyboardKeys) {
         var key = KeyboardKeys.which;
         for (var i = 0; i < AllObjList.length; i++) {
+            if (AllObjList[i].class == "delete") continue;
             if (AllObjList[i].event) {
                 for (var e1 = 0; e1 < AllObjList[i].event.length; e1++) {
                     if (AllObjList[i].event[e1][0] == 'KeyDowningMoveRegistered' &&
@@ -384,7 +472,8 @@ function WindowRegisterKeyDowning() {
                         else if (AllObjList[i].event[e1][2] == "上下反轉") {
                             AllObjList[i].flipy = !AllObjList[i].flipy;
                         }
-                        //getByid("RefleshImgButton").onclick();
+                        //flag1
+                        getByid("RefleshImgButton").onclick();
                     }
                     if (AllObjList[i].event[e1][0] == 'KeyDownBroadcastRegistered' &&
                         key == keyCode[AllObjList[i].event[e1][1]]) {
@@ -399,6 +488,7 @@ function WindowRegisterKeyDowning() {
     function KeyUp(KeyboardKeys) {
         var key = KeyboardKeys.which;
         for (var i = 0; i < AllObjList.length; i++) {
+            if (AllObjList[i].class == "delete") continue;
             if (AllObjList[i].event) {
                 for (var e1 = 0; e1 < AllObjList[i].event.length; e1++) {
                     if (AllObjList[i].event[e1][0] == 'KeyDowningMoveRegistered' &&
@@ -412,24 +502,62 @@ function WindowRegisterKeyDowning() {
     }
     setInterval(function () {
         for (var i = 0; i < AllObjList.length; i++) {
+            if (AllObjList[i].class == "delete") continue;
             if (AllObjList[i].event) {
                 for (var e1 = 0; e1 < AllObjList[i].event.length; e1++) {
                     if (AllObjList[i].event[e1][0] == 'KeyDowningMoveRegistered' &&
                         AllObjList[i].event[e1][4] == true) {
                         //AllObjList[i].event[e1][3]=true;
+                        //遇到障礙物停止前進
+                        var pounchList = [];
+                        for (var ec = 0; ec < AllObjList[i].event.length; ec++) {
+                            if (AllObjList[i].event[ec][0] == 'pounchStopRegistered') {
+                                for (var j = 0; j < AllObjList.length; j++) {
+                                    if (AllObjList[j].class == AllObjList[i].event[ec][1])
+                                        pounchList.push(AllObjList[j]);
+                                }
+
+                            }
+                        }
+
                         if (AllObjList[i].event[e1][2] == "往右移動") {
                             AllObjList[i].x += parseInt(AllObjList[i].event[e1][3]);
+                            //碰到障礙物就後退
+                            for (var j = 0; j < pounchList.length; j++) {
+                                if (pounch(AllObjList[i], pounchList[j]) == true) {
+                                    AllObjList[i].x -= parseInt(AllObjList[i].event[e1][3]);
+                                }
+                            }
+
                         }
                         else if (AllObjList[i].event[e1][2] == "往左移動") {
                             AllObjList[i].x -= parseInt(AllObjList[i].event[e1][3]);
+                            //碰到障礙物就後退
+                            for (var j = 0; j < pounchList.length; j++) {
+                                if (pounch(AllObjList[i], pounchList[j]) == true) {
+                                    AllObjList[i].x += parseInt(AllObjList[i].event[e1][3]);
+                                }
+                            }
                         }
                         else if (AllObjList[i].event[e1][2] == "往上移動") {
                             AllObjList[i].y -= parseInt(AllObjList[i].event[e1][3]);
+                            //碰到障礙物就後退
+                            for (var j = 0; j < pounchList.length; j++) {
+                                if (pounch(AllObjList[i], pounchList[j]) == true) {
+                                    AllObjList[i].y += parseInt(AllObjList[i].event[e1][3]);
+                                }
+                            }
                         }
                         else if (AllObjList[i].event[e1][2] == "往下移動") {
                             AllObjList[i].y += parseInt(AllObjList[i].event[e1][3]);
+                            //碰到障礙物就後退
+                            for (var j = 0; j < pounchList.length; j++) {
+                                if (pounch(AllObjList[i], pounchList[j]) == true) {
+                                    AllObjList[i].y -= parseInt(AllObjList[i].event[e1][3]);
+                                }
+                            }
                         }
-                       // getByid("RefleshImgButton").onclick();
+                        // getByid("RefleshImgButton").onclick();
                     }
                 }
             }
@@ -438,6 +566,7 @@ function WindowRegisterKeyDowning() {
 
     setInterval(function () {
         for (var i = 0; i < AllObjList.length; i++) {
+            if (AllObjList[i].class == "delete") continue;
             if (AllObjList[i].event) {
                 for (var e1 = 0; e1 < AllObjList[i].event.length; e1++) {
                     if (AllObjList[i].event[e1][0] == 'KeyPounchRegistered') {
@@ -454,6 +583,7 @@ function WindowRegisterKeyDowning() {
             }
         }
         for (var i = 0; i < AllObjList.length; i++) {
+            if (AllObjList[i].class == "delete") continue;
             if (AllObjList[i].event) {
                 for (var e1 = 0; e1 < AllObjList[i].event.length; e1++) {
                     if (AllObjList[i].event[e1][0] == 'broadcastRegistered') {
@@ -486,29 +616,86 @@ function WindowRegisterKeyDowning() {
                                 else if (AllObjList[i].event[e1][2] == "上下反轉") {
                                     AllObjList[i].flipy = !AllObjList[i].flipy;
                                 }
-                                else if (AllObjList[i].event[e1][2] == "產生分身"&&!AllObjList[i].clone) {
+                                else if (AllObjList[i].event[e1][2] == "產生分身" && !AllObjList[i].clone) {
                                     var clone = JSON.parse(JSON.stringify(AllObjList[i]));
                                     id_length++;
-                                    clone.id=id_length;//
-                                    clone.clone=true;
-                                    clone.img=AllObjList[i].img;
+                                    clone.id = id_length;//
+                                    clone.clone = true;
+                                    clone.img = AllObjList[i].img;
                                     //clone.event[e1][2]="delete";
                                     //clone.event=AllObjList[i].event;
                                     //console.log(clone);
                                     for (var ec = 0; ec < clone.event.length; ec++) {
                                         if (clone.event[ec][0] == 'KeyDownBroadcastRegistered') {
-                                            clone.event[ec][0]="delete";
+                                            clone.event[ec][0] = "delete";
                                         }
                                     }
                                     AllObjList.push(clone);
                                     console.log(i);
                                     for (var ec = 0; ec < clone.event.length; ec++) {
                                         if (clone.event[ec][0] == 'cloneActionRegistered') {
-                                            var move2obj=getObjByClass(clone.event[ec][2])
-                                            clone.x=move2obj.x;
-                                            clone.y=move2obj.y;
+                                            var move2obj = getObjByClass(clone.event[ec][2]);
+                                            if (!move2obj) continue;
+                                            clone.x = move2obj.x;
+                                            clone.y = move2obj.y;
                                         }
                                     }
+
+                                    for (var ec = 0; ec < clone.event.length; ec++) {
+                                        if (clone.event[ec][0] == 'cloneWaitRegistered') {
+                                            if (!isNaN(parseInt(clone.event[ec][1]))) {
+                                                if (parseInt(clone.event[ec][1]) >= 0 && parseInt(clone.event[ec][1]) < 100000000) {
+                                                    const ec_const2 = ec;
+                                                    window.setTimeout(function () {
+                                                        if (clone.event[ec_const2][2] == "隱形") {
+                                                            clone.display = false;
+                                                        }
+                                                        else if (clone.event[ec_const2][2] == "取消隱形") {
+                                                            clone.display = true;
+                                                        }
+                                                        else if (clone.event[ec_const2][2] == "銷毀") {
+                                                            clone.class = "delete";
+                                                        }
+                                                        else if (clone.event[ec_const2][2] == "左右正向") {
+                                                            clone.flipx = false;
+                                                        }
+                                                        else if (clone.event[ec_const2][2] == "左右反向") {
+                                                            clone.flipx = true;
+                                                        }
+                                                        else if (clone.event[ec_const2][2] == "左右反轉") {
+                                                            clone.flipx = !clone.flipx;
+                                                        }
+                                                        else if (clone.event[ec_const2][2] == "上下正向") {
+                                                            clone.flipy = false;
+                                                        }
+                                                        else if (clone.event[ec_const2][2] == "上下反向") {
+                                                            clone.flipy = true;
+                                                        }
+                                                        else if (clone.event[ec_const2][2] == "上下反轉") {
+                                                            clone.flipy = !clone.flipy;
+                                                        }
+                                                    }, parseInt(clone.event[ec][1]));
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    for (var ec = 0; ec < clone.event.length; ec++) {
+                                        if (clone.event[ec][0] == 'cloneWaitBroadcastnRegistered') {
+                                            if (!isNaN(parseInt(clone.event[ec][1]))) {
+                                                if (parseInt(clone.event[ec][1]) >= 0 && parseInt(clone.event[ec][1]) < 100000000) {
+                                                    const ec_const = ec;
+                                                    window.setTimeout(function () {
+                                                        GameWorld.broadcast.push(clone.event[ec_const][2]);
+                                                    }, parseInt(clone.event[ec][1]));
+                                                }
+                                            }
+                                        }
+                                    }
+
+
+
+
                                 }
                                 getByid("RefleshImgButton").onclick();
                                 //alert('');
@@ -526,10 +713,32 @@ function WindowRegisterKeyDowning() {
     window.addEventListener("keyup", KeyUp, true);
 }
 setInterval(function () {
+    if (checkPouch == true) return;
     refleshGame();
 }, 10);
 WindowRegisterKeyDowning();
 
+
+function pounchStopRegistered(id) {
+    var obj = getObjById(id);
+    obj.event.push(['pounchStopRegistered',
+        getByid(id + "_pounchstop_obj").value, false]);
+    getByid("RefleshImgButton").onclick();
+}
+
+function cloneWaitRegistered(id) {
+    var obj = getObjById(id);
+    obj.event.push(['cloneWaitRegistered',
+        getByid(id + "_clonewait_time").value, getByid(id + "_clonewait_action").value, false]);
+    getByid("RefleshImgButton").onclick();
+}
+
+function cloneWaitBroadcastnRegistered(id) {
+    var obj = getObjById(id);
+    obj.event.push(['cloneWaitBroadcastnRegistered',
+        getByid(id + "_clonewaitbroadcast_time").value, getByid(id + "_clonewaitbroadcast_broadcast").value, false]);
+    getByid("RefleshImgButton").onclick();
+}
 
 function cloneActionRegistered(id) {
     var obj = getObjById(id);
@@ -639,6 +848,8 @@ function refleshGame() {
         ctx.clearRect(0, 0, 1024, 1024);
         for (var d = 0; d < AllObjList.length; d++)
             if (AllObjList[d].type == "background") {
+                if (AllObjList[d].class == "delete") continue;
+                if (AllObjList[d].display == false) continue;
                 if (AllObjList[d].flipx == true || AllObjList[d].flipy == true) {
                     ctx.save();
                     var tmp_flipx = AllObjList[d].flipx ? GameObj.width + (AllObjList[d].x - GameObj.width / 2) * 2 + AllObjList[d].width : 0;
@@ -655,6 +866,29 @@ function refleshGame() {
             }
         for (var d = 0; d < AllObjList.length; d++) {
             if (AllObjList[d].type == "img") {
+                if (AllObjList[d].class == "delete") continue;
+                if (AllObjList[d].display == false) continue;
+                if (AllObjList[d].layer == true) continue;
+                if (AllObjList[d].flipx == true || AllObjList[d].flipy == true) {
+                    ctx.save();
+                    var tmp_flipx = AllObjList[d].flipx ? GameObj.width + (AllObjList[d].x - GameObj.width / 2) * 2 + AllObjList[d].width : 0;
+                    var tmp_flipy = AllObjList[d].flipy ? GameObj.height + (AllObjList[d].y - GameObj.height / 2) * 2 + AllObjList[d].height : 0;
+                    ctx.translate(tmp_flipx, tmp_flipy);
+                    var tmp_flipx = AllObjList[d].flipx ? -1 : 1;
+                    var tmp_flipy = AllObjList[d].flipy ? -1 : 1;
+                    ctx.scale(tmp_flipx, tmp_flipy);
+                    ctx.drawImage(AllObjList[d].img, AllObjList[d].x, AllObjList[d].y, AllObjList[d].width, AllObjList[d].height);
+                    ctx.restore();
+                } else {
+                    ctx.drawImage(AllObjList[d].img, AllObjList[d].x, AllObjList[d].y, AllObjList[d].width, AllObjList[d].height);
+                }
+            }
+        }
+        for (var d = 0; d < AllObjList.length; d++) {
+            if (AllObjList[d].type == "img") {
+                if (AllObjList[d].class == "delete") continue;
+                if (AllObjList[d].display == false) continue;
+                if (AllObjList[d].layer != true) continue;
                 if (AllObjList[d].flipx == true || AllObjList[d].flipy == true) {
                     ctx.save();
                     var tmp_flipx = AllObjList[d].flipx ? GameObj.width + (AllObjList[d].x - GameObj.width / 2) * 2 + AllObjList[d].width : 0;
@@ -706,6 +940,23 @@ window.onload = function () {
             getByid('ImgListDiv').appendChild(image_tmp);
         }
     });
+    readTextFile("image/waterball_json.json", function (text) {
+        waterball_json = JSON.parse(text);
+        waterball_json = waterball_json.image_json;
+        for (var j1 = 0; j1 < waterball_json.length; j1++) {
+            var image_tmp = document.createElement("IMG");
+            image_tmp.width = imgListSize[0];
+            image_tmp.height = imgListSize[1];
+            image_tmp.src = waterball_json[j1].path;
+            image_tmp.alt = waterball_json[j1].title;
+            image_tmp.obj = waterball_json[j1];
+            image_tmp.className = "leftimg objimg";
+            image_tmp.onmousedown = function () {
+                ImgObjChoose(this.obj);
+            }
+            getByid('WaterBallListDiv').appendChild(image_tmp);
+        }
+    });
     readTextFile("image/background_json.json", function (text) {
         background_json = JSON.parse(text);
         background_json = background_json.background_json;
@@ -743,6 +994,7 @@ window.onload = function () {
         checkPouch = false;
         for (var d = 0; d < AllObjList.length; d++) {
             if (AllObjList[d].type == "img") {
+                if (AllObjList[d].class == "delete") continue;
                 var p = pounch(AllObjList[d], mouseObj);
                 if (p == true) {
                     ChooseObj = AllObjList[d];
@@ -801,7 +1053,8 @@ window.onload = function () {
                     height: imgListSize[1],
                     flipx: false,
                     flipy: false,
-                    display: 0,
+                    layer: false,
+                    display: true,
                     event: [],
                     span: [],
                     select: [],
@@ -832,7 +1085,7 @@ window.onload = function () {
                     height: GameObj.height,
                     flipx: false,
                     flipy: false,
-                    display: 0,
+                    display: true,
                     event: [],
                     span: [],
                     select: [],
