@@ -1,0 +1,18 @@
+{
+    "anime_json": [
+        {
+            "title": "warrior",
+            "title_tw": "戰士",
+            "classtype": "anime",
+            "classtype_tw": "動畫",
+            "path": "./image/anime/warrior/warrior-145594_1280_edit_small.png",
+            "animeList": [
+                "./image/anime/warrior/warrior-145597_1280_edit_small.png",
+                "./image/anime/warrior/warrior-145596_1280_edit_small.png",
+                "./image/anime/warrior/warrior-145596_1280_edit2_small.png",
+                "./image/anime/warrior/warrior-145594_1280_edit_small.png"
+            ],
+            "url": "https://pixabay.com/zh/vectors/dragon-slayer-warrior-rpg-sprite-145565/"
+        }
+    ]
+}
