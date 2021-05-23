@@ -188,6 +188,21 @@ function ObjSelect(obj, move) {
 <input id="`+ obj.id + `_clonewaitbroadcast_time" size='3' type='text' value='100'/>毫秒後,廣播
 <input  id="`+ obj.id + `_clonewaitbroadcast_broadcast" size='6' type='text' value='事件1'/>
 <button onclick="cloneWaitBroadcastnRegistered(`+ obj.id + `)">ok</button>   `;
+
+
+        cells = eTable.insertRow(4);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        cells.innerHTML = `如果分身產生,橫向膨脹直到碰到
+        <input id="`+ obj.id + `_cloneLateralExpansion_obj" size='6' type='text' value='輸入類別'/>或邊界
+        <button onclick="cloneLateralExpansion(`+ obj.id + `)">ok</button>   `;; 
+        
+        cells = eTable.insertRow(5);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        cells.innerHTML = `如果分身產生,縱向膨脹直到碰到
+        <input id="`+ obj.id + `_cloneVerticalExpansion_obj" size='6' type='text' value='輸入類別'/>或邊界
+        <button onclick="cloneVerticalExpansion(`+ obj.id + `)">ok</button>   `;;
     }
 
     if (getByid("SpecialEvent_Choose").selected == true) {
@@ -196,6 +211,13 @@ function ObjSelect(obj, move) {
         cells.style = "word-break:break-word; word-wrap:break-word;"
         cells.innerHTML = `如果碰到<input  id="` + obj.id + `_pounchstop_obj" size='6' type='text' value='障礙物'/>,停止前進
     <button  onclick="pounchStopRegistered(`+ obj.id + `)">ok</button>
+    `;     
+    
+    cells = eTable.insertRow(2);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        cells.innerHTML = `如果碰到<input  id="` + obj.id + `_pounchDelete_obj" size='6' type='text' value='炸藥'/>,銷毀
+    <button  onclick="pounchDeleteRegistered(`+ obj.id + `)">ok</button>
     `;
     }
     if (getByid("AnimeEvent_Choose").selected == true) {
@@ -354,8 +376,52 @@ function ObjSelect(obj, move) {
             getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
         }
 
+        if (eventobj[e1][0] == 'pounchDeleteRegistered') {
+            cells.innerHTML = "如果碰到" + eventobj[e1][1] + "銷毀";//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }
+
         if (eventobj[e1][0] == 'KeyDownAnimeEventRegistered') {
             cells.innerHTML = "如果按下" + eventobj[e1][1] + "轉換為第" + eventobj[e1][2] + "型態";//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }
+
+        if (eventobj[e1][0] == 'cloneLateralExpansion') {
+            cells.innerHTML = "如果分身產生,橫向膨脹直到碰到" + eventobj[e1][1] + "或邊界";//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }
+        if (eventobj[e1][0] == 'cloneVerticalExpansion') {
+            cells.innerHTML = "如果分身產生,縱向膨脹直到碰到" + eventobj[e1][1] + "或邊界";//+
             var button_tmp = document.createElement("BUTTON");
             button_tmp.id = "button_event" + e1;
             button_tmp.obj = eventobj[e1];
@@ -421,13 +487,32 @@ function ObjSelect(obj, move) {
 
 }
 
+function cloneVerticalExpansion(id) {
+    var obj = getObjById(id);
+    obj.event.push(['cloneVerticalExpansion',
+        getByid(id + "_cloneVerticalExpansion_obj").value, false]);
+    getByid("RefleshImgButton").onclick();
+}
+
+function cloneLateralExpansion(id) {
+    var obj = getObjById(id);
+    obj.event.push(['cloneLateralExpansion',
+        getByid(id + "_cloneLateralExpansion_obj").value, false]);
+    getByid("RefleshImgButton").onclick();
+}
+
 function KeyDownAnimeEventRegistered(id) {
     var obj = getObjById(id);
     obj.event.push(['KeyDownAnimeEventRegistered',
         getByid(id + "_keydownAnime").value, getByid(id + "_keydownAnime_target").value, false]);
     getByid("RefleshImgButton").onclick();
 }
-
+function pounchDeleteRegistered(id) {
+    var obj = getObjById(id);
+    obj.event.push(['pounchDeleteRegistered',
+        getByid(id + "_pounchDelete_obj").value, false]);
+    getByid("RefleshImgButton").onclick();
+}
 function pounchStopRegistered(id) {
     var obj = getObjById(id);
     obj.event.push(['pounchStopRegistered',

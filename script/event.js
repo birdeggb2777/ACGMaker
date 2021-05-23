@@ -157,6 +157,34 @@ function WindowRegisterKeyDowning() {
             }
         }
         for (var i = 0; i < AllObjList.length; i++) {
+            for (var ec = 0; ec < AllObjList[i].event.length; ec++) {
+                if (AllObjList[i].event[ec][0] == 'pounchDeleteRegistered') {
+                    var pounchList0 = [];
+                    //for (var ec0 = 0; ec0 < AllObjList[i].event.length; ec0++) {
+                    for (var p = 0; p < AllObjList.length; p++) {
+                        if (AllObjList[p].class == AllObjList[i].event[ec][1])
+                            pounchList0.push(AllObjList[p]);
+                    }
+                    //}
+                    //console.log(pounchList0);
+
+                    var pounch0 = false;
+                    for (var p = 0; p < pounchList0.length; p++) {
+                        if (pounch(AllObjList[i], pounchList0[p]) == true) {
+                            pounch0 = true;
+                        }
+                    }
+                    if (pounch0 == true) AllObjList[i].class = "delete";
+                    //for (var j = 0; j < AllObjList.length; j++) {
+                    //   if (AllObjList[j].class == AllObjList[i].event[ec][1])
+                    ///       pounchList0.push(AllObjList[j]);
+                    // }
+                }
+                //flag
+            }
+        }
+
+        for (var i = 0; i < AllObjList.length; i++) {
             if (AllObjList[i].class == "delete") continue;
             if (AllObjList[i].event) {
                 for (var e1 = 0; e1 < AllObjList[i].event.length; e1++) {
@@ -192,6 +220,7 @@ function WindowRegisterKeyDowning() {
                                 }
                                 else if (AllObjList[i].event[e1][2] == "產生分身" && !AllObjList[i].clone) {
                                     var clone = JSON.parse(JSON.stringify(AllObjList[i]));
+                                    const clone1 = clone;
                                     id_length++;
                                     clone.id = id_length;//
                                     clone.clone = true;
@@ -214,41 +243,114 @@ function WindowRegisterKeyDowning() {
                                             clone.y = move2obj.y;
                                         }
                                     }
+                                    for (var ec = 0; ec < clone.event.length; ec++) {
+                                        if (clone.event[ec][0] == 'cloneLateralExpansion') {
+                                            var pounchList = [];
+                                            for (var ec2 = 0; ec2 < AllObjList[i].event.length; ec2++) {
+                                                console.log(clone.event[ec2][1]);
+                                                //if (AllObjList[i].event[ec2][0] == "cloneLateralExpansion") {
+                                                for (var p = 0; p < AllObjList.length; p++) {
+                                                    if (AllObjList[p].class == clone.event[ec2][1])
+                                                        pounchList.push(AllObjList[p]);
+                                                }
 
+                                                // }
+                                            }
+                                            console.log(pounchList);
+                                            var gameobj = createGameWorldObj();
+                                            for (var l = 0; l < gameobj.width; l++) {
+
+                                                if (clone.x < gameobj.x || clone.y < gameobj.y ||
+                                                    clone.x + clone.width > gameobj.x + gameobj.width ||
+                                                    clone.y + clone.height > gameobj.y + gameobj.height
+                                                ) {
+
+                                                } else {
+                                                    var pounch1 = false;
+                                                    for (var p = 0; p < pounchList.length; p++) {
+                                                        if (pounch(clone, pounchList[p]) == true) {
+                                                            pounch1 = true;
+                                                        }
+                                                    }
+                                                    if (pounch1 == true) break;
+                                                    clone.width += 2;
+                                                    clone.x--;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    for (var ec = 0; ec < clone.event.length; ec++) {
+                                        if (clone.event[ec][0] == 'cloneVerticalExpansion') {
+                                            var pounchList2 = [];
+                                            for (var ec2 = 0; ec2 < AllObjList[i].event.length; ec2++) {
+                                                console.log(clone.event[ec2][1]);
+                                                //if (AllObjList[i].event[ec2][0] == "cloneLateralExpansion") {
+                                                for (var p = 0; p < AllObjList.length; p++) {
+                                                    if (AllObjList[p].class == clone.event[ec2][1])
+                                                        pounchList2.push(AllObjList[p]);
+                                                }
+
+                                                // }
+                                            }
+                                            console.log(pounchList2);
+                                            var gameobj = createGameWorldObj();
+                                            for (var l = 0; l < gameobj.width; l++) {
+
+                                                if (clone.x < gameobj.x || clone.y < gameobj.y ||
+                                                    clone.x + clone.width > gameobj.x + gameobj.width ||
+                                                    clone.y + clone.height > gameobj.y + gameobj.height
+                                                ) {
+
+                                                } else {
+                                                    var pounch1 = false;
+                                                    for (var p = 0; p < pounchList2.length; p++) {
+                                                        if (pounch(clone, pounchList2[p]) == true) {
+                                                            pounch1 = true;
+                                                        }
+                                                    }
+                                                    if (pounch1 == true) break;
+                                                    clone.height += 2;
+                                                    clone.y--;
+                                                }
+                                            }
+                                        }
+                                    }
                                     for (var ec = 0; ec < clone.event.length; ec++) {
                                         if (clone.event[ec][0] == 'cloneWaitRegistered') {
-                                            if (!isNaN(parseInt(clone.event[ec][1]))) {
-                                                if (parseInt(clone.event[ec][1]) >= 0 && parseInt(clone.event[ec][1]) < 100000000) {
+
+                                            if (!isNaN(parseInt(clone1.event[ec][1]))) {
+                                                if (parseInt(clone1.event[ec][1]) >= 0 && parseInt(clone1.event[ec][1]) < 100000000) {
                                                     const ec_const2 = ec;
+
                                                     window.setTimeout(function () {
-                                                        if (clone.event[ec_const2][2] == "隱形") {
-                                                            clone.display = false;
+                                                        if (clone1.event[ec_const2][2] == "隱形") {
+                                                            clone1.display = false;
                                                         }
-                                                        else if (clone.event[ec_const2][2] == "取消隱形") {
-                                                            clone.display = true;
+                                                        else if (clone1.event[ec_const2][2] == "取消隱形") {
+                                                            clone1.display = true;
                                                         }
-                                                        else if (clone.event[ec_const2][2] == "銷毀") {
-                                                            clone.class = "delete";
+                                                        else if (clone1.event[ec_const2][2] == "銷毀") {
+                                                            clone1.class = "delete";
                                                         }
-                                                        else if (clone.event[ec_const2][2] == "左右正向") {
-                                                            clone.flipx = false;
+                                                        else if (clone1.event[ec_const2][2] == "左右正向") {
+                                                            clone1.flipx = false;
                                                         }
-                                                        else if (clone.event[ec_const2][2] == "左右反向") {
-                                                            clone.flipx = true;
+                                                        else if (clone1.event[ec_const2][2] == "左右反向") {
+                                                            clone1.flipx = true;
                                                         }
-                                                        else if (clone.event[ec_const2][2] == "左右反轉") {
-                                                            clone.flipx = !clone.flipx;
+                                                        else if (clone1.event[ec_const2][2] == "左右反轉") {
+                                                            clone1.flipx = !clone1.flipx;
                                                         }
-                                                        else if (clone.event[ec_const2][2] == "上下正向") {
-                                                            clone.flipy = false;
+                                                        else if (clone1.event[ec_const2][2] == "上下正向") {
+                                                            clone1.flipy = false;
                                                         }
-                                                        else if (clone.event[ec_const2][2] == "上下反向") {
-                                                            clone.flipy = true;
+                                                        else if (clone1.event[ec_const2][2] == "上下反向") {
+                                                            clone1.flipy = true;
                                                         }
-                                                        else if (clone.event[ec_const2][2] == "上下反轉") {
-                                                            clone.flipy = !clone.flipy;
+                                                        else if (clone1.event[ec_const2][2] == "上下反轉") {
+                                                            clone1.flipy = !clone1.flipy;
                                                         }
-                                                    }, parseInt(clone.event[ec][1]));
+                                                    }, parseInt(clone1.event[ec][1]));
                                                 }
                                             }
                                         }
