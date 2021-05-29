@@ -10,6 +10,20 @@ getByid("imgListOpetion").onchange = function () {
     else AnimeListDiv.style.display = "none";
 }
 
+getByid("jsonfile").onchange = function (e) {
+    var file = e.target.files[0];
+    if (!file) {
+        return;
+    }
+    var reader = new FileReader();
+    reader.onload = function (e) {
+
+        var contents = e.target.result;
+        convertJSONtoGameWorld(contents);
+    };
+    reader.readAsText(file);
+}
+
 getByid("EventListOpetion").onchange = function () {
     getByid("RefleshImgButton").onclick();
 }
@@ -123,6 +137,8 @@ function GameWorldSelect(obj, move) {
     // /Table.className = "table table-dark table-striped";
     eTable.setAttribute("border", 2);
 
+
+
     getByid("selectObjectEventDiv").appendChild(eTable);
     getByid("ObjEventTable").parentNode.replaceChild(eTable, getByid("ObjEventTable"));
 
@@ -139,7 +155,18 @@ function GameWorldSelect(obj, move) {
         cells.innerHTML = "特殊事件: ";//+ obj.name;i
     if (getByid("AnimeEvent_Choose").selected == true)
         cells.innerHTML = "動畫事件: ";//+ obj.name;
+    if (getByid("GameWorld_Choose").selected == true)
+        cells.innerHTML = "遊戲設定: ";//+ obj.name;
 
+    if (getByid("GameWorld_Choose").selected == true) {
+        cells = eTable.insertRow(1);
+        cells = cells.insertCell(0);
+        cells.innerHTML = `<button onclick="exportGameWorldJSONFile();">輸出專案資料</button>`
+
+        cells = eTable.insertRow(2);
+        cells = cells.insertCell(0);
+        cells.innerHTML = `<button onclick="getByid('jsonfile').click();">匯入專案資料</button>`;
+    }
     var eTable2 = document.createElement("table");
     eTable2.id = "ObjEventTable2";
     // /Table.className = "table table-dark table-striped";
@@ -294,6 +321,8 @@ function ObjSelect(obj, move) {
         cells.innerHTML = "特殊事件: ";//+ obj.name;i
     if (getByid("AnimeEvent_Choose").selected == true)
         cells.innerHTML = "動畫事件: ";//+ obj.name;
+    if (getByid("GameWorld_Choose").selected == true)
+        cells.innerHTML = "遊戲設定: ";//+ obj.name;
     /*
     var cells = Table.insertRow(1);
     cells = cells.insertCell(0);
@@ -417,8 +446,6 @@ function ObjSelect(obj, move) {
         <button  onclick="KeyDownAnimeEventRegistered(`+ obj.id + `)">ok</button>
         `;
     }
-
-
 
     var eTable2 = document.createElement("table");
     eTable2.id = "ObjEventTable2";

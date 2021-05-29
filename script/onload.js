@@ -122,6 +122,7 @@ window.onload = function () {
             }
         }
         if (!checkPouch) {
+            getByid("GameWorld_Choose").selected = true;
             ChooseObj = GameObj;
             ObjSelect(ChooseObj);
             checkPouch = true;
@@ -169,6 +170,7 @@ window.onload = function () {
                 tempObject = {
                     name: NowChoose.obj.title,
                     type: "img",
+                    src: NowChoose.src,
                     img: NowChoose,
                     x: currX - imgListSize[0] / 2,
                     y: currY - imgListSize[1] / 2,
@@ -202,6 +204,7 @@ window.onload = function () {
                     name: NowChoose.obj.title,
                     type: "background",
                     img: NowChoose,
+                    src: NowChoose.src,
                     x: 0,
                     y: 0,
                     id: id_length,
@@ -228,6 +231,7 @@ window.onload = function () {
                     animeList: NowChoose.obj.animeList,
                     type: "anime",
                     img: document.createElement("IMG"),
+                    src: NowChoose.src,
                     x: currX - imgListSize[0] / 2,
                     y: currY - imgListSize[1] / 2,
                     id: id_length,
