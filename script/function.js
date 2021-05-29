@@ -8,6 +8,7 @@ function getClass(str) {
 
 
 function getObjById(id) {
+    if (id==0) return GameObj;
     for (var i = 0; i < AllObjList.length; i++) {
         if (AllObjList[i].id == id) return AllObjList[i];
     }

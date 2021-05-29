@@ -132,7 +132,6 @@ window.onload = function () {
         MouseRightClick = false;
     }
     getByid("game").onmousemove = function (e) {
-
         var canvas = document.getElementById('game');
         if (canvas.getContext) {
             var ctx = canvas.getContext('2d');
@@ -141,7 +140,7 @@ window.onload = function () {
         }
 
         if (MouseLeftClick) {
-            if (ChooseObj) {
+            if (ChooseObj && ChooseObj != GameObj) {
                 ChooseObj.x = currX - ChooseObj.width / 2;
                 ChooseObj.y = currY - ChooseObj.height / 2;
                 ObjSelect(ChooseObj, true);

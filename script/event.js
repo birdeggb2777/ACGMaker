@@ -26,6 +26,7 @@ function WindowRegisterKeyDowning() {
                             AllObjList[i].display = true;
                         }
                         else if (AllObjList[i].event[e1][2] == "銷毀") {
+                            if (AllObjList[i].class != "delete") AllObjList[i].originClass = "" + AllObjList[i].class + "";
                             AllObjList[i].class = "delete";
                         }
                         else if (AllObjList[i].event[e1][2] == "左右正向") {
@@ -174,7 +175,10 @@ function WindowRegisterKeyDowning() {
                             pounch0 = true;
                         }
                     }
-                    if (pounch0 == true) AllObjList[i].class = "delete";
+                    if (pounch0 == true) {
+                        if (AllObjList[i].class != "delete") AllObjList[i].originClass = "" + AllObjList[i].class + "";
+                        AllObjList[i].class = "delete";
+                    }
                     //for (var j = 0; j < AllObjList.length; j++) {
                     //   if (AllObjList[j].class == AllObjList[i].event[ec][1])
                     ///       pounchList0.push(AllObjList[j]);
@@ -198,6 +202,7 @@ function WindowRegisterKeyDowning() {
                                     AllObjList[i].display = true;
                                 }
                                 else if (AllObjList[i].event[e1][2] == "銷毀") {
+                                    if (AllObjList[i].class != "delete") AllObjList[i].originClass = "" + AllObjList[i].class + "";
                                     AllObjList[i].class = "delete";
                                 }
                                 else if (AllObjList[i].event[e1][2] == "左右正向") {

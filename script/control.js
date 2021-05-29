@@ -14,7 +14,118 @@ getByid("EventListOpetion").onchange = function () {
     getByid("RefleshImgButton").onclick();
 }
 
+function GameWorldSelect(obj, move) {
+    var Table = document.createElement("table");
+    Table.id = "ObjTable";
+    // /Table.className = "table table-dark table-striped";
+    Table.setAttribute("border", 2);
+    Table.style = "table-layout:fixed;"
+    Table.width = "300";
+    var cells = Table.insertRow(0);
+    cells = cells.insertCell(0);
+    cells.style = "word-break:break-word; word-wrap:break-word;"
+    cells.innerHTML = "名稱: " + obj.name;
+
+    cells = Table.insertRow(1);
+    cells = cells.insertCell(0);
+    cells.style = "word-break:break-word; word-wrap:break-word;"
+    cells.innerHTML = "ID: " + obj.id;
+
+    cells = Table.insertRow(2);
+    cells = cells.insertCell(0);
+    cells.style = "word-break:break-word; word-wrap:break-word;"
+    cells.innerHTML = "座標X: " + "<input type='text'  value='" + obj.x + "' size='8' onchange='ChooseObj.x=parseInt(this.value);refleshGame();'/>";
+
+    cells = Table.insertRow(3);
+    cells = cells.insertCell(0);
+    cells.style = "word-break:break-word; word-wrap:break-word;"
+    cells.innerHTML = "座標Y: " + "<input type='text'  value='" + obj.y + "' size='8' onchange='ChooseObj.y=parseInt(this.value);refleshGame();'/>";
+
+    cells = Table.insertRow(4);
+    cells = cells.insertCell(0);
+    cells.style = "word-break:break-word; word-wrap:break-word;"
+    cells.innerHTML = "寬度:" + "<input type='text'  value='" + obj.width + "' size='8' onchange='ChooseObj.width=parseInt(this.value);refleshGame();'/>";
+
+    cells = Table.insertRow(5);
+    cells = cells.insertCell(0);
+    cells.style = "word-break:break-word; word-wrap:break-word;"
+    cells.innerHTML = "長度: " + "<input type='text'  value='" + obj.height + "' size='8' onchange='ChooseObj.height=parseInt(this.value);refleshGame();'/>";
+    getByid("selectObjectDiv").appendChild(Table);
+    getByid("ObjTable").parentNode.replaceChild(Table, getByid("ObjTable"));
+
+    var button_tmp2 = document.createElement("BUTTON");
+    button_tmp2.id = "RefleshImgButton";
+    button_tmp2.style.float = "right middle";
+    button_tmp2.innerText = "刷新";
+    button_tmp2.obj = obj;
+    button_tmp2.style.display = "none";
+    button_tmp2.onclick = function () { (ObjSelect(this.obj)) };
+
+    getByid('selectObjectDiv').appendChild(button_tmp2);
+    getByid("RefleshImgButton").parentNode.replaceChild(button_tmp2, getByid("RefleshImgButton"));
+
+    var button_tmp3 = document.createElement("BUTTON");
+    button_tmp3.id = "ClearImgButton";
+    button_tmp3.style.float = "right middle";
+    button_tmp3.innerText = "回復原狀(刪除分身與恢復被刪除的物件)";
+    button_tmp3.obj = obj;
+    button_tmp3.style.display = "";
+    button_tmp3.onclick = function () { clearGameWorld(); };
+    //button_tmp3.onclick = function () { (ObjSelect(this.obj)) };
+
+    getByid('selectObjectDiv').appendChild(button_tmp3);
+    getByid("ClearImgButton").parentNode.replaceChild(button_tmp3, getByid("ClearImgButton"));
+
+    var image_tmp = document.createElement("IMG");
+    image_tmp.id = "selectObjImg";
+    image_tmp.width = imgListSize[0];
+    image_tmp.height = imgListSize[1];
+    image_tmp.src = "";
+    image_tmp.style.display = "none";
+    getByid('selectObjectDiv').appendChild(image_tmp);
+    getByid("selectObjImg").parentNode.replaceChild(image_tmp, getByid("selectObjImg"));
+
+
+    var eTable = document.createElement("table");
+    eTable.id = "ObjEventTable";
+    // /Table.className = "table table-dark table-striped";
+    eTable.setAttribute("border", 2);
+
+    getByid("selectObjectEventDiv").appendChild(eTable);
+    getByid("ObjEventTable").parentNode.replaceChild(eTable, getByid("ObjEventTable"));
+
+    eTable.style = "table-layout:fixed;"
+    eTable.width = "320";
+    var cells = eTable.insertRow(0);
+    cells = cells.insertCell(0);
+    cells.style = "word-break:break-word; word-wrap:break-word;"
+    if (getByid("Event_Choose").selected == true)
+        cells.innerHTML = "一般事件: ";//+ obj.name;
+    if (getByid("CloneEvent_Choose").selected == true)
+        cells.innerHTML = "分身事件: ";//+ obj.name;
+    if (getByid("SpecialEvent_Choose").selected == true)
+        cells.innerHTML = "特殊事件: ";//+ obj.name;i
+    if (getByid("AnimeEvent_Choose").selected == true)
+        cells.innerHTML = "動畫事件: ";//+ obj.name;
+
+    var eTable2 = document.createElement("table");
+    eTable2.id = "ObjEventTable2";
+    // /Table.className = "table table-dark table-striped";
+    eTable2.setAttribute("border", 2);
+
+    getByid("selectObjectEventDiv").appendChild(eTable2);
+    getByid("ObjEventTable2").parentNode.replaceChild(eTable2, getByid("ObjEventTable2"));
+}
+
 function ObjSelect(obj, move) {
+
+    if (obj == GameObj) {
+        GameWorldSelect(obj, move);
+        return;
+    }
+
+
+
     var Table = document.createElement("table");
     Table.id = "ObjTable";
     // /Table.className = "table table-dark table-striped";
@@ -87,10 +198,22 @@ function ObjSelect(obj, move) {
     button_tmp2.style.float = "right middle";
     button_tmp2.innerText = "刷新";
     button_tmp2.obj = obj;
+    button_tmp2.style.display = "";
     button_tmp2.onclick = function () { (ObjSelect(this.obj)) };
 
     getByid('selectObjectDiv').appendChild(button_tmp2);
     getByid("RefleshImgButton").parentNode.replaceChild(button_tmp2, getByid("RefleshImgButton"));
+
+    var button_tmp3 = document.createElement("BUTTON");
+    button_tmp3.id = "ClearImgButton";
+    button_tmp3.style.float = "right middle";
+    button_tmp3.innerText = "重新開始遊戲(刪除分身與恢復被刪除的物件)";
+    button_tmp3.obj = obj;
+    button_tmp3.style.display = "none";
+    //button_tmp3.onclick = function () { (ObjSelect(this.obj)) };
+
+    getByid('selectObjectDiv').appendChild(button_tmp3);
+    getByid("ClearImgButton").parentNode.replaceChild(button_tmp3, getByid("ClearImgButton"));
 
     var eTable = document.createElement("table");
     eTable.id = "ObjEventTable";
@@ -196,7 +319,7 @@ function ObjSelect(obj, move) {
         cells.innerHTML = `如果分身產生,橫向膨脹直到碰到
         <input id="`+ obj.id + `_cloneLateralExpansion_obj" size='6' type='text' value='輸入類別'/>或邊界
         <button onclick="cloneLateralExpansion(`+ obj.id + `)">ok</button>   `;;
-        
+
         cells = eTable.insertRow(5);
         cells = cells.insertCell(0);
         cells.style = "word-break:break-word; word-wrap:break-word;"
@@ -219,9 +342,9 @@ function ObjSelect(obj, move) {
         cells.style = "word-break:break-word; word-wrap:break-word;"
         cells.innerHTML = `如果碰到<input  id="` + obj.id + `_pounchstop_obj" size='6' type='text' value='障礙物'/>,停止前進
     <button  onclick="pounchStopRegistered(`+ obj.id + `)">ok</button>
-    `;     
-    
-    cells = eTable.insertRow(2);
+    `;
+
+        cells = eTable.insertRow(2);
         cells = cells.insertCell(0);
         cells.style = "word-break:break-word; word-wrap:break-word;"
         cells.innerHTML = `如果碰到<input  id="` + obj.id + `_pounchDelete_obj" size='6' type='text' value='炸藥'/>,銷毀
@@ -441,9 +564,9 @@ function ObjSelect(obj, move) {
             }
             cells.appendChild(button_tmp);
             getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
-        }  
+        }
         if (eventobj[e1][0] == 'clonewaitchangeClassRegistered') {
-            cells.innerHTML = "如果分身產生,等待" + eventobj[e1][1] + "毫秒後,變更類別為"+ eventobj[e1][2];//+
+            cells.innerHTML = "如果分身產生,等待" + eventobj[e1][1] + "毫秒後,變更類別為" + eventobj[e1][2];//+
             var button_tmp = document.createElement("BUTTON");
             button_tmp.id = "button_event" + e1;
             button_tmp.obj = eventobj[e1];
@@ -512,7 +635,7 @@ function ObjSelect(obj, move) {
 function clonewaitchangeClassRegistered(id) {
     var obj = getObjById(id);
     obj.event.push(['clonewaitchangeClassRegistered',
-        getByid(id + "_clonewaitchangeClass_time").value,getByid(id + "_clonewaitchangeClass_class").value, false]);
+        getByid(id + "_clonewaitchangeClass_time").value, getByid(id + "_clonewaitchangeClass_class").value, false]);
     getByid("RefleshImgButton").onclick();
 }
 
@@ -650,13 +773,24 @@ function ImgObjChoose(obj) {
     getByid("selectObjImg").parentNode.replaceChild(image_tmp, getByid("selectObjImg"));
 
 
-    var button_tmp = document.createElement("BUTTON");
-    button_tmp.id = "EditImgButton";
-    button_tmp.style.float = "right middle";
-    button_tmp.innerText = "修改圖片";
+    var button_tmp3 = document.createElement("BUTTON");
+    button_tmp3.id = "ClearImgButton";
+    button_tmp3.style.float = "right middle";
+    button_tmp3.innerText = "回復原狀(刪除分身與恢復被刪除的物件)";
+    button_tmp3.obj = obj;
+    button_tmp3.style.display = "none";
+    //button_tmp3.onclick = function () { (ObjSelect(this.obj)) };
 
-    getByid('selectObjectDiv').appendChild(button_tmp);
-    getByid("EditImgButton").parentNode.replaceChild(button_tmp, getByid("EditImgButton"));
+    getByid('selectObjectDiv').appendChild(button_tmp3);
+    getByid("ClearImgButton").parentNode.replaceChild(button_tmp3, getByid("ClearImgButton"));
+
+    //var button_tmp = document.createElement("BUTTON");
+    // button_tmp.id = "EditImgButton";
+    //button_tmp.style.float = "right middle";
+    //button_tmp.innerText = "修改圖片";
+
+    //getByid('selectObjectDiv').appendChild(button_tmp);
+    //getByid("EditImgButton").parentNode.replaceChild(button_tmp, getByid("EditImgButton"));
 
     //alert(obj.classtype == "anime");
     //console.log(obj);

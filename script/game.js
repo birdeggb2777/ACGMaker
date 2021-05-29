@@ -36,17 +36,31 @@ let MouseRightClick = false;
 let checkPouch = false;
 GameObj.width = 750;
 GameObj.height = 550;
-GameObj.x=0;
-GameObj.y=0;
-GameObj.img=null;
-GameObj.id=0;
-GameObj.event=[];
-GameObj.select=[];
-GameObj.broadcast=[];
-GameObj.class="GameWorld";
-GameObj.name="GameWorld";
-GameObj.type="GameWorld";
+GameObj.x = 0;
+GameObj.y = 0;
+GameObj.img = null;
+GameObj.id = 0;
+GameObj.event = [];
+GameObj.select = [];
+GameObj.broadcast = [];
+GameObj.class = "GameWorld";
+GameObj.name = "GameWorld";
+GameObj.type = "GameWorld";
 
+function clearGameWorld() {
+    var tempAllObjList = []
+    for (var i = 0; i < AllObjList.length; i++) {
+        if (!AllObjList[i].clone) {
+            tempAllObjList.push(AllObjList[i]);
+        }
+    }
+    AllObjList = tempAllObjList;
+    for (var i = 0; i < AllObjList.length; i++) {
+        if (AllObjList[i].class == "delete") {
+            AllObjList[i].class = "" + AllObjList[i].originClass;
+        }
+    }
+}
 
 function refleshGame() {
     if (getByid("game").width != GameObj.width || getByid("game").height != GameObj.height) {
