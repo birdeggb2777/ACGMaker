@@ -120,7 +120,11 @@ window.onload = function () {
                 }
             }
         }
-        if (!checkPouch) ChooseObj = null;
+        if (!checkPouch) {
+            ChooseObj = GameObj;
+            ObjSelect(ChooseObj);
+            checkPouch = true;
+        }
     }
     getByid("game").onmouseup = function (e) {
         //ChooseObj = null;

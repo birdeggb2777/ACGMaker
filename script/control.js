@@ -195,14 +195,22 @@ function ObjSelect(obj, move) {
         cells.style = "word-break:break-word; word-wrap:break-word;"
         cells.innerHTML = `如果分身產生,橫向膨脹直到碰到
         <input id="`+ obj.id + `_cloneLateralExpansion_obj" size='6' type='text' value='輸入類別'/>或邊界
-        <button onclick="cloneLateralExpansion(`+ obj.id + `)">ok</button>   `;; 
+        <button onclick="cloneLateralExpansion(`+ obj.id + `)">ok</button>   `;;
         
         cells = eTable.insertRow(5);
         cells = cells.insertCell(0);
         cells.style = "word-break:break-word; word-wrap:break-word;"
         cells.innerHTML = `如果分身產生,縱向膨脹直到碰到
         <input id="`+ obj.id + `_cloneVerticalExpansion_obj" size='6' type='text' value='輸入類別'/>或邊界
-        <button onclick="cloneVerticalExpansion(`+ obj.id + `)">ok</button>   `;;
+        <button onclick="cloneVerticalExpansion(`+ obj.id + `)">ok</button>   `;
+
+        cells = eTable.insertRow(6);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        cells.innerHTML = `如果分身產生,等待
+        <input id="`+ obj.id + `_clonewaitchangeClass_time" size='3' type='text' value='100'/>毫秒後,變更類別為
+        <input  id="`+ obj.id + `_clonewaitchangeClass_class" size='6' type='text' value='類別1'/>
+        <button onclick="clonewaitchangeClassRegistered(`+ obj.id + `)">ok</button>   `;
     }
 
     if (getByid("SpecialEvent_Choose").selected == true) {
@@ -433,6 +441,20 @@ function ObjSelect(obj, move) {
             }
             cells.appendChild(button_tmp);
             getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }  
+        if (eventobj[e1][0] == 'clonewaitchangeClassRegistered') {
+            cells.innerHTML = "如果分身產生,等待" + eventobj[e1][1] + "毫秒後,變更類別為"+ eventobj[e1][2];//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
         }
     }
 
@@ -485,6 +507,13 @@ function ObjSelect(obj, move) {
 
     }
 
+}
+
+function clonewaitchangeClassRegistered(id) {
+    var obj = getObjById(id);
+    obj.event.push(['clonewaitchangeClassRegistered',
+        getByid(id + "_clonewaitchangeClass_time").value,getByid(id + "_clonewaitchangeClass_class").value, false]);
+    getByid("RefleshImgButton").onclick();
 }
 
 function cloneVerticalExpansion(id) {

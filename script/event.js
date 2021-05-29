@@ -256,7 +256,7 @@ function WindowRegisterKeyDowning() {
 
                                                 // }
                                             }
-                                            console.log(pounchList);
+                                            // console.log(pounchList);
                                             var gameobj = createGameWorldObj();
                                             for (var l = 0; l < gameobj.width; l++) {
 
@@ -272,7 +272,11 @@ function WindowRegisterKeyDowning() {
                                                             pounch1 = true;
                                                         }
                                                     }
-                                                    if (pounch1 == true) break;
+                                                    if (pounch1 == true) {
+                                                        clone.width += 2;
+                                                        clone.x--;
+                                                        break;
+                                                    };
                                                     clone.width += 2;
                                                     clone.x--;
                                                 }
@@ -308,7 +312,11 @@ function WindowRegisterKeyDowning() {
                                                             pounch1 = true;
                                                         }
                                                     }
-                                                    if (pounch1 == true) break;
+                                                    if (pounch1 == true) {
+                                                        clone.height += 2;
+                                                        clone.y--;
+                                                        break;
+                                                    };
                                                     clone.height += 2;
                                                     clone.y--;
                                                 }
@@ -363,6 +371,22 @@ function WindowRegisterKeyDowning() {
                                                     const ec_const = ec;
                                                     window.setTimeout(function () {
                                                         GameWorld.broadcast.push(clone.event[ec_const][2]);
+                                                    }, parseInt(clone.event[ec][1]));
+                                                }
+                                            }
+                                        }
+                                    }
+
+
+                                    for (var ec = 0; ec < clone.event.length; ec++) {
+                                        if (clone.event[ec][0] == 'clonewaitchangeClassRegistered') {
+                                            if (!isNaN(parseInt(clone.event[ec][1]))) {
+                                                if (parseInt(clone.event[ec][1]) >= 0 && parseInt(clone.event[ec][1]) < 100000000) {
+                                                    const ec_const2 = ec;
+                                                    const clone2 = clone;
+                                                    window.setTimeout(function () {
+                                                        clone2.class = clone.event[ec_const2][2];
+                                                        //GameWorld.broadcast.push(clone.event[ec_cons2][2]);
                                                     }, parseInt(clone.event[ec][1]));
                                                 }
                                             }
