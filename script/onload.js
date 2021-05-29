@@ -97,6 +97,7 @@ window.onload = function () {
         return [currX, currY];
     }
     getByid("game").onmousedown = function (e) {
+        //if (GameObj.status == "PlayGame") return;
         if (e.which == 1) MouseLeftClick = true;
         else if (e.which == 3) MouseRightClick = true;
 
@@ -127,11 +128,13 @@ window.onload = function () {
         }
     }
     getByid("game").onmouseup = function (e) {
+        //if (GameObj.status == "PlayGame") return;
         //ChooseObj = null;
         MouseLeftClick = false;
         MouseRightClick = false;
     }
     getByid("game").onmousemove = function (e) {
+        //if (GameObj.status == "PlayGame") return;
         var canvas = document.getElementById('game');
         if (canvas.getContext) {
             var ctx = canvas.getContext('2d');

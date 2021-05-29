@@ -46,6 +46,7 @@ GameObj.broadcast = [];
 GameObj.class = "GameWorld";
 GameObj.name = "GameWorld";
 GameObj.type = "GameWorld";
+GameObj.status = "MakeGame";
 
 function clearGameWorld() {
     var tempAllObjList = []

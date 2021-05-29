@@ -50,6 +50,12 @@ function GameWorldSelect(obj, move) {
     cells = cells.insertCell(0);
     cells.style = "word-break:break-word; word-wrap:break-word;"
     cells.innerHTML = "長度: " + "<input type='text'  value='" + obj.height + "' size='8' onchange='ChooseObj.height=parseInt(this.value);refleshGame();'/>";
+
+    cells = Table.insertRow(6);
+    cells = cells.insertCell(0);
+    cells.style = "word-break:break-word; word-wrap:break-word;"
+    cells.innerHTML = "模式: " + "<input type='button'  value='" + displayGameWorldStatus() + "' size='8' onclick='ChooseObj.status=changeGameWorldStatus();ObjSelect(GameObj);refleshGame();'/>";
+
     getByid("selectObjectDiv").appendChild(Table);
     getByid("ObjTable").parentNode.replaceChild(Table, getByid("ObjTable"));
 
@@ -75,6 +81,32 @@ function GameWorldSelect(obj, move) {
 
     getByid('selectObjectDiv').appendChild(button_tmp3);
     getByid("ClearImgButton").parentNode.replaceChild(button_tmp3, getByid("ClearImgButton"));
+
+    var button_tmp4 = document.createElement("BUTTON");
+    button_tmp4.id = "CopyImgButton";
+    button_tmp4.style.float = "right middle";
+    button_tmp4.innerText = "複製";
+    button_tmp4.obj = obj;
+    button_tmp4.style.display = "none";
+    button_tmp4.onclick = function () { CloneObj(obj); };
+    //button_tmp3.onclick = function () { (ObjSelect(this.obj)) };
+
+    getByid('selectObjectDiv').appendChild(button_tmp4);
+    getByid("CopyImgButton").parentNode.replaceChild(button_tmp4, getByid("CopyImgButton"));
+
+    var button_tmp5 = document.createElement("BUTTON");
+    button_tmp5.id = "DeleteImgButton";
+    button_tmp5.style.float = "right middle";
+    button_tmp5.innerText = "永久刪除";
+    button_tmp5.obj = obj;
+    button_tmp5.style.display = "none";
+    button_tmp5.onclick = function () { DeleteObj(obj); };
+    //button_tmp3.onclick = function () { (ObjSelect(this.obj)) };
+
+    getByid('selectObjectDiv').appendChild(button_tmp5);
+    getByid("DeleteImgButton").parentNode.replaceChild(button_tmp5, getByid("DeleteImgButton"));
+
+
 
     var image_tmp = document.createElement("IMG");
     image_tmp.id = "selectObjImg";
@@ -207,13 +239,39 @@ function ObjSelect(obj, move) {
     var button_tmp3 = document.createElement("BUTTON");
     button_tmp3.id = "ClearImgButton";
     button_tmp3.style.float = "right middle";
-    button_tmp3.innerText = "重新開始遊戲(刪除分身與恢復被刪除的物件)";
+    button_tmp3.innerText = "重新開始遊戲(刪除分身與恢復被銷毀的物件)";
     button_tmp3.obj = obj;
     button_tmp3.style.display = "none";
     //button_tmp3.onclick = function () { (ObjSelect(this.obj)) };
 
     getByid('selectObjectDiv').appendChild(button_tmp3);
     getByid("ClearImgButton").parentNode.replaceChild(button_tmp3, getByid("ClearImgButton"));
+
+    var button_tmp4 = document.createElement("BUTTON");
+    button_tmp4.id = "CopyImgButton";
+    button_tmp4.style.float = "right middle";
+    button_tmp4.innerText = "複製";
+    button_tmp4.obj = obj;
+    button_tmp4.style.display = "";
+    button_tmp4.onclick = function () { CloneObj(obj); };
+    //button_tmp3.onclick = function () { (ObjSelect(this.obj)) };
+
+    getByid('selectObjectDiv').appendChild(button_tmp4);
+    getByid("CopyImgButton").parentNode.replaceChild(button_tmp4, getByid("CopyImgButton"));
+
+
+    var button_tmp5 = document.createElement("BUTTON");
+    button_tmp5.id = "DeleteImgButton";
+    button_tmp5.style.float = "right middle";
+    button_tmp5.innerText = "永久刪除";
+    button_tmp5.obj = obj;
+    button_tmp5.style.display = "";
+    button_tmp5.onclick = function () { DeleteObj(obj); };
+    //button_tmp3.onclick = function () { (ObjSelect(this.obj)) };
+
+    getByid('selectObjectDiv').appendChild(button_tmp5);
+    getByid("DeleteImgButton").parentNode.replaceChild(button_tmp5, getByid("DeleteImgButton"));
+
 
     var eTable = document.createElement("table");
     eTable.id = "ObjEventTable";
@@ -784,6 +842,30 @@ function ImgObjChoose(obj) {
     getByid('selectObjectDiv').appendChild(button_tmp3);
     getByid("ClearImgButton").parentNode.replaceChild(button_tmp3, getByid("ClearImgButton"));
 
+
+    var button_tmp4 = document.createElement("BUTTON");
+    button_tmp4.id = "CopyImgButton";
+    button_tmp4.style.float = "right middle";
+    button_tmp4.innerText = "複製";
+    button_tmp4.obj = obj;
+    button_tmp4.style.display = "none";
+    button_tmp4.onclick = function () { CloneObj(obj); };
+    //button_tmp3.onclick = function () { (ObjSelect(this.obj)) };
+
+    getByid('selectObjectDiv').appendChild(button_tmp4);
+    getByid("CopyImgButton").parentNode.replaceChild(button_tmp4, getByid("CopyImgButton"));
+
+    var button_tmp5 = document.createElement("BUTTON");
+    button_tmp5.id = "DeleteImgButton";
+    button_tmp5.style.float = "right middle";
+    button_tmp5.innerText = "永久刪除";
+    button_tmp5.obj = obj;
+    button_tmp5.style.display = "none";
+    button_tmp5.onclick = function () { DeleteObj(obj); };
+    //button_tmp3.onclick = function () { (ObjSelect(this.obj)) };
+
+    getByid('selectObjectDiv').appendChild(button_tmp5);
+    getByid("DeleteImgButton").parentNode.replaceChild(button_tmp5, getByid("DeleteImgButton"));
     //var button_tmp = document.createElement("BUTTON");
     // button_tmp.id = "EditImgButton";
     //button_tmp.style.float = "right middle";
