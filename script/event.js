@@ -278,14 +278,40 @@ function WindowRegisterKeyDowning() {
                                                         }
                                                     }
                                                     if (pounch1 == true) {
-                                                        clone.width += 2;
-                                                        clone.x--;
+                                                        clone.width -= 1;
+                                                        clone.x++;
                                                         break;
                                                     };
-                                                    clone.width += 2;
+                                                    clone.width += 1;
                                                     clone.x--;
                                                 }
                                             }
+                                            for (var l = 0; l < gameobj.width; l++) {
+
+                                                if (clone.x + 1 < gameobj.x || clone.y < gameobj.y ||
+                                                    clone.x + 1 + clone.width > gameobj.x + gameobj.width ||
+                                                    clone.y + clone.height > gameobj.y + gameobj.height
+                                                ) {
+
+                                                } else {
+                                                    var pounch1 = false;
+                                                    for (var p = 0; p < pounchList.length; p++) {
+                                                        if (pounch(clone, pounchList[p]) == true) {
+                                                            pounch1 = true;
+                                                        }
+                                                    }
+                                                    if (pounch1 == true) {
+                                                        clone.width += 1;
+                                                        //clone.x--;
+                                                        break;
+                                                    };
+                                                    clone.width += 1;
+                                                    //clone.x--;
+                                                }
+                                            }
+                                            clone.width += 1;
+                                            clone.x--;
+                                            clone.width += 1;
                                         }
                                     }
                                     for (var ec = 0; ec < clone.event.length; ec++) {
@@ -301,7 +327,7 @@ function WindowRegisterKeyDowning() {
 
                                                 // }
                                             }
-                                            console.log(pounchList2);
+                                            //console.log(pounchList2);
                                             var gameobj = createGameWorldObj();
                                             for (var l = 0; l < gameobj.width; l++) {
 
@@ -318,14 +344,40 @@ function WindowRegisterKeyDowning() {
                                                         }
                                                     }
                                                     if (pounch1 == true) {
-                                                        clone.height += 2;
-                                                        clone.y--;
+                                                        clone.height -= 1;
+                                                        clone.y++;
                                                         break;
                                                     };
-                                                    clone.height += 2;
+                                                    clone.height += 1;
                                                     clone.y--;
                                                 }
                                             }
+                                            for (var l = 0; l < gameobj.width; l++) {
+
+                                                if (clone.x < gameobj.x || clone.y + 1 < gameobj.y ||
+                                                    clone.x + clone.width > gameobj.x + gameobj.width ||
+                                                    clone.y + 1 + clone.height > gameobj.y + gameobj.height
+                                                ) {
+
+                                                } else {
+                                                    var pounch1 = false;
+                                                    for (var p = 0; p < pounchList2.length; p++) {
+                                                        if (pounch(clone, pounchList2[p]) == true) {
+                                                            pounch1 = true;
+                                                        }
+                                                    }
+                                                    if (pounch1 == true) {
+                                                        clone.height += 1;
+                                                        //clone.y--;
+                                                        break;
+                                                    };
+                                                    clone.height += 1;
+                                                    //clone.y--;
+                                                }
+                                            }
+                                            clone.height += 1;
+                                            clone.y--;
+                                            clone.height += 2;
                                         }
                                     }
                                     for (var ec = 0; ec < clone.event.length; ec++) {
