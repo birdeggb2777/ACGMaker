@@ -166,6 +166,10 @@ function GameWorldSelect(obj, move) {
         cells = eTable.insertRow(2);
         cells = cells.insertCell(0);
         cells.innerHTML = `<button onclick="getByid('jsonfile').click();">匯入專案資料</button>`;
+
+        cells = eTable.insertRow(3);
+        cells = cells.insertCell(0);
+        cells.innerHTML = `<button onclick="ExportGAM();">輸出遊戲</button>`;
     }
     var eTable2 = document.createElement("table");
     eTable2.id = "ObjEventTable2";
