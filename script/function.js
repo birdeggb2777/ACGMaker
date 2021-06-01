@@ -102,8 +102,52 @@ function convertJSONtoGameWorld(json) {
     AllObjList = objList;
 }
 
-function ExportGAM() {
+function ExportGAME() {
     var jsonData = JSON.stringify(AllObjList);
+    var objList = JSON.parse(jsonData);
+
+    var canvas = document.createElement("canvas");
+    var context = canvas.getContext('2d');
+    for (var i = 0; i < objList.length; i++) {
+        //objList[i].img = document.createElement("IMG");
+        var width = AllObjList[i].img.width;
+        var height = AllObjList[i].img.height;
+        if (canvas.width && canvas.height) context.clearRect(0, 0, canvas.width, canvas.height);
+        else context.clearRect(0, 0, 1024, 1024);
+        canvas.width = width;
+        canvas.height = height;
+        //console.log(AllObjList[i].img.src, width, height);
+        context.drawImage(AllObjList[i].img, 0, 0, width, height);
+        //console.log(AllObjList[i].img.src, width, height);
+        objList[i].src = canvas.toDataURL();
+        //console.log(objList[i].src);
+        objList[i].img.src = null
+    }
+
+    for (var i = 0; i < objList.length; i++) {
+        if (!AllObjList[i].animeList) continue;
+        for (var j = 0; j < AllObjList[i].animeList.length; j++) {
+            for (var o = 0; o < ImageSrcList.length; o++) {
+                var A = document.createElement("A");
+                A.href = AllObjList[i].animeList[j];
+                if (A.href == ImageSrcList[o].src) {
+                    var image = ImageSrcList[o];
+                    var width = image.width;
+                    var height = image.height;
+                    if (canvas.width && canvas.height) context.clearRect(0, 0, canvas.width, canvas.height);
+                    else context.clearRect(0, 0, 1024, 1024);
+                    canvas.width = width;
+                    canvas.height = height;
+                    //console.log(AllObjList[i].img.src, width, height);
+                    context.drawImage(image, 0, 0, width, height);
+                    //console.log(AllObjList[i].img.src, width, height);
+                    objList[i].animeList[j] = canvas.toDataURL();
+                }
+            }
+        }
+    }
+    jsonData = JSON.stringify(objList);
+
     jsonData = "" + jsonData;
     jsonData = ExportTEXT.replace("___loadAllObjList___", jsonData);
     function download(content, fileName, contentType) {

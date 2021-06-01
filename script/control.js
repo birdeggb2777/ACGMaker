@@ -169,7 +169,7 @@ function GameWorldSelect(obj, move) {
 
         cells = eTable.insertRow(3);
         cells = cells.insertCell(0);
-        cells.innerHTML = `<button onclick="ExportGAM();">輸出遊戲</button>`;
+        cells.innerHTML = `<button onclick="ExportGAME();">輸出遊戲</button>`;
     }
     var eTable2 = document.createElement("table");
     eTable2.id = "ObjEventTable2";

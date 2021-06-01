@@ -1,7 +1,6 @@
 
 window.onload = function () {
     refleshGame();
-
     function readTextFile(file, callback) {
         var rawFile = new XMLHttpRequest();
         rawFile.overrideMimeType("application/json");
@@ -22,6 +21,11 @@ window.onload = function () {
             image_tmp.width = imgListSize[0];
             image_tmp.height = imgListSize[1];
             image_tmp.src = image_json[j1].path;
+
+            var image = new Image();
+            image.src = image_tmp.src;
+            ImageSrcList.push(image);
+
             image_tmp.alt = image_json[j1].title;
             image_tmp.obj = image_json[j1];
             image_tmp.className = "leftimg objimg";
@@ -39,6 +43,11 @@ window.onload = function () {
             image_tmp.width = imgListSize[0];
             image_tmp.height = imgListSize[1];
             image_tmp.src = waterball_json[j1].path;
+
+            var image = new Image();
+            image.src = image_tmp.src;
+            ImageSrcList.push(image);
+
             image_tmp.alt = waterball_json[j1].title;
             image_tmp.obj = waterball_json[j1];
             image_tmp.className = "leftimg objimg";
@@ -56,6 +65,11 @@ window.onload = function () {
             image_tmp.width = imgListSize[0];
             image_tmp.height = imgListSize[1];
             image_tmp.src = background_json[j1].path;
+
+            var image = new Image();
+            image.src = image_tmp.src;
+            ImageSrcList.push(image);
+
             image_tmp.alt = background_json[j1].title;
             image_tmp.obj = background_json[j1];
             image_tmp.className = "leftimg backgroundimg";
@@ -78,6 +92,12 @@ window.onload = function () {
         image_tmp.alt = anime_json[0].title;
         image_tmp.obj = anime_json[0];
         image_tmp.animeList = [];
+
+        for (var o = 0; o < image_tmp.obj.animeList.length; o++) {
+            var image = new Image();
+            image.src = image_tmp.obj.animeList[o];
+            ImageSrcList.push(image);
+        }
         //for (var j1 = 0; j1 < anime_json.length; j1++) {
         //    image_tmp.animeList.push(anime_json[j1].path);
         // }

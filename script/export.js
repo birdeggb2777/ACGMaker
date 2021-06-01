@@ -74,6 +74,7 @@ function clearGameWorld() {
     }
 }
 
+
 function refleshGame() {
     if (getByid("game").width != GameObj.width || getByid("game").height != GameObj.height) {
         getByid("game").width = GameObj.width;
@@ -95,10 +96,14 @@ function refleshGame() {
                     var tmp_flipx = AllObjList[d].flipx ? -1 : 1;
                     var tmp_flipy = AllObjList[d].flipy ? -1 : 1;
                     ctx.scale(tmp_flipx, tmp_flipy);
-                    ctx.drawImage(AllObjList[d].img, AllObjList[d].x, AllObjList[d].y, AllObjList[d].width, AllObjList[d].height);
+                    try {
+                        ctx.drawImage(AllObjList[d].img, AllObjList[d].x, AllObjList[d].y, AllObjList[d].width, AllObjList[d].height);
+                    } catch (ex) { };
                     ctx.restore();
                 } else {
-                    ctx.drawImage(AllObjList[d].img, AllObjList[d].x, AllObjList[d].y, AllObjList[d].width, AllObjList[d].height);
+                    try {
+                        ctx.drawImage(AllObjList[d].img, AllObjList[d].x, AllObjList[d].y, AllObjList[d].width, AllObjList[d].height);
+                    } catch (ex) { };
                 }
             }
         for (var d = 0; d < AllObjList.length; d++) {
@@ -114,10 +119,14 @@ function refleshGame() {
                     var tmp_flipx = AllObjList[d].flipx ? -1 : 1;
                     var tmp_flipy = AllObjList[d].flipy ? -1 : 1;
                     ctx.scale(tmp_flipx, tmp_flipy);
-                    ctx.drawImage(AllObjList[d].img, AllObjList[d].x, AllObjList[d].y, AllObjList[d].width, AllObjList[d].height);
+                    try {
+                        ctx.drawImage(AllObjList[d].img, AllObjList[d].x, AllObjList[d].y, AllObjList[d].width, AllObjList[d].height);
+                    } catch (ex) { };
                     ctx.restore();
                 } else {
-                    ctx.drawImage(AllObjList[d].img, AllObjList[d].x, AllObjList[d].y, AllObjList[d].width, AllObjList[d].height);
+                    try {
+                        ctx.drawImage(AllObjList[d].img, AllObjList[d].x, AllObjList[d].y, AllObjList[d].width, AllObjList[d].height);
+                    } catch (ex) { };
                 }
             }
         }
@@ -134,15 +143,18 @@ function refleshGame() {
                     var tmp_flipx = AllObjList[d].flipx ? -1 : 1;
                     var tmp_flipy = AllObjList[d].flipy ? -1 : 1;
                     ctx.scale(tmp_flipx, tmp_flipy);
-                    ctx.drawImage(AllObjList[d].img, AllObjList[d].x, AllObjList[d].y, AllObjList[d].width, AllObjList[d].height);
+                    try {
+                        ctx.drawImage(AllObjList[d].img, AllObjList[d].x, AllObjList[d].y, AllObjList[d].width, AllObjList[d].height);
+                    } catch (ex) { };
                     ctx.restore();
                 } else {
-                    ctx.drawImage(AllObjList[d].img, AllObjList[d].x, AllObjList[d].y, AllObjList[d].width, AllObjList[d].height);
+                    try {
+                        ctx.drawImage(AllObjList[d].img, AllObjList[d].x, AllObjList[d].y, AllObjList[d].width, AllObjList[d].height);
+                    } catch (ex) { };
                 }
             }
         }
     }
-
 }
 
 
