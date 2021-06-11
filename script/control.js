@@ -68,7 +68,9 @@ function GameWorldSelect(obj, move) {
     cells = Table.insertRow(6);
     cells = cells.insertCell(0);
     cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = "模式: " + "<input type='button'  value='" + displayGameWorldStatus() + "' size='8' onclick='ChooseObj.status=changeGameWorldStatus();ObjSelect(GameObj);refleshGame();'/>";
+    cells.innerHTML = "模式: " + "<input type='button'  value='" + displayGameWorldStatus() + "' size='8' onclick='ChooseObj.status=changeGameWorldStatus();ObjSelect(GameObj);refleshGame();'/>" +
+        " 版本: " + ChooseObj.version + "";
+    ;
 
     getByid("selectObjectDiv").appendChild(Table);
     getByid("ObjTable").parentNode.replaceChild(Table, getByid("ObjTable"));
@@ -155,6 +157,8 @@ function GameWorldSelect(obj, move) {
         cells.innerHTML = "特殊事件: ";//+ obj.name;i
     if (getByid("AnimeEvent_Choose").selected == true)
         cells.innerHTML = "動畫事件: ";//+ obj.name;
+    if (getByid("Variable_Choose").selected == true)
+        cells.innerHTML = "自訂變數: ";//+ obj.name;
     if (getByid("GameWorld_Choose").selected == true)
         cells.innerHTML = "遊戲設定: ";//+ obj.name;
 
@@ -213,49 +217,45 @@ function ObjSelect(obj, move) {
     cells = Table.insertRow(2);
     cells = cells.insertCell(0);
     cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = "座標X: " + "<input type='text'  value='" + obj.x + "' size='8' onchange='ChooseObj.originX=ChooseObj.x=parseInt(this.value);refleshGame();'/>";
+    cells.innerHTML = "座標X: " + "<input type='text'  value='" + obj.x + "' size='6' onchange='ChooseObj.originX=ChooseObj.x=parseInt(this.value);refleshGame();'/>" +
+        "座標Y: " + "<input type='text'  value='" + obj.y + "' size='6' onchange='ChooseObj.originY=ChooseObj.y=parseInt(this.value);refleshGame();'/>";
 
     cells = Table.insertRow(3);
     cells = cells.insertCell(0);
     cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = "座標Y: " + "<input type='text'  value='" + obj.y + "' size='8' onchange='ChooseObj.originY=ChooseObj.y=parseInt(this.value);refleshGame();'/>";
+    cells.innerHTML = "寬度:" + "<input type='text'  value='" + obj.width + "' size='6' onchange='ChooseObj.width=parseInt(this.value);refleshGame();'/>" +
+        "長度: " + "<input type='text'  value='" + obj.height + "' size='6' onchange='ChooseObj.height=parseInt(this.value);refleshGame();'/>";
 
     cells = Table.insertRow(4);
-    cells = cells.insertCell(0);
-    cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = "寬度:" + "<input type='text'  value='" + obj.width + "' size='8' onchange='ChooseObj.width=parseInt(this.value);refleshGame();'/>";
-
-    cells = Table.insertRow(5);
-    cells = cells.insertCell(0);
-    cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = "長度: " + "<input type='text'  value='" + obj.height + "' size='8' onchange='ChooseObj.height=parseInt(this.value);refleshGame();'/>";
-
-    cells = Table.insertRow(6);
     cells = cells.insertCell(0);
     cells.style = "word-break:break-word; word-wrap:break-word;"
     cells.innerHTML = "左右反轉: " + "<input type='button'  value='" + obj.flipx + "' size='8' onclick='ChooseObj.flipx=this.value=!(ChooseObj.flipx);refleshGame();'/>" +
         "上下反轉: " + "<input type='button'  value='" + obj.flipy + "' size='8' onclick='ChooseObj.flipy=this.value=!(ChooseObj.flipy);refleshGame();'/>";
 
-    cells = Table.insertRow(7);
+    cells = Table.insertRow(5);
     cells = cells.insertCell(0);
     cells.style = "word-break:break-word; word-wrap:break-word;"
     cells.innerHTML = "繪圖優先度：" + "<input type='button'  value='" + obj.layer + "' size='8' onclick='ChooseObj.layer=this.value=!(ChooseObj.layer);refleshGame();'/>"
         + ",顯示隱藏：<input type='button'  value='" + obj.display + "' size='8' onclick='ChooseObj.display=this.value=!(ChooseObj.display);refleshGame();'/>";
 
-    cells = Table.insertRow(8);
+    cells = Table.insertRow(6);
     cells = cells.insertCell(0);
     cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = "類別: " + "<input type='text'  value='" + obj.class + "' size='8' onchange='ChooseObj.class=this.value;refleshGame();'/>";
+    cells.innerHTML = "類別: " + "<input type='text'  value='" + obj.class + "' size='8' onchange='ChooseObj.class=this.value;refleshGame();'/>" +
+        "對齊：<input type='checkbox' id='AlignCheckbox' onchange='AlignCheck=this.checked;refleshGame()'> "
+        ;
 
     /*var cells = Table.insertRow(2);
     cells = cells.insertCell(0);
     cells.style = "word-break:break-word; word-wrap:break-word;"
     cells.innerHTML = "類型: " + obj.classtype_tw; 
     */
-
-
     getByid("selectObjectDiv").appendChild(Table);
     getByid("ObjTable").parentNode.replaceChild(Table, getByid("ObjTable"));
+    if (AlignCheck == true || AlignCheck == "checked") getByid("AlignCheckbox").checked = true;
+    else getByid("AlignCheckbox").checked = false;
+
+
     var button_tmp2 = document.createElement("BUTTON");
     button_tmp2.id = "RefleshImgButton";
     button_tmp2.style.float = "right middle";
@@ -325,6 +325,8 @@ function ObjSelect(obj, move) {
         cells.innerHTML = "特殊事件: ";//+ obj.name;i
     if (getByid("AnimeEvent_Choose").selected == true)
         cells.innerHTML = "動畫事件: ";//+ obj.name;
+    if (getByid("Variable_Choose").selected == true)
+        cells.innerHTML = "自訂變數: ";//+ obj.name;
     if (getByid("GameWorld_Choose").selected == true)
         cells.innerHTML = "遊戲設定: ";//+ obj.name;
     /*
@@ -450,7 +452,14 @@ function ObjSelect(obj, move) {
         <button  onclick="KeyDownAnimeEventRegistered(`+ obj.id + `)">ok</button>
         `;
     }
-
+    if (getByid("Variable_Choose").selected == true) {
+        cells = eTable.insertRow(1);
+        cells = cells.insertCell(0);
+        cells.innerHTML = `設定<input id="` + obj.id + `_customVariable_target" value='變數1' size='6' type='text'/>,其值為
+        <input id="`+ obj.id + `_customVariable_number" value='1' min="0" max="1000" type='number' />
+        <button  onclick="CustomVariableRegistered(`+ obj.id + `)">ok</button>
+        `;
+    }
     var eTable2 = document.createElement("table");
     eTable2.id = "ObjEventTable2";
     // /Table.className = "table table-dark table-striped";
@@ -625,7 +634,6 @@ function ObjSelect(obj, move) {
             cells.appendChild(button_tmp);
             getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
         }
-
         if (eventobj[e1][0] == 'cloneLateralExpansion') {
             cells.innerHTML = "如果分身產生,橫向膨脹直到碰到" + eventobj[e1][1] + "或邊界";//+
             var button_tmp = document.createElement("BUTTON");
@@ -667,6 +675,26 @@ function ObjSelect(obj, move) {
             }
             cells.appendChild(button_tmp);
             getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }
+    }
+    var variableobj = getObjById(obj.id).variable;
+    for (var e2 = 0; e2 < variableobj.length; e2++) {
+        var cells = eTable2.insertRow(e1);//yes
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        if (variableobj[e2][0] == 'CustomVariableRegistered') {
+            cells.innerHTML = "設定" + variableobj[e2][1] + ",其值為" + variableobj[e2][2] + "";//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_variable" + e2;
+            button_tmp.obj = variableobj[e2];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_variable" + (e2)).parentNode.replaceChild(button_tmp, getByid("button_variable" + e2));
         }
     }
 
@@ -719,6 +747,19 @@ function ObjSelect(obj, move) {
 
     }
 
+}
+
+function CustomVariableRegistered(id) {
+    var obj = getObjById(id);
+    if (obj.variable) {
+        obj.variable.push(['CustomVariableRegistered',
+            getByid(id + "_customVariable_target").value, parseFloat(getByid(id + "_customVariable_number").value), false]);
+    } else {
+        obj.variable = [];
+        obj.variable.push(['CustomVariableRegistered',
+            getByid(id + "_customVariable_target").value, parseFloat(getByid(id + "_customVariable_number").value), false]);
+    }
+    getByid("RefleshImgButton").onclick();
 }
 
 function clonewaitchangeClassRegistered(id) {

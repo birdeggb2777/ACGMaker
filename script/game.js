@@ -27,6 +27,7 @@ let BackgroundListDiv = getByid("BackgroundListDiv");
 let WaterBallListDiv = getByid("WaterBallListDiv");
 let MouseDrag = false;
 let NowChoose = null;
+let AlignCheck = "checked";
 let AllObjList = []
 let id_length = 0;
 let GameObj = {}
@@ -48,9 +49,11 @@ GameObj.class = "GameWorld";
 GameObj.name = "GameWorld";
 GameObj.type = "GameWorld";
 GameObj.status = "MakeGame";
+GameObj.version = "0.0.2.5";
 
 function clearGameWorld() {
-    var tempAllObjList = []
+    NowChoose = undefined;
+    var tempAllObjList = [];
     for (var i = 0; i < AllObjList.length; i++) {
         if (!AllObjList[i].clone) {
             tempAllObjList.push(AllObjList[i]);

@@ -1,5 +1,7 @@
 
 window.onload = function () {
+    AllObjList.push(GameObj);
+
     refleshGame();
     function readTextFile(file, callback) {
         var rawFile = new XMLHttpRequest();
@@ -214,8 +216,12 @@ window.onload = function () {
             rightPouchObjY = currY - blockY / 2;
         } else {
             rightPouchObjY = rightPouchObjY;
-
         }
+        if (AlignCheck == false) {
+            leftPouchObjX = currX - blockX / 2;
+            rightPouchObjY = currY - blockY / 2;
+        }
+
         if (MouseLeftClick) {
             if (ChooseObj && ChooseObj != GameObj) {
                 ChooseObj.x = leftPouchObjX;
@@ -266,6 +272,7 @@ window.onload = function () {
                     span: [],
                     select: [],
                     broadcast: [],
+                    variable: [],
                     class: "角色",
                     rotate: 0
                 }
@@ -300,6 +307,7 @@ window.onload = function () {
                     span: [],
                     select: [],
                     broadcast: [],
+                    variable: [],
                     class: "背景",
                     rotate: 0
                 };
@@ -330,6 +338,7 @@ window.onload = function () {
                     span: [],
                     select: [],
                     broadcast: [],
+                    variable: [],
                     class: "動畫",
                     rotate: 0
                 }
@@ -347,6 +356,7 @@ window.onload = function () {
             dragalt = event.target.alt;
             MouseDrag = "enter";
             NowChoose = event.target;
+            ChooseObj = undefined;
         }
     })
 
@@ -354,27 +364,34 @@ window.onload = function () {
     interact('#game').dropzone({
         accept: '.leftimg',
         ondropactivate: function (event) {
-            event.target.classList.add('drop-active')
+            event.target.classList.add('drop-active');
         },
         ondragenter: function (event) {
             var draggableElement = event.relatedTarget
             var dropzoneElement = event.target
-            dropzoneElement.classList.add('drop-target')
-            draggableElement.classList.add('can-drop')
+            dropzoneElement.classList.add('drop-target');
+            draggableElement.classList.add('can-drop');
             MouseDrag = "enter";
         },
         ondragleave: function (event) {
-            event.target.classList.remove('drop-target')
-            event.relatedTarget.classList.remove('can-drop')
+            event.target.classList.remove('drop-target');
+            event.relatedTarget.classList.remove('can-drop');
             MouseDrag = "leave";
+            //NowChoose = undefined;
         },
         ondrop: function (event) {
             MouseDrag = false;
             MouseDrag = "complete";
         },
         ondropdeactivate: function (event) {
-            event.target.classList.remove('drop-active')
-            event.target.classList.remove('drop-target')
+            event.target.classList.remove('drop-active');
+            event.target.classList.remove('drop-target');
+            // NowChoose = undefined;
         }
     })
+    //選擇GameWorld
+    getByid("GameWorld_Choose").selected = true;
+    ChooseObj = GameObj;
+    ObjSelect(ChooseObj);
+    checkPouch = true;
 }
