@@ -62,6 +62,12 @@ function clearGameWorld() {
             AllObjList[i].class = "" + AllObjList[i].originClass;
         }
     }
+    for (var i = 0; i < AllObjList.length; i++) {
+        if (AllObjList[i].originX && AllObjList[i].originY) {
+            AllObjList[i].x = AllObjList[i].originX;
+            AllObjList[i].y = AllObjList[i].originY;
+        }
+    }
 }
 
 function refleshGame() {

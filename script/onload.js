@@ -163,10 +163,65 @@ window.onload = function () {
             var currY = getCurrPoint(e, canvas)[1];
         }
 
+
+
+        //對齊周圍的物件
+        var blockX, blockY;
+        if (ChooseObj) {
+            blockX = ChooseObj.width;
+            blockY = ChooseObj.height;
+        }
+        else {
+            blockX = imgListSize[0];
+            blockY = imgListSize[1];
+        }
+        var leftPouchObjX, rightPouchObjY;
+        var pouchObj = {
+            x: currX, y: currY - blockY,
+            width: 5, height: blockY + blockY
+        };
+        for (var d = 0; d < AllObjList.length; d++) {
+            if (AllObjList[d].type == "img" || AllObjList[d].type == "anime") {
+                if (AllObjList[d].class == "delete") continue;
+                if (ChooseObj && AllObjList[d] == ChooseObj) continue;
+                if (pounch(AllObjList[d], pouchObj)) {
+                    leftPouchObjX = AllObjList[d].x;
+                }
+            }
+        }
+
+        var pouchObj = {
+            x: currX - blockX, y: currY,
+            width: blockX + blockX, height: 5
+        };
+        for (var d = 0; d < AllObjList.length; d++) {
+            if (AllObjList[d].type == "img" || AllObjList[d].type == "anime") {
+                if (AllObjList[d].class == "delete") continue;
+                if (ChooseObj && AllObjList[d] == ChooseObj) continue;
+                if (pounch(AllObjList[d], pouchObj)) {
+                    rightPouchObjY = AllObjList[d].y;
+                }
+            }
+        }
+
+
+        if (leftPouchObjX == undefined) {
+            leftPouchObjX = currX - blockX / 2;
+        } else {
+            leftPouchObjX = leftPouchObjX;
+        }
+        if (rightPouchObjY == undefined) {
+            rightPouchObjY = currY - blockY / 2;
+        } else {
+            rightPouchObjY = rightPouchObjY;
+
+        }
         if (MouseLeftClick) {
             if (ChooseObj && ChooseObj != GameObj) {
-                ChooseObj.x = currX - ChooseObj.width / 2;
-                ChooseObj.y = currY - ChooseObj.height / 2;
+                ChooseObj.x = leftPouchObjX;
+                ChooseObj.y = rightPouchObjY;
+                ChooseObj.originX = leftPouchObjX;
+                ChooseObj.originY = rightPouchObjY;
                 ObjSelect(ChooseObj, true);
             }
             refleshGame();
@@ -174,29 +229,35 @@ window.onload = function () {
             refleshGame();
         }
 
+
         if (MouseDrag == "enter") {
             if (NowChoose.obj.classtype == "image")
-                ctx.drawImage(NowChoose, currX - imgListSize[0] / 2, currY - imgListSize[1] / 2, imgListSize[0], imgListSize[1]);
+                ctx.drawImage(NowChoose, leftPouchObjX, rightPouchObjY, imgListSize[0], imgListSize[1]);
             if (NowChoose.obj.classtype == "anime")
-                ctx.drawImage(NowChoose, currX - imgListSize[0] / 2, currY - imgListSize[1] / 2, imgListSize[0], imgListSize[1]);
+                ctx.drawImage(NowChoose, leftPouchObjX, rightPouchObjY, imgListSize[0], imgListSize[1]);
             else if (NowChoose.obj.classtype == "background")
                 ctx.drawImage(NowChoose, currX, currY, GameObj.width, GameObj.height);
         }
         if (MouseDrag == "complete") {
             id_length++;
             MouseDrag = false;
-            ctx.drawImage(NowChoose, currX, currY, imgListSize[0], imgListSize[1]);
+
+            ctx.drawImage(NowChoose, currX, currY, blockX, blockY);
+
+
             if (NowChoose.obj.classtype == "image") {
                 tempObject = {
                     name: NowChoose.obj.title,
                     type: "img",
                     src: NowChoose.src,
                     img: NowChoose,
-                    x: currX - imgListSize[0] / 2,
-                    y: currY - imgListSize[1] / 2,
+                    x: leftPouchObjX,
+                    y: rightPouchObjY,
+                    originX: leftPouchObjX,
+                    originY: rightPouchObjY,
                     id: id_length,
-                    width: imgListSize[0],
-                    height: imgListSize[1],
+                    width: blockX,
+                    height: blockY,
                     flipx: false,
                     flipy: false,
                     layer: false,
@@ -227,6 +288,8 @@ window.onload = function () {
                     src: NowChoose.src,
                     x: 0,
                     y: 0,
+                    originX: 0,
+                    originY: 0,
                     id: id_length,
                     width: GameObj.width,
                     height: GameObj.height,
@@ -237,7 +300,7 @@ window.onload = function () {
                     span: [],
                     select: [],
                     broadcast: [],
-                    class: "場景",
+                    class: "背景",
                     rotate: 0
                 };
                 AllObjList.push(tempObject);
@@ -252,11 +315,13 @@ window.onload = function () {
                     type: "anime",
                     img: document.createElement("IMG"),
                     src: NowChoose.src,
-                    x: currX - imgListSize[0] / 2,
-                    y: currY - imgListSize[1] / 2,
+                    x: leftPouchObjX,
+                    y: rightPouchObjY,
+                    originX: leftPouchObjX,
+                    originY: rightPouchObjY,
                     id: id_length,
-                    width: imgListSize[0],
-                    height: imgListSize[1],
+                    width: blockX,
+                    height: blockY,
                     flipx: false,
                     flipy: false,
                     layer: false,

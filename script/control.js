@@ -48,12 +48,12 @@ function GameWorldSelect(obj, move) {
     cells = Table.insertRow(2);
     cells = cells.insertCell(0);
     cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = "座標X: " + "<input type='text'  value='" + obj.x + "' size='8' onchange='ChooseObj.x=parseInt(this.value);refleshGame();'/>";
+    cells.innerHTML = "座標X: " + "<input type='text'  value='" + obj.x + "' size='8' onchange='ChooseObj.originX=ChooseObj.x=parseInt(this.value);refleshGame();'/>";
 
     cells = Table.insertRow(3);
     cells = cells.insertCell(0);
     cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = "座標Y: " + "<input type='text'  value='" + obj.y + "' size='8' onchange='ChooseObj.y=parseInt(this.value);refleshGame();'/>";
+    cells.innerHTML = "座標Y: " + "<input type='text'  value='" + obj.y + "' size='8' onchange='ChooseObj.originY=ChooseObj.y=parseInt(this.value);refleshGame();'/>";
 
     cells = Table.insertRow(4);
     cells = cells.insertCell(0);
@@ -213,12 +213,12 @@ function ObjSelect(obj, move) {
     cells = Table.insertRow(2);
     cells = cells.insertCell(0);
     cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = "座標X: " + "<input type='text'  value='" + obj.x + "' size='8' onchange='ChooseObj.x=parseInt(this.value);refleshGame();'/>";
+    cells.innerHTML = "座標X: " + "<input type='text'  value='" + obj.x + "' size='8' onchange='ChooseObj.originX=ChooseObj.x=parseInt(this.value);refleshGame();'/>";
 
     cells = Table.insertRow(3);
     cells = cells.insertCell(0);
     cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = "座標Y: " + "<input type='text'  value='" + obj.y + "' size='8' onchange='ChooseObj.y=parseInt(this.value);refleshGame();'/>";
+    cells.innerHTML = "座標Y: " + "<input type='text'  value='" + obj.y + "' size='8' onchange='ChooseObj.originY=ChooseObj.y=parseInt(this.value);refleshGame();'/>";
 
     cells = Table.insertRow(4);
     cells = cells.insertCell(0);
