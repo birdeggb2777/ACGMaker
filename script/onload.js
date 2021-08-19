@@ -15,6 +15,37 @@ window.onload = function () {
         rawFile.send(null);
     }
 
+
+    readTextFile("image/material_json.json", function (text) {
+        material_json = JSON.parse(text);
+        material_json = material_json.material_json;
+        for (var j1 = 0; j1 < material_json.length; j1++) {
+            if (material_json[j1].Parent_folder) {
+                var Parent_folder = material_json[j1].Parent_folder;
+                for (var j2 = 0; j2 < material_json[j1].subpath.length; j2++) {
+                    var image_tmp = document.createElement("IMG");
+                    image_tmp.width = imgListSize[0];
+                    image_tmp.height = imgListSize[1];
+                    image_tmp.src = Parent_folder + material_json[j1].subpath[j2];
+                    var image = new Image();
+                    image.src = image_tmp.src;
+                    ImageSrcList.push(image);
+
+                    image_tmp.alt = material_json[j1].title;
+                    image_tmp.obj = copyJSon(material_json[j1]);
+                    image_tmp.obj.path= Parent_folder + material_json[j1].subpath[j2];
+                    image_tmp.className = "leftimg objimg";
+                    image_tmp.onmousedown = function () {
+                        ImgObjChoose(this.obj);
+                    }
+                    getByid('MaterialListDiv').appendChild(image_tmp);
+
+                }
+            }
+        }
+    });
+
+
     readTextFile("image/image_json.json", function (text) {
         image_json = JSON.parse(text);
         image_json = image_json.image_json;
@@ -132,7 +163,7 @@ window.onload = function () {
         var mouseObj = { x: currX, y: currY, width: 3, height: 3 };
         checkPouch = false;
         for (var d = 0; d < AllObjList.length; d++) {
-            if (AllObjList[d].type == "img" || AllObjList[d].type == "anime") {
+            if (AllObjList[d].type == "img" || AllObjList[d].type == "anime" || AllObjList[d].type == "scenes") {
                 if (AllObjList[d].class == "delete") continue;
                 var p = pounch(AllObjList[d], mouseObj);
                 if (p == true) {
@@ -243,6 +274,8 @@ window.onload = function () {
                 ctx.drawImage(NowChoose, leftPouchObjX, rightPouchObjY, imgListSize[0], imgListSize[1]);
             else if (NowChoose.obj.classtype == "background")
                 ctx.drawImage(NowChoose, currX, currY, GameObj.width, GameObj.height);
+            else if (NowChoose.obj.classtype == "scenes")
+                ctx.drawImage(NowChoose, leftPouchObjX, rightPouchObjY, imgListSize[0], imgListSize[1]);
         }
         if (MouseDrag == "complete") {
             id_length++;
@@ -274,6 +307,35 @@ window.onload = function () {
                     broadcast: [],
                     variable: [],
                     class: "角色",
+                    rotate: 0
+                }
+                AllObjList.push(tempObject);
+                ChooseObj = tempObject;
+                ObjSelect(ChooseObj);
+            }
+            if (NowChoose.obj.classtype == "scenes") {
+                tempObject = {
+                    name: NowChoose.obj.title,
+                    type: "img",
+                    src: NowChoose.src,
+                    img: NowChoose,
+                    x: leftPouchObjX,
+                    y: rightPouchObjY,
+                    originX: leftPouchObjX,
+                    originY: rightPouchObjY,
+                    id: id_length,
+                    width: blockX,
+                    height: blockY,
+                    flipx: false,
+                    flipy: false,
+                    layer: false,
+                    display: true,
+                    event: [],
+                    span: [],
+                    select: [],
+                    broadcast: [],
+                    variable: [],
+                    class: ""+NowChoose.obj.assign_class,
                     rotate: 0
                 }
                 AllObjList.push(tempObject);

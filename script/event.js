@@ -75,6 +75,37 @@ function WindowRegisterKeyDowning() {
             }
         }
     }
+
+    setInterval(function () {
+        for (var i = 0; i < AllObjList.length; i++) {
+            for (var ec = 0; ec < AllObjList[i].event.length; ec++) {
+                if (AllObjList[i].event[ec][0] == 'pounchGravityRegistered') {
+                    for (var ec2 = 0; ec2 < AllObjList[0].event.length; ec2++) {
+                        if (AllObjList[0].event[ec2][0] == 'GravityGameWorldYRegistered') {
+                            AllObjList[i].y = parseFloat(AllObjList[i].y) + parseFloat(AllObjList[0].event[ec2][1]);
+                            //console.log(AllObjList[0].event[ec2][0], AllObjList[0].event[ec2][1]);
+                        }
+                        var pounchList = [];
+                        for (var i2 = 0; i2 < AllObjList.length; i2++) {
+                            console.log(AllObjList[i2].class,AllObjList[i].event[ec][1],AllObjList[i2].class==AllObjList[i].event[ec][1]);
+                            if (AllObjList[i2].class == AllObjList[i].event[ec][1] && AllObjList[i2] != AllObjList[i]) {
+                                pounchList.push(AllObjList[i2]);
+                            }
+                        }
+                        console.log(pounchList);
+                        //碰到例外就往後退
+                        for (var j = 0; j < pounchList.length; j++) {
+                            if (pounch(AllObjList[i], pounchList[j]) == true) {
+                                //console.log(true);
+                                AllObjList[i].y = parseFloat(AllObjList[i].y) - parseFloat(AllObjList[0].event[ec2][1]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }, 50);
+
     setInterval(function () {
         for (var i = 0; i < AllObjList.length; i++) {
             if (AllObjList[i].class == "delete") continue;
@@ -157,6 +188,9 @@ function WindowRegisterKeyDowning() {
                 }
             }
         }
+
+
+
         for (var i = 0; i < AllObjList.length; i++) {
             for (var ec = 0; ec < AllObjList[i].event.length; ec++) {
                 if (AllObjList[i].event[ec][0] == 'pounchDeleteRegistered') {

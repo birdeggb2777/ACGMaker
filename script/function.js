@@ -76,6 +76,11 @@ function displayGameWorldStatus() {
     else return "開發模式";
 }
 
+function copyJSon(json){
+    var jsonData = JSON.stringify(json);
+    return JSON.parse(jsonData);
+}
+
 function exportGameWorldJSON() {
     var jsonData = JSON.stringify(AllObjList);
     return jsonData;

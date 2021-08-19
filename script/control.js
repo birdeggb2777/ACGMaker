@@ -8,6 +8,8 @@ getByid("imgListOpetion").onchange = function () {
     else WaterBallListDiv.style.display = "none";
     if (getByid("Anime_Choose").selected == true) AnimeListDiv.style.display = "";
     else AnimeListDiv.style.display = "none";
+    if (getByid("Material_Choose").selected == true) MaterialListDiv.style.display = "";
+    else MaterialListDiv.style.display = "none";
 }
 
 getByid("jsonfile").onchange = function (e) {
@@ -175,11 +177,55 @@ function GameWorldSelect(obj, move) {
         cells = cells.insertCell(0);
         cells.innerHTML = `<button onclick="ExportGAME();">輸出遊戲</button>`;
     }
+
+    if (getByid("SpecialEvent_Choose").selected == true) {
+        cells = eTable.insertRow(1);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        cells.innerHTML = `設定地心引力為Y軸移動
+    <input  id="`+ obj.id + `_GravityGameWorldY_y"  min="-1000" max="1000" type='number' value='2'/>
+    <button  onclick="GravityGameWorldYRegistered(`+ obj.id + `)">ok</button>
+    `;
+
+    }
     var eTable2 = document.createElement("table");
     eTable2.id = "ObjEventTable2";
     // /Table.className = "table table-dark table-striped";
     eTable2.setAttribute("border", 2);
 
+    var eTable2 = document.createElement("table");
+    eTable2.id = "ObjEventTable2";
+    // /Table.className = "table table-dark table-striped";
+    eTable2.setAttribute("border", 2);
+
+    getByid("selectObjectEventDiv").appendChild(eTable2);
+    getByid("ObjEventTable2").parentNode.replaceChild(eTable2, getByid("ObjEventTable2"));
+
+
+
+    eTable2.style = "table-layout:fixed;"
+    eTable2.width = "300";
+
+    var eventobj = getObjById(obj.id).event;
+    for (var e1 = 0; e1 < eventobj.length; e1++) {
+        var cells = eTable2.insertRow(e1);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        if (eventobj[e1][0] == 'GravityGameWorldYRegistered') {
+            cells.innerHTML = "設定地心引力為Y軸移動" + eventobj[e1][1] + "像素";//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }
+    }
     getByid("selectObjectEventDiv").appendChild(eTable2);
     getByid("ObjEventTable2").parentNode.replaceChild(eTable2, getByid("ObjEventTable2"));
 }
@@ -443,6 +489,13 @@ function ObjSelect(obj, move) {
         cells.innerHTML = `如果碰到<input  id="` + obj.id + `_pounchDelete_obj" size='6' type='text' value='炸藥'/>,銷毀
     <button  onclick="pounchDeleteRegistered(`+ obj.id + `)">ok</button>
     `;
+
+        cells = eTable.insertRow(3);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        cells.innerHTML = `受地心引力影響，但碰到<input  id="` + obj.id + `_pounchGravity_obj" size='6' type='text' value='場景'/>除外
+<button  onclick="pounchGravityRegistered(`+ obj.id + `)">ok</button>
+`;
     }
     if (getByid("AnimeEvent_Choose").selected == true) {
         cells = eTable.insertRow(1);
@@ -604,7 +657,20 @@ function ObjSelect(obj, move) {
             cells.appendChild(button_tmp);
             getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
         }
-
+        if (eventobj[e1][0] == 'pounchGravityRegistered') {
+            cells.innerHTML = "受地心引力影響，但碰到" + eventobj[e1][1] + "除外";//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }
         if (eventobj[e1][0] == 'pounchDeleteRegistered') {
             cells.innerHTML = "如果碰到" + eventobj[e1][1] + "銷毀";//+
             var button_tmp = document.createElement("BUTTON");
@@ -762,6 +828,13 @@ function CustomVariableRegistered(id) {
     getByid("RefleshImgButton").onclick();
 }
 
+function GravityGameWorldYRegistered(id) {
+    var obj = getObjById(id);
+    obj.event.push(['GravityGameWorldYRegistered',
+        getByid(id + "_GravityGameWorldY_y").value, false]);
+    getByid("RefleshImgButton").onclick();
+}
+
 function clonewaitchangeClassRegistered(id) {
     var obj = getObjById(id);
     obj.event.push(['clonewaitchangeClassRegistered',
@@ -789,6 +862,14 @@ function KeyDownAnimeEventRegistered(id) {
         getByid(id + "_keydownAnime").value, getByid(id + "_keydownAnime_target").value, false]);
     getByid("RefleshImgButton").onclick();
 }
+
+function pounchGravityRegistered(id) {
+    var obj = getObjById(id);
+    obj.event.push(['pounchGravityRegistered',
+        getByid(id + "_pounchGravity_obj").value, false]);
+    getByid("RefleshImgButton").onclick();
+}
+
 function pounchDeleteRegistered(id) {
     var obj = getObjById(id);
     obj.event.push(['pounchDeleteRegistered',

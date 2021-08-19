@@ -129,6 +129,30 @@ function refleshGame() {
             }
         }
         for (var d = 0; d < AllObjList.length; d++) {
+            if (AllObjList[d].type == "scenes") {
+                if (AllObjList[d].class == "delete") continue;
+                if (AllObjList[d].display == false) continue;
+                if (AllObjList[d].layer == true) continue;
+                if (AllObjList[d].flipx == true || AllObjList[d].flipy == true) {
+                    ctx.save();
+                    var tmp_flipx = AllObjList[d].flipx ? GameObj.width + (AllObjList[d].x - GameObj.width / 2) * 2 + AllObjList[d].width : 0;
+                    var tmp_flipy = AllObjList[d].flipy ? GameObj.height + (AllObjList[d].y - GameObj.height / 2) * 2 + AllObjList[d].height : 0;
+                    ctx.translate(tmp_flipx, tmp_flipy);
+                    var tmp_flipx = AllObjList[d].flipx ? -1 : 1;
+                    var tmp_flipy = AllObjList[d].flipy ? -1 : 1;
+                    ctx.scale(tmp_flipx, tmp_flipy);
+                    try {
+                        ctx.drawImage(AllObjList[d].img, AllObjList[d].x, AllObjList[d].y, AllObjList[d].width, AllObjList[d].height);
+                    } catch (ex) { };
+                    ctx.restore();
+                } else {
+                    try {
+                        ctx.drawImage(AllObjList[d].img, AllObjList[d].x, AllObjList[d].y, AllObjList[d].width, AllObjList[d].height);
+                    } catch (ex) { };
+                }
+            }
+        }
+        for (var d = 0; d < AllObjList.length; d++) {
             if (AllObjList[d].type == "img" || AllObjList[d].type == "anime") {
                 if (AllObjList[d].class == "delete") continue;
                 if (AllObjList[d].display == false) continue;

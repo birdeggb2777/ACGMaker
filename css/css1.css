@@ -36,3 +36,10 @@
 .number_keydownAnime_target {
     width: 4em;
   }
+
+.LeftImgListDiv{
+    height: 200;
+    overflow: hidden;
+    overflow-y: scroll;
+
+}
