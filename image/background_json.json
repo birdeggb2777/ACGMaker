@@ -22,6 +22,14 @@
             "classtype_tw": "背景",
             "path": "./image/background/temple.jpg",
             "url": "Me"
+        },
+        {
+            "title": "colored_grass",
+            "title_tw": "草原",
+            "classtype": "background",
+            "classtype_tw": "背景",
+            "path": "./image/background/colored_grass.png",
+            "url": "https://opengameart.org/content/platformer-pack-redux-360-assets/"
         }
     ]
 }

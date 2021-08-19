@@ -27,9 +27,31 @@ function pounch(obj, obj2) {
                 return true;
             return false;
         }
-        if (pounch1(obj.x, obj.y, obj.width, obj.height,
-            obj2.x, obj2.y, obj2.width, obj2.height) == true) {
-            return true
+        if (obj.type != "scenes" && obj2.type != "scenes") {
+            if (pounch1(obj.x, obj.y, obj.width, obj.height,
+                obj2.x, obj2.y, obj2.width, obj2.height) == true) {
+                return true
+            }
+        } else if (obj.type == "scenes" && obj2.type == "scenes") {
+            if (pounch1(obj.x - GameObj.x, obj.y - GameObj.y, obj.width, obj.height,
+                obj2.x - GameObj.x, obj2.y - GameObj.y, obj2.width, obj2.height) == true) {
+                return true
+            }
+        } else if (obj.type == "scenes" && obj2.type != "scenes") {
+            if (pounch1(obj.x - GameObj.x, obj.y - GameObj.y, obj.width, obj.height,
+                obj2.x, obj2.y, obj2.width, obj2.height) == true) {
+                return true
+            }
+        } else if (obj.type != "scenes" && obj2.type == "scenes") {
+            if (pounch1(obj.x, obj.y, obj.width, obj.height,
+                obj2.x - GameObj.x, obj2.y - GameObj.y, obj2.width, obj2.height) == true) {
+                return true
+            }
+        } else {
+            if (pounch1(obj.x, obj.y, obj.width, obj.height,
+                obj2.x, obj2.y, obj2.width, obj2.height) == true) {
+                return true
+            }
         }
     } catch (ex) { return false; };
     return false;
@@ -76,7 +98,7 @@ function displayGameWorldStatus() {
     else return "開發模式";
 }
 
-function copyJSon(json){
+function copyJSon(json) {
     var jsonData = JSON.stringify(json);
     return JSON.parse(jsonData);
 }

@@ -2,6 +2,7 @@
 function WindowRegisterKeyDowning() {
 
     function KeyDown(KeyboardKeys) {
+        if (AllObjList[0].status == "MakeGame") return;
         var key = KeyboardKeys.which;
         for (var i = 0; i < AllObjList.length; i++) {
             if (AllObjList[i].class == "delete") continue;
@@ -61,6 +62,7 @@ function WindowRegisterKeyDowning() {
     }
 
     function KeyUp(KeyboardKeys) {
+        if (AllObjList[0].status == "MakeGame") return;
         var key = KeyboardKeys.which;
         for (var i = 0; i < AllObjList.length; i++) {
             if (AllObjList[i].class == "delete") continue;
@@ -76,7 +78,15 @@ function WindowRegisterKeyDowning() {
         }
     }
 
+    //GameWorld的座標事件
     setInterval(function () {
+        if (AllObjList[0].status == "MakeGame") return;
+        for (var ec = 0; ec < AllObjList[0].event.length; ec++) {
+            if (AllObjList[0].event[ec][0] == 'ScreenGameWorldYRegistered') {
+                AllObjList[0].x+=parseFloat(AllObjList[0].event[ec][1]);
+            }
+        }
+
         for (var i = 0; i < AllObjList.length; i++) {
             for (var ec = 0; ec < AllObjList[i].event.length; ec++) {
                 if (AllObjList[i].event[ec][0] == 'pounchGravityRegistered') {
@@ -87,7 +97,7 @@ function WindowRegisterKeyDowning() {
                         }
                         var pounchList = [];
                         for (var i2 = 0; i2 < AllObjList.length; i2++) {
-                            console.log(AllObjList[i2].class,AllObjList[i].event[ec][1],AllObjList[i2].class==AllObjList[i].event[ec][1]);
+                            console.log(AllObjList[i2].class, AllObjList[i].event[ec][1], AllObjList[i2].class == AllObjList[i].event[ec][1]);
                             if (AllObjList[i2].class == AllObjList[i].event[ec][1] && AllObjList[i2] != AllObjList[i]) {
                                 pounchList.push(AllObjList[i2]);
                             }
@@ -107,6 +117,7 @@ function WindowRegisterKeyDowning() {
     }, 50);
 
     setInterval(function () {
+        if (AllObjList[0].status == "MakeGame") return;
         for (var i = 0; i < AllObjList.length; i++) {
             if (AllObjList[i].class == "delete") continue;
             if (AllObjList[i].event) {
@@ -171,6 +182,7 @@ function WindowRegisterKeyDowning() {
     }, 10);
 
     setInterval(function () {
+        if (AllObjList[0].status == "MakeGame") return;
         for (var i = 0; i < AllObjList.length; i++) {
             if (AllObjList[i].class == "delete") continue;
             if (AllObjList[i].event) {

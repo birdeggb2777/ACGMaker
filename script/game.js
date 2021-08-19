@@ -48,8 +48,8 @@ GameObj.broadcast = [];
 GameObj.class = "GameWorld";
 GameObj.name = "GameWorld";
 GameObj.type = "GameWorld";
-GameObj.status = "MakeGame";
-GameObj.version = "0.0.2.5";
+GameObj.status = "PlayGame";//MakeGame
+GameObj.version = "0.0.3.1";
 
 function clearGameWorld() {
     NowChoose = undefined;
@@ -142,12 +142,18 @@ function refleshGame() {
                     var tmp_flipy = AllObjList[d].flipy ? -1 : 1;
                     ctx.scale(tmp_flipx, tmp_flipy);
                     try {
-                        ctx.drawImage(AllObjList[d].img, AllObjList[d].x, AllObjList[d].y, AllObjList[d].width, AllObjList[d].height);
+                        if (AllObjList[d].flipx != true)
+                            ctx.drawImage(AllObjList[d].img, AllObjList[d].x - AllObjList[0].x, AllObjList[d].y + AllObjList[0].y, AllObjList[d].width, AllObjList[d].height);
+                        else if (AllObjList[d].flipx != true)
+                            ctx.drawImage(AllObjList[d].img, AllObjList[d].x + AllObjList[0].x, AllObjList[d].y - AllObjList[0].y, AllObjList[d].width, AllObjList[d].height);
+                        else
+                            ctx.drawImage(AllObjList[d].img, AllObjList[d].x + AllObjList[0].x, AllObjList[d].y + AllObjList[0].y, AllObjList[d].width, AllObjList[d].height);
+
                     } catch (ex) { };
                     ctx.restore();
                 } else {
                     try {
-                        ctx.drawImage(AllObjList[d].img, AllObjList[d].x, AllObjList[d].y, AllObjList[d].width, AllObjList[d].height);
+                        ctx.drawImage(AllObjList[d].img, AllObjList[d].x - AllObjList[0].x, AllObjList[d].y - AllObjList[0].y, AllObjList[d].width, AllObjList[d].height);
                     } catch (ex) { };
                 }
             }

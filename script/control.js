@@ -187,6 +187,14 @@ function GameWorldSelect(obj, move) {
     <button  onclick="GravityGameWorldYRegistered(`+ obj.id + `)">ok</button>
     `;
 
+        cells = eTable.insertRow(2);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        cells.innerHTML = `設定視野X不斷移動
+    <input  id="`+ obj.id + `_ScreenGameWorld_x"  min="-1000" max="1000" type='number' value='2'/>像素
+    <button  onclick="ScreenGameWorldYRegistered(`+ obj.id + `)">ok</button>
+    `;
+
     }
     var eTable2 = document.createElement("table");
     eTable2.id = "ObjEventTable2";
@@ -213,6 +221,21 @@ function GameWorldSelect(obj, move) {
         cells.style = "word-break:break-word; word-wrap:break-word;"
         if (eventobj[e1][0] == 'GravityGameWorldYRegistered') {
             cells.innerHTML = "設定地心引力為Y軸移動" + eventobj[e1][1] + "像素";//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }  
+        
+        if (eventobj[e1][0] == 'ScreenGameWorldYRegistered') {
+            cells.innerHTML = "設定視野X不斷移動" + eventobj[e1][1] + "像素";//+
             var button_tmp = document.createElement("BUTTON");
             button_tmp.id = "button_event" + e1;
             button_tmp.obj = eventobj[e1];
@@ -825,6 +848,13 @@ function CustomVariableRegistered(id) {
         obj.variable.push(['CustomVariableRegistered',
             getByid(id + "_customVariable_target").value, parseFloat(getByid(id + "_customVariable_number").value), false]);
     }
+    getByid("RefleshImgButton").onclick();
+}
+
+function ScreenGameWorldYRegistered(id) {
+    var obj = getObjById(id);
+    obj.event.push(['ScreenGameWorldYRegistered',
+        getByid(id + "_ScreenGameWorld_x").value, false]);
     getByid("RefleshImgButton").onclick();
 }
 

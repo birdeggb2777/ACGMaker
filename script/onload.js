@@ -33,7 +33,7 @@ window.onload = function () {
 
                     image_tmp.alt = material_json[j1].title;
                     image_tmp.obj = copyJSon(material_json[j1]);
-                    image_tmp.obj.path= Parent_folder + material_json[j1].subpath[j2];
+                    image_tmp.obj.path = Parent_folder + material_json[j1].subpath[j2];
                     image_tmp.className = "leftimg objimg";
                     image_tmp.onmousedown = function () {
                         ImgObjChoose(this.obj);
@@ -253,6 +253,12 @@ window.onload = function () {
             rightPouchObjY = currY - blockY / 2;
         }
 
+
+        if (ChooseObj && ChooseObj.type && ChooseObj.type == "scenes") {
+            leftPouchObjX += GameObj.x;
+            rightPouchObjY += GameObj.y;
+        }
+
         if (MouseLeftClick) {
             if (ChooseObj && ChooseObj != GameObj) {
                 ChooseObj.x = leftPouchObjX;
@@ -277,6 +283,14 @@ window.onload = function () {
             else if (NowChoose.obj.classtype == "scenes")
                 ctx.drawImage(NowChoose, leftPouchObjX, rightPouchObjY, imgListSize[0], imgListSize[1]);
         }
+
+        try {
+            if (NowChoose.obj.classtype == "scenes") {
+                leftPouchObjX += GameObj.x;
+                rightPouchObjY += GameObj.y;
+            }
+        } catch (ex) { }
+
         if (MouseDrag == "complete") {
             id_length++;
             MouseDrag = false;
@@ -316,7 +330,7 @@ window.onload = function () {
             if (NowChoose.obj.classtype == "scenes") {
                 tempObject = {
                     name: NowChoose.obj.title,
-                    type: "img",
+                    type: "scenes",
                     src: NowChoose.src,
                     img: NowChoose,
                     x: leftPouchObjX,
@@ -335,7 +349,7 @@ window.onload = function () {
                     select: [],
                     broadcast: [],
                     variable: [],
-                    class: ""+NowChoose.obj.assign_class,
+                    class: "" + NowChoose.obj.assign_class,
                     rotate: 0
                 }
                 AllObjList.push(tempObject);
