@@ -153,6 +153,7 @@ window.onload = function () {
     getByid("game").onmousedown = function (e) {
         //if (GameObj.status == "PlayGame") return;
         if (e.which == 1) MouseLeftClick = true;
+        else if (e.which == 2) MouseMiddleClick = true;
         else if (e.which == 3) MouseRightClick = true;
 
         var canvas = document.getElementById('game');
@@ -160,6 +161,9 @@ window.onload = function () {
             var ctx = canvas.getContext('2d');
             var currX = getCurrPoint(e, canvas)[0];
             var currY = getCurrPoint(e, canvas)[1];
+            originMouseClickPoint = [currX, currY, originMouseClickPoint[2]];
+            GameObj.originX = GameObj.x;
+            GameObj.originY = GameObj.y;
         }
         var mouseObj = { x: currX, y: currY, width: 3, height: 3 };
         checkPouch = false;
@@ -187,6 +191,7 @@ window.onload = function () {
         //ChooseObj = null;
         MouseLeftClick = false;
         MouseRightClick = false;
+        MouseMiddleClick = false;
     }
     getByid("game").onmousemove = function (e) {
         //if (GameObj.status == "PlayGame") return;
@@ -220,6 +225,7 @@ window.onload = function () {
                 if (ChooseObj && AllObjList[d] == ChooseObj) continue;
                 if (pounch(AllObjList[d], pouchObj)) {
                     leftPouchObjX = AllObjList[d].x;
+                    if (AllObjList[d].type == "scenes") leftPouchObjX -= GameObj.x;
                 }
             }
         }
@@ -234,6 +240,7 @@ window.onload = function () {
                 if (ChooseObj && AllObjList[d] == ChooseObj) continue;
                 if (pounch(AllObjList[d], pouchObj)) {
                     rightPouchObjY = AllObjList[d].y;
+                    if (AllObjList[d].type == "scenes") rightPouchObjY -= GameObj.y;
                 }
             }
         }
@@ -256,8 +263,8 @@ window.onload = function () {
 
         //已移除的不明功能，會阻止scenes物件對齊
         if (ChooseObj && ChooseObj.type && ChooseObj.type == "scenes") {
-           // leftPouchObjX += GameObj.x;
-           // rightPouchObjY += GameObj.y;
+            leftPouchObjX += GameObj.x;
+            rightPouchObjY += GameObj.y;
         }
 
         if (MouseLeftClick) {
@@ -269,7 +276,11 @@ window.onload = function () {
                 ObjSelect(ChooseObj, true);
             }
             refleshGame();
-        } else {
+        } else if (MouseMiddleClick) {
+            GameObj.x = GameObj.originX + (originMouseClickPoint[0] - currX);
+            GameObj.y = GameObj.originY + (originMouseClickPoint[1] - currY);
+        }
+        else {
             refleshGame();
         }
 

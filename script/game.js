@@ -33,7 +33,9 @@ let AllObjList = []
 let GameObj = {}
 let ChooseObj = null;
 let MouseLeftClick = false;
+let MouseMiddleClick = false;
 let MouseRightClick = false;
+let originMouseClickPoint = [0, 0, 0];
 let checkPouch = false;
 var ImageSrcList = [];
 GameObj.id_length = 0;
@@ -41,6 +43,8 @@ GameObj.width = 750;
 GameObj.height = 550;
 GameObj.x = 0;
 GameObj.y = 0;
+GameObj.originX = 0;
+GameObj.originY = 0;
 GameObj.img = null;
 GameObj.id = 0;
 GameObj.event = [];
@@ -50,7 +54,7 @@ GameObj.class = "GameWorld";
 GameObj.name = "GameWorld";
 GameObj.type = "GameWorld";
 GameObj.status = "PlayGame";//MakeGame
-GameObj.version = "0.0.4.1";
+GameObj.version = "0.0.4.2";
 GameObj.KeyPressList = [];
 
 function clearGameWorld() {

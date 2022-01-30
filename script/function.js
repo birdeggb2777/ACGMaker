@@ -130,9 +130,9 @@ function convertJSONtoGameWorld(json) {
     GameObj = AllObjList[0];
 }
 
-function includeElementFromEvent(event) {
+function includeElementFromEvent(event,str) {
     for (var e1 = 0; e1 < event.length; e1++) {
-        if (event[e1][0] == 'KeyPressStatusEventRegistered') {
+        if (event[e1][0] == str) {
             return true;
         }
     }

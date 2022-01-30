@@ -13,6 +13,23 @@ function WindowRegisterKeyDowning() {
             return a;
         }, []);
 
+        for (var e1 = 0; e1 < AllObjList[0].event.length; e1++) {
+            if (AllObjList[0].event[e1][0] == 'KeydownGameWorldJumpRegistered' &&
+                key == keyCode[AllObjList[0].event[e1][1]]) {
+                const JumpKeyEvent_ = AllObjList[0].event[e1];
+                const steps_ = 50 * parseFloat(JumpKeyEvent_[3]);
+                const move_y = parseFloat(JumpKeyEvent_[2]);
+                JumpKeyEvent_[4] = steps_;
+                var interval1 = setInterval(function () {
+                    if (JumpKeyEvent_[4] <= 0) clearInterval(this);
+                    else {
+                        JumpKeyEvent_[4] -= 50;
+                        AllObjList[0].originY = AllObjList[0].y += parseFloat(JumpKeyEvent_[2]);
+                    }
+                }, 50);
+            }
+        }
+
         for (var i = 0; i < AllObjList.length; i++) {
             if (AllObjList[i].class == "delete") continue;
             if (AllObjList[i].event) {
@@ -102,26 +119,71 @@ function WindowRegisterKeyDowning() {
             if (AllObjList[0].event[ec][0] == 'ScreenGameWorldYRegistered') {
                 AllObjList[0].x += parseFloat(AllObjList[0].event[ec][1]);
             }
+
+            if (AllObjList[0].event[ec][0] == 'ScreenPounchBorderYRegistered') {
+                for (var i2 = 0; i2 < AllObjList.length; i2++) {
+                    if (AllObjList[i2].class == AllObjList[0].event[ec][1] && AllObjList[i2] != AllObjList[0]) {
+                        if (AllObjList[0].event[ec][2] == "上邊界") {
+                            if (AllObjList[i2].y <= parseFloat(AllObjList[0].event[ec][3])) {
+                                AllObjList[0].originX = AllObjList[0].x += parseFloat(AllObjList[0].event[ec][4]);
+                                AllObjList[0].originY = AllObjList[0].y += parseFloat(AllObjList[0].event[ec][5]);
+                                AllObjList[i2].originX = AllObjList[i2].x -= parseFloat(AllObjList[0].event[ec][4]) / 2;
+                                AllObjList[i2].originY = AllObjList[i2].y -= parseFloat(AllObjList[0].event[ec][5]) / 2;
+                            }
+                        } else if (AllObjList[0].event[ec][2] == "下邊界") {
+                            if (AllObjList[i2].y >= AllObjList[0].height - parseFloat(AllObjList[0].event[ec][3])) {
+                                AllObjList[0].originX = AllObjList[0].x += parseFloat(AllObjList[0].event[ec][4]);
+                                AllObjList[0].originY = AllObjList[0].y += parseFloat(AllObjList[0].event[ec][5]);
+                                AllObjList[i2].originX = AllObjList[i2].x -= parseFloat(AllObjList[0].event[ec][4]) / 2;
+                                AllObjList[i2].originY = AllObjList[i2].y -= parseFloat(AllObjList[0].event[ec][5]) / 2;
+                            }
+                        } else if (AllObjList[0].event[ec][2] == "左邊界") {
+                            if (AllObjList[i2].x <= parseFloat(AllObjList[0].event[ec][3])) {
+                                AllObjList[0].originX = AllObjList[0].x += parseFloat(AllObjList[0].event[ec][4]);
+                                AllObjList[0].originY = AllObjList[0].y += parseFloat(AllObjList[0].event[ec][5]);
+                                AllObjList[i2].originX = AllObjList[i2].x -= parseFloat(AllObjList[0].event[ec][4]) / 2;
+                                AllObjList[i2].originY = AllObjList[i2].y -= parseFloat(AllObjList[0].event[ec][5]) / 2;
+                            }
+                        } else if (AllObjList[0].event[ec][2] == "右邊界") {
+                            if (AllObjList[i2].x >= AllObjList[0].width - parseFloat(AllObjList[0].event[ec][3])) {
+                                AllObjList[0].originX = AllObjList[0].x += parseFloat(AllObjList[0].event[ec][4]);
+                                AllObjList[0].originY = AllObjList[0].y += parseFloat(AllObjList[0].event[ec][5]);
+                                AllObjList[i2].originX = AllObjList[i2].x -= parseFloat(AllObjList[0].event[ec][4]) / 2;
+                                AllObjList[i2].originY = AllObjList[i2].y -= parseFloat(AllObjList[0].event[ec][5]) / 2;
+                            }
+                        }
+                    }
+                    //AllObjList[0].x += parseFloat(AllObjList[0].event[ec][1]);
+                }
+            }
         }
 
         for (var i = 0; i < AllObjList.length; i++) {
             for (var ec = 0; ec < AllObjList[i].event.length; ec++) {
                 if (AllObjList[i].event[ec][0] == 'pounchGravityRegistered') {
                     for (var ec2 = 0; ec2 < AllObjList[0].event.length; ec2++) {
-                        if (AllObjList[0].event[ec2][0] == 'GravityGameWorldYRegistered') {
-                            AllObjList[i].y = parseFloat(AllObjList[i].y) + parseFloat(AllObjList[0].event[ec2][1]);
-                            //console.log(AllObjList[0].event[ec2][0], AllObjList[0].event[ec2][1]);
-                        }
                         var pounchList = [];
                         for (var i2 = 0; i2 < AllObjList.length; i2++) {
                             if (AllObjList[i2].class == AllObjList[i].event[ec][1] && AllObjList[i2] != AllObjList[i]) {
                                 pounchList.push(AllObjList[i2]);
                             }
                         }
+                        var pounchGravity = false;
+                        //如果不用往下掉就會撞到了
+                        for (var j = 0; j < pounchList.length; j++) {
+                            if (pounch(AllObjList[i], pounchList[j]) == true) {
+                                pounchGravity = true; break;
+                            }
+                        }
+                        if (pounchGravity == true) continue;
+                        //往下掉
+                        if (AllObjList[0].event[ec2][0] == 'GravityGameWorldYRegistered') {
+                            AllObjList[i].y = parseFloat(AllObjList[i].y) + parseFloat(AllObjList[0].event[ec2][1]);
+                        }
+
                         //碰到例外就往後退
                         for (var j = 0; j < pounchList.length; j++) {
                             if (pounch(AllObjList[i], pounchList[j]) == true) {
-                                //console.log(true);
                                 AllObjList[i].y = parseFloat(AllObjList[i].y) - parseFloat(AllObjList[0].event[ec2][1]);
                             }
                         }
@@ -129,9 +191,9 @@ function WindowRegisterKeyDowning() {
                 }
             }
         }
-    }, 500);
+    }, 10);
 
-    //鍵盤事件?
+    //按住鍵盤事件
     setInterval(function () {
         if (AllObjList[0].status == "MakeGame") return;
         for (var i = 0; i < AllObjList.length; i++) {
@@ -207,7 +269,7 @@ function WindowRegisterKeyDowning() {
                     var forme = AllObjList[i].forme[f];
                     if (forme[0] == "CustomFormeListRegistered") {
                         //timer常數
-                        forme.nowTicks += 10;
+                        forme.nowTicks += 50;
                         if (forme.nowTicks > forme.timer) {
                             forme.nowTicks = 0;
                             forme.nowFrame = forme.nowFrame + 1 >= forme.list.length ? 0 : forme.nowFrame + 1;
@@ -217,15 +279,17 @@ function WindowRegisterKeyDowning() {
                 }
             }
         }
-    }, 10);
+    }, 50);
     //狀態與動畫
     setInterval(function () {
         if (AllObjList[0].status == "MakeGame") return;
+        //按住某鍵或碰到某物
         for (var i = 0; i < AllObjList.length; i++) {
             if (AllObjList[i].class == "delete") continue;
             if (AllObjList[i].event) {
                 var flag = null;
-                if (includeElementFromEvent(AllObjList[i].event)) flag = false;
+                if (includeElementFromEvent(AllObjList[i].event, 'KeyPressStatusEventRegistered')) flag = false;
+                if (includeElementFromEvent(AllObjList[i].event, 'PounchStatusEventRegistered')) flag = false;
                 for (var e1 = 0; e1 < AllObjList[i].event.length; e1++) {
                     if (AllObjList[i].event[e1][0] == 'KeyPressStatusEventRegistered') {
                         if (AllObjList[i].event[e1][1]) {
@@ -235,10 +299,85 @@ function WindowRegisterKeyDowning() {
                             }
                         }
                     }
-                    if (flag == false) AllObjList[i].status = "normal";
                 }
+                for (var e1 = 0; e1 < AllObjList[i].event.length; e1++) {
+                    if (AllObjList[i].event[e1][0] == 'PounchStatusEventRegistered') {
+                        if (AllObjList[i].event[e1][1]) {
+                            var pounchList0 = [];
+                            for (var p = 0; p < AllObjList.length; p++) {
+                                if (AllObjList[p].class == AllObjList[i].event[e1][1])
+                                    pounchList0.push(AllObjList[p]);
+                            }
+
+                            var pounch0 = false;
+                            for (var p = 0; p < pounchList0.length; p++) {
+                                if (pounch(AllObjList[i], pounchList0[p]) == true) {
+                                    pounch0 = true;
+                                    flag = true;
+                                }
+                            }
+                            if (pounch0 == true) {
+                                if (AllObjList[i].class != "delete") {
+                                    AllObjList[i].status = "" + AllObjList[i].event[e1][2];
+                                    flag = true;
+                                };
+                            }
+                        }
+                    }
+                }
+                if (flag == false) AllObjList[i].status = "normal";
             }
         }
+        /*
+                //按住某鍵
+                for (var i = 0; i < AllObjList.length; i++) {
+                    if (AllObjList[i].class == "delete") continue;
+                    if (AllObjList[i].event) {
+                        var flag = null;
+                        if (includeElementFromEvent(AllObjList[i].event, 'KeyPressStatusEventRegistered')) flag = false;
+                        for (var e1 = 0; e1 < AllObjList[i].event.length; e1++) {
+                            if (AllObjList[i].event[e1][0] == 'KeyPressStatusEventRegistered') {
+                                if (AllObjList[i].event[e1][1]) {
+                                    if (AllObjList[0].KeyPressList.includes(keyCode[AllObjList[i].event[e1][1]])) {
+                                        AllObjList[i].status = "" + AllObjList[i].event[e1][2];
+                                        flag = true;
+                                    }
+                                }
+                            }
+                            if (flag == false) AllObjList[i].status = "normal";
+                        }
+                    }
+                }
+                //碰到某物
+                for (var i = 0; i < AllObjList.length; i++) {
+                    var flag = null;
+                    if (includeElementFromEvent(AllObjList[i].event, 'PounchStatusEventRegistered')) flag = false;
+                    for (var e1 = 0; e1 < AllObjList[i].event.length; e1++) {
+                        if (AllObjList[i].event[e1][0] == 'PounchStatusEventRegistered') {
+                            if (AllObjList[i].event[e1][1]) {
+                                var pounchList0 = [];
+                                for (var p = 0; p < AllObjList.length; p++) {
+                                    if (AllObjList[p].class == AllObjList[i].event[e1][1])
+                                        pounchList0.push(AllObjList[p]);
+                                }
+        
+                                var pounch0 = false;
+                                for (var p = 0; p < pounchList0.length; p++) {
+                                    if (pounch(AllObjList[i], pounchList0[p]) == true) {
+                                        pounch0 = true;
+                                        flag = true;
+                                    }
+                                }
+                                if (pounch0 == true) {
+                                    if (AllObjList[i].class != "delete") AllObjList[i].status = "" + AllObjList[i].event[e1][2];
+                                    flag = true;
+                                }
+                            }
+                        }
+                        //if (flag == false) AllObjList[i].status = "normal";
+                    }
+                    if (flag == false) AllObjList[i].status = "normal";
+                }*/
         //保持型態
         for (var i = 0; i < AllObjList.length; i++) {
             if (AllObjList[i].class == "delete") continue;
@@ -266,7 +405,7 @@ function WindowRegisterKeyDowning() {
                                     for (var f = 0; f < AllObjList[i].forme.length; f++) {
                                         var forme = AllObjList[i].forme[f];
                                         if (forme.name == AllObjList[i].event[e1][2])
-                                            AllObjList[i].img.src = AllObjList[i].animeList[forme.returnForme()];
+                                            AllObjList[i].img.src = AllObjList[i].animeList[forme.nowForme];
                                     }
                                 }
                             }
@@ -277,7 +416,7 @@ function WindowRegisterKeyDowning() {
 
         }
 
-    }, 10);
+    }, 100);
 
     //通常事件
     setInterval(function () {

@@ -179,13 +179,22 @@ function GameWorldSelect(obj, move) {
         cells = cells.insertCell(0);
         cells.innerHTML = `<button onclick="ExportGAME();">輸出遊戲</button>`;
     }
-
+    if (getByid("Event_Choose").selected == true) {
+        cells = eTable.insertRow(1);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        cells.innerHTML = `當按下<input  id="` + obj.id + `_KeydownGameWorldJump_key" size='1' type='text' value='w'/>,啟動跳躍,
+        Y軸移動<input  id="`+ obj.id + `_KeydownGameWorldJump_y"  min="-1000" max="1000" type='number' value='-4' style='width:60px;'/>,持續
+    <input  id="`+ obj.id + `_KeydownGameWorldJump_steps"  min="0" max="1000" type='number' value='10' style='width:60px;'/>
+    <button  onclick="KeydownGameWorldJumpRegistered(`+ obj.id + `)">ok</button>
+    `;
+    }
     if (getByid("SpecialEvent_Choose").selected == true) {
         cells = eTable.insertRow(1);
         cells = cells.insertCell(0);
         cells.style = "word-break:break-word; word-wrap:break-word;"
         cells.innerHTML = `設定地心引力為Y軸移動
-    <input  id="`+ obj.id + `_GravityGameWorldY_y"  min="-1000" max="1000" type='number' value='2'/>
+    <input  id="`+ obj.id + `_GravityGameWorldY_y"  min="-1000" max="1000" type='number' value='2' style='width:60px;'/>
     <button  onclick="GravityGameWorldYRegistered(`+ obj.id + `)">ok</button>
     `;
 
@@ -193,10 +202,24 @@ function GameWorldSelect(obj, move) {
         cells = cells.insertCell(0);
         cells.style = "word-break:break-word; word-wrap:break-word;"
         cells.innerHTML = `設定視野X不斷移動
-    <input  id="`+ obj.id + `_ScreenGameWorld_x"  min="-1000" max="1000" type='number' value='2'/>像素
+    <input  id="`+ obj.id + `_ScreenGameWorld_x"  min="-1000" max="1000" type='number' value='2' style='width:60px;'/>像素
     <button  onclick="ScreenGameWorldYRegistered(`+ obj.id + `)">ok</button>
     `;
 
+        //<input id="`+ obj.id + `_pounching_obj" size='6' type='text' value='輸入類別'/>
+        // 廣播<input id="`+ obj.id + `_pounching_broadcast" size='6' type='text' value='事件2'/>
+        // <button onclick="KeyPounchRegistered(`+ obj.id + `)";>ok</button>
+
+        cells = eTable.insertRow(3);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        cells.innerHTML = `當  <input id="` + obj.id + `_ScreenPounchBorder_obj" size='6' type='text' value='輸入類別'/>
+    與<select id="`+ obj.id + `_ScreenPounchBorder_direction"><option>左邊界</option><option>右邊界</option><option>上邊界</option><option>下邊界</option></select>距離
+<input  id="`+ obj.id + `_ScreenPounchBorder_distance"  min="0" max="10000" type='number' value='100' style='width:50px;'/>以內時,視野X增加
+<input  id="`+ obj.id + `_ScreenPounchBorder_x"  min="-10000" max="10000" type='number' value='1' style='width:50px;'/>Y增加
+<input  id="`+ obj.id + `_ScreenPounchBorder_y"  min="-10000" max="10000" type='number' value='1' style='width:50px;'/>
+<button  onclick="ScreenPounchBorderYRegistered(`+ obj.id + `)">ok</button>
+`;
     }
     var eTable2 = document.createElement("table");
     eTable2.id = "ObjEventTable2";
@@ -236,6 +259,37 @@ function GameWorldSelect(obj, move) {
             getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
         }
 
+        if (eventobj[e1][0] == 'KeydownGameWorldJumpRegistered') {
+            cells.innerHTML = "當按下" + eventobj[e1][1] + ",啟動跳躍,Y軸移動" + eventobj[e1][2] +
+                ",持續" + eventobj[e1][3];//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }
+
+        if (eventobj[e1][0] == 'ScreenPounchBorderYRegistered') {
+            cells.innerHTML = "當" + eventobj[e1][1] + "與" + eventobj[e1][2] + "距離" + eventobj[e1][3] + "以內時,視野X增加" +
+                eventobj[e1][4] + "Y增加" + eventobj[e1][5];//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }
         if (eventobj[e1][0] == 'ScreenGameWorldYRegistered') {
             cells.innerHTML = "設定視野X不斷移動" + eventobj[e1][1] + "像素";//+
             var button_tmp = document.createElement("BUTTON");
@@ -319,13 +373,17 @@ function ObjSelect(obj, move) {
         cells = Table.insertRow(7);
         cells = cells.insertCell(0);
         cells.style = "word-break:break-word; word-wrap:break-word;"
-        cells.innerHTML = "轉換類型: " + "<input type='button'  value='" + obj.type + "' size='8' onclick='ChooseObj.originType=ChooseObj.type;ChooseObj.type=`img`;refleshGame();getByid(`RefleshImgButton`).click();'/>";
+        cells.innerHTML = "轉換類型: " + "<input type='button'  value='" + obj.type + "' size='7' onclick='ChooseObj.originType=ChooseObj.type;ChooseObj.type=`img`;" +
+            "if(ChooseObj.type==`img`){ChooseObj.x=ChooseObj.originX-=GameObj.x;ChooseObj.y=ChooseObj.originY-=GameObj.y;}else{ChooseObj.x=ChooseObj.originX+=GameObj.x;ChooseObj.y=ChooseObj.originY+=GameObj.y;}" +
+            "refleshGame();getByid(`RefleshImgButton`).click();'/>";
         //getByid("RefleshImgButton").onclick();
     } else if (obj.originType != undefined) {
         cells = Table.insertRow(7);
         cells = cells.insertCell(0);
         cells.style = "word-break:break-word; word-wrap:break-word;"
-        cells.innerHTML = "轉換類型: " + "<input type='button'  value='" + obj.type + "' size='8' onclick='ChooseObj.type=ChooseObj.originType;refleshGame();getByid(`RefleshImgButton`).click();'/>";
+        cells.innerHTML = "轉換類型: " + "<input type='button' value='" + obj.type + "' size='7' onclick='ChooseObj.type=ChooseObj.originType;" +
+            "if(ChooseObj.type==`img`){ChooseObj.x=ChooseObj.originX-=GameObj.x;ChooseObj.y=ChooseObj.originY-=GameObj.y;}else{ChooseObj.x=ChooseObj.originX+=GameObj.x;ChooseObj.y=ChooseObj.originY+=GameObj.y;}" +
+            "refleshGame();getByid(`RefleshImgButton`).click();'/>";
         //getByid("RefleshImgButton").onclick();
     }/*var cells = Table.insertRow(2);
     cells = cells.insertCell(0);
@@ -563,8 +621,14 @@ function ObjSelect(obj, move) {
         cells = eTable.insertRow(1);
         cells = cells.insertCell(0);
         cells.innerHTML = `按住<input  id="` + obj.id + `_keyPressStatus" size='1' type='text' value='w'/>
-        時的狀態為<input  id="` + obj.id + `_keyPressStatus_target" size='6' type='text' value='走路'/>
+        時的狀態為<input  id="` + obj.id + `_keyPressStatus_target" size='4' type='text' value='走路'/>
         <button  onclick="KeyPressStatusEventRegistered(`+ obj.id + `)">ok</button>
+        `;
+        cells = eTable.insertRow(2);
+        cells = cells.insertCell(0);
+        cells.innerHTML = `碰到<input  id="` + obj.id + `_pounchStatus_obj" size='4' type='text' value='輸入類別'/>
+        時的狀態為<input  id="` + obj.id + `_pounchStatus_target" size='4' type='text' value='爬梯子'/>
+        <button  onclick="PounchStatusEventRegistered(`+ obj.id + `)">ok</button>
         `;
     }
     if (getByid("Variable_Choose").selected == true) {
@@ -782,6 +846,7 @@ function ObjSelect(obj, move) {
             cells.appendChild(button_tmp);
             getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
         }
+
         if (eventobj[e1][0] == 'KeyPressStatusEventRegistered') {
             cells.innerHTML = "按住" + eventobj[e1][1] + "時的狀態為" + eventobj[e1][2];//+
             var button_tmp = document.createElement("BUTTON");
@@ -796,6 +861,22 @@ function ObjSelect(obj, move) {
             cells.appendChild(button_tmp);
             getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
         }
+
+        if (eventobj[e1][0] == 'PounchStatusEventRegistered') {
+            cells.innerHTML = "碰到" + eventobj[e1][1] + "時的狀態為" + eventobj[e1][2];//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }
+
         if (eventobj[e1][0] == 'KeyDownAnimeEventRegistered') {
             cells.innerHTML = "如果按下" + eventobj[e1][1] + "轉換為第" + eventobj[e1][2] + "型態";//+
             var button_tmp = document.createElement("BUTTON");
@@ -957,8 +1038,8 @@ function CustomFormeListRegistered(id) {
             nowTicks: 0,
             nowForme: JSON.parse(getByid(id + "_customFormeList_list").value)[0],
             nowFrame: 0,
-            enable: true,
-            returnForme: function () { return this.nowForme; }
+            enable: true//,
+           // returnForme: function () { return this.nowForme; }
         }
 
         if (!obj.forme) { obj.forme = []; }
@@ -969,6 +1050,7 @@ function CustomFormeListRegistered(id) {
 
     getByid("RefleshImgButton").onclick();
 }
+
 function CustomVariableRegistered(id) {
     var obj = getObjById(id);
 
@@ -979,10 +1061,26 @@ function CustomVariableRegistered(id) {
     getByid("RefleshImgButton").onclick();
 }
 
+function ScreenPounchBorderYRegistered(id) {
+    var obj = getObjById(id);
+    obj.event.push(['ScreenPounchBorderYRegistered',
+        getByid(id + "_ScreenPounchBorder_obj").value, getByid(id + "_ScreenPounchBorder_direction").value, getByid(id + "_ScreenPounchBorder_distance").value,
+        getByid(id + "_ScreenPounchBorder_x").value, getByid(id + "_ScreenPounchBorder_y").value, false]);
+    getByid("RefleshImgButton").onclick();
+}
+
 function ScreenGameWorldYRegistered(id) {
     var obj = getObjById(id);
     obj.event.push(['ScreenGameWorldYRegistered',
         getByid(id + "_ScreenGameWorld_x").value, false]);
+    getByid("RefleshImgButton").onclick();
+}
+
+function KeydownGameWorldJumpRegistered(id) {
+    var obj = getObjById(id);
+    obj.event.push(['KeydownGameWorldJumpRegistered',
+        getByid(id + "_KeydownGameWorldJump_key").value, getByid(id + "_KeydownGameWorldJump_y").value,
+        getByid(id + "_KeydownGameWorldJump_steps").value, 0, false]);
     getByid("RefleshImgButton").onclick();
 }
 
@@ -1025,6 +1123,13 @@ function statusAnimeEventRegistered(id) {
     var obj = getObjById(id);
     obj.event.push(['statusAnimeEventRegistered',
         getByid(id + "_statusAnime").value, getByid(id + "_statusAnime_target").value, false]);
+    getByid("RefleshImgButton").onclick();
+}
+
+function PounchStatusEventRegistered(id) {
+    var obj = getObjById(id);
+    obj.event.push(['PounchStatusEventRegistered',
+        getByid(id + "_pounchStatus_obj").value, getByid(id + "_pounchStatus_target").value, false]);
     getByid("RefleshImgButton").onclick();
 }
 
