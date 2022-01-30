@@ -292,7 +292,7 @@ window.onload = function () {
         } catch (ex) { }
 
         if (MouseDrag == "complete") {
-            id_length++;
+            GameObj.id_length++;
             MouseDrag = false;
 
             ctx.drawImage(NowChoose, currX, currY, blockX, blockY);
@@ -308,7 +308,7 @@ window.onload = function () {
                     y: rightPouchObjY,
                     originX: leftPouchObjX,
                     originY: rightPouchObjY,
-                    id: id_length,
+                    id: GameObj.id_length,
                     width: blockX,
                     height: blockY,
                     flipx: false,
@@ -337,7 +337,7 @@ window.onload = function () {
                     y: rightPouchObjY,
                     originX: leftPouchObjX,
                     originY: rightPouchObjY,
-                    id: id_length,
+                    id: GameObj.id_length,
                     width: blockX,
                     height: blockY,
                     flipx: false,
@@ -373,7 +373,7 @@ window.onload = function () {
                     y: 0,
                     originX: 0,
                     originY: 0,
-                    id: id_length,
+                    id: GameObj.id_length,
                     width: GameObj.width,
                     height: GameObj.height,
                     flipx: false,
@@ -403,7 +403,7 @@ window.onload = function () {
                     y: rightPouchObjY,
                     originX: leftPouchObjX,
                     originY: rightPouchObjY,
-                    id: id_length,
+                    id: GameObj.id_length,
                     width: blockX,
                     height: blockY,
                     flipx: false,

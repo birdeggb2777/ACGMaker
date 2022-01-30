@@ -272,8 +272,8 @@ function WindowRegisterKeyDowning() {
                                 else if (AllObjList[i].event[e1][2] == "產生分身" && !AllObjList[i].clone) {
                                     var clone = JSON.parse(JSON.stringify(AllObjList[i]));
                                     const clone1 = clone;
-                                    id_length++;
-                                    clone.id = id_length;//
+                                    GameObj.id_length++;
+                                    clone.id = GameObj.id_length;//
                                     clone.clone = true;
                                     clone.img = AllObjList[i].img;
                                     //clone.event[e1][2]="delete";

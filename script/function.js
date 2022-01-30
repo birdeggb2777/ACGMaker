@@ -69,8 +69,8 @@ function createGameWorldObj() {
 
 function CloneObj(obj) {
     var clone = JSON.parse(JSON.stringify(obj));
-    id_length++;
-    clone.id = id_length;//
+    GameObj.id_length++;
+    clone.id = GameObj.id_length;//
     clone.img = obj.img;
     clone.x = obj.x + 25;
     clone.y = obj.y + 25;
@@ -127,6 +127,7 @@ function convertJSONtoGameWorld(json) {
         objList[i].img.src = objList[i].src;
     }
     AllObjList = objList;
+    GameObj = AllObjList[0];
 }
 
 function ExportGAME() {

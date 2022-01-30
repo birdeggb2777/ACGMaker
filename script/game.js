@@ -29,13 +29,14 @@ let MouseDrag = false;
 let NowChoose = null;
 let AlignCheck = "checked";
 let AllObjList = []
-let id_length = 0;
+//let id_length = 0;
 let GameObj = {}
 let ChooseObj = null;
 let MouseLeftClick = false;
 let MouseRightClick = false;
 let checkPouch = false;
 var ImageSrcList = [];
+GameObj.id_length = 0;
 GameObj.width = 750;
 GameObj.height = 550;
 GameObj.x = 0;
@@ -49,7 +50,7 @@ GameObj.class = "GameWorld";
 GameObj.name = "GameWorld";
 GameObj.type = "GameWorld";
 GameObj.status = "PlayGame";//MakeGame
-GameObj.version = "0.0.3.1";
+GameObj.version = "0.0.4.0";
 
 function clearGameWorld() {
     NowChoose = undefined;

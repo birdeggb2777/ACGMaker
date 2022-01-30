@@ -232,8 +232,8 @@ function GameWorldSelect(obj, move) {
             }
             cells.appendChild(button_tmp);
             getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
-        }  
-        
+        }
+
         if (eventobj[e1][0] == 'ScreenGameWorldYRegistered') {
             cells.innerHTML = "設定視野X不斷移動" + eventobj[e1][1] + "像素";//+
             var button_tmp = document.createElement("BUTTON");
@@ -310,11 +310,22 @@ function ObjSelect(obj, move) {
     cells = Table.insertRow(6);
     cells = cells.insertCell(0);
     cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = "類別: " + "<input type='text'  value='" + obj.class + "' size='8' onchange='ChooseObj.class=this.value;refleshGame();'/>" +
-        "對齊：<input type='checkbox' id='AlignCheckbox' onchange='AlignCheck=this.checked;refleshGame()'> "
-        ;
+    cells.innerHTML = "類別: " + "<input type='text'  value='" + obj.class + "' size='6' onchange='ChooseObj.class=this.value;refleshGame();'/>" +
+        "對齊：<input type='checkbox' id='AlignCheckbox' onchange='AlignCheck=this.checked;refleshGame()'> ";
 
-    /*var cells = Table.insertRow(2);
+    if (obj.type != 'img') {
+        cells = Table.insertRow(7);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        cells.innerHTML = "轉換類型: " + "<input type='button'  value='" + obj.type + "' size='8' onclick='ChooseObj.originType=ChooseObj.type;ChooseObj.type=`img`;refleshGame();getByid(`RefleshImgButton`).click();'/>";
+        //getByid("RefleshImgButton").onclick();
+    }else if(obj.originType!=undefined){
+        cells = Table.insertRow(7);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        cells.innerHTML = "轉換類型: " + "<input type='button'  value='" + obj.type + "' size='8' onclick='ChooseObj.type=ChooseObj.originType;refleshGame();getByid(`RefleshImgButton`).click();'/>";
+        //getByid("RefleshImgButton").onclick();
+    }/*var cells = Table.insertRow(2);
     cells = cells.insertCell(0);
     cells.style = "word-break:break-word; word-wrap:break-word;"
     cells.innerHTML = "類型: " + obj.classtype_tw; 

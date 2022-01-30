@@ -39,12 +39,13 @@ let WaterBallListDiv = getByid("WaterBallListDiv");
 let MouseDrag = false;
 let NowChoose = null;
 let AllObjList = []
-let id_length = 0;
+//let id_length = 0;
 let GameObj = {}
 let ChooseObj = null;
 let MouseLeftClick = false;
 let MouseRightClick = false;
 let checkPouch = false;
+GameObj.id_length=0;
 GameObj.width = 750;
 GameObj.height = 550;
 GameObj.x = 0;
@@ -222,8 +223,8 @@ function refleshGame() {
     
     function CloneObj(obj) {
         var clone = JSON.parse(JSON.stringify(obj));
-        id_length++;
-        clone.id = id_length;//
+        GameObj.id_length++;
+        clone.id = GameObj.id_length;//
         clone.img = obj.img;
         clone.x = obj.x + 25;
         clone.y = obj.y + 25;
@@ -510,8 +511,8 @@ function refleshGame() {
                                     else if (AllObjList[i].event[e1][2] == "產生分身" && !AllObjList[i].clone) {
                                         var clone = JSON.parse(JSON.stringify(AllObjList[i]));
                                         const clone1 = clone;
-                                        id_length++;
-                                        clone.id = id_length;//
+                                        GameObj.id_length++;
+                                        clone.id = GameObj.id_length;//
                                         clone.clone = true;
                                         clone.img = AllObjList[i].img;
                                         //clone.event[e1][2]="delete";
