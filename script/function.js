@@ -130,6 +130,15 @@ function convertJSONtoGameWorld(json) {
     GameObj = AllObjList[0];
 }
 
+function includeElementFromEvent(event) {
+    for (var e1 = 0; e1 < event.length; e1++) {
+        if (event[e1][0] == 'KeyPressStatusEventRegistered') {
+            return true;
+        }
+    }
+    return false;
+}
+
 function ExportGAME() {
     var jsonData = JSON.stringify(AllObjList);
     var objList = JSON.parse(jsonData);

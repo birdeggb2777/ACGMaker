@@ -50,7 +50,8 @@ GameObj.class = "GameWorld";
 GameObj.name = "GameWorld";
 GameObj.type = "GameWorld";
 GameObj.status = "PlayGame";//MakeGame
-GameObj.version = "0.0.4.0";
+GameObj.version = "0.0.4.1";
+GameObj.KeyPressList = [];
 
 function clearGameWorld() {
     NowChoose = undefined;

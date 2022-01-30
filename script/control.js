@@ -159,6 +159,8 @@ function GameWorldSelect(obj, move) {
         cells.innerHTML = "特殊事件: ";//+ obj.name;i
     if (getByid("AnimeEvent_Choose").selected == true)
         cells.innerHTML = "動畫事件: ";//+ obj.name;
+    if (getByid("StatusEvent_Choose").selected == true)
+        cells.innerHTML = "狀態事件: ";//+ obj.name;
     if (getByid("Variable_Choose").selected == true)
         cells.innerHTML = "自訂變數: ";//+ obj.name;
     if (getByid("GameWorld_Choose").selected == true)
@@ -319,7 +321,7 @@ function ObjSelect(obj, move) {
         cells.style = "word-break:break-word; word-wrap:break-word;"
         cells.innerHTML = "轉換類型: " + "<input type='button'  value='" + obj.type + "' size='8' onclick='ChooseObj.originType=ChooseObj.type;ChooseObj.type=`img`;refleshGame();getByid(`RefleshImgButton`).click();'/>";
         //getByid("RefleshImgButton").onclick();
-    }else if(obj.originType!=undefined){
+    } else if (obj.originType != undefined) {
         cells = Table.insertRow(7);
         cells = cells.insertCell(0);
         cells.style = "word-break:break-word; word-wrap:break-word;"
@@ -405,6 +407,8 @@ function ObjSelect(obj, move) {
         cells.innerHTML = "特殊事件: ";//+ obj.name;i
     if (getByid("AnimeEvent_Choose").selected == true)
         cells.innerHTML = "動畫事件: ";//+ obj.name;
+    if (getByid("StatusEvent_Choose").selected == true)
+        cells.innerHTML = "狀態事件: ";//+ obj.name;
     if (getByid("Variable_Choose").selected == true)
         cells.innerHTML = "自訂變數: ";//+ obj.name;
     if (getByid("GameWorld_Choose").selected == true)
@@ -419,36 +423,39 @@ function ObjSelect(obj, move) {
         cells = eTable.insertRow(1);
         cells = cells.insertCell(0);
         cells.style = "word-break:break-word; word-wrap:break-word;"
-        cells.innerHTML = `如果按住<select id="` + obj.id + `_keydowning"><option>w</option><option>a</option><option>s</option><option>d</option></select>
-    <select id="`+ obj.id + `_keydowning_direction"><option>往右移動</option><option>往左移動</option><option>往上移動</option><option>往下移動</option></select>
-    <select id="`+ obj.id + `_keydowning_move"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>7</option><option>10</option><option>15</option><option>20</option></select>格。
-    <button onclick="KeyDowningMoveRegistered(`+ obj.id + `)";>ok</button>
-    `;
+        cells.innerHTML = //`如果按住<select id="` + obj.id + `_keydowning"><option>w</option><option>a</option><option>s</option><option>d</option></select>
+            `如果按住<input  id="` + obj.id + `_keydowning" size='1' type='text' value='w'/>
+        <select id="`+ obj.id + `_keydowning_direction"><option>往右移動</option><option>往左移動</option><option>往上移動</option><option>往下移動</option></select>
+        <select id="`+ obj.id + `_keydowning_move"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>7</option><option>10</option><option>15</option><option>20</option></select>格。
+        <button onclick="KeyDowningMoveRegistered(`+ obj.id + `)";>ok</button>
+        `;
 
         cells = eTable.insertRow(2);
         cells = cells.insertCell(0);
         cells.style = "word-break:break-word; word-wrap:break-word;"
         cells.innerHTML = `如果碰到
-    <input id="`+ obj.id + `_pounching_obj" size='6' type='text' value='輸入類別'/>
-    廣播<input id="`+ obj.id + `_pounching_broadcast" size='6' type='text' value='事件2'/>
-    <button onclick="KeyPounchRegistered(`+ obj.id + `)";>ok</button>
-    `;
+        <input id="`+ obj.id + `_pounching_obj" size='6' type='text' value='輸入類別'/>
+        廣播<input id="`+ obj.id + `_pounching_broadcast" size='6' type='text' value='事件2'/>
+        <button onclick="KeyPounchRegistered(`+ obj.id + `)";>ok</button>
+        `;
 
         cells = eTable.insertRow(3);
         cells = cells.insertCell(0);
         cells.style = "word-break:break-word; word-wrap:break-word;"
-        cells.innerHTML = `如果按下<select id="` + obj.id + `_keydownBroadcast" ><option>w</option><option>a</option><option>s</option><option>d</option><option>space</option></select>
-    廣播<input  id="`+ obj.id + `_keydownBroadcast_broadcast" size='6' type='text' value='事件1'/>
-    <button  onclick="KeyDownBroadcastRegistered(`+ obj.id + `)">ok</button>
-    `;
+        cells.innerHTML = //`如果按下<select id="` + obj.id + `_keydownBroadcast" ><option>w</option><option>a</option><option>s</option><option>d</option><option>space</option></select>
+            `如果按下<input  id="` + obj.id + `_keydownBroadcast" size='1' type='text' value='w'/>
+        廣播<input  id="`+ obj.id + `_keydownBroadcast_broadcast" size='6' type='text' value='事件1'/>
+        <button  onclick="KeyDownBroadcastRegistered(`+ obj.id + `)">ok</button>
+        `;
 
         cells = eTable.insertRow(3);
         cells = cells.insertCell(0);
         cells.style = "word-break:break-word; word-wrap:break-word;"
-        cells.innerHTML = `如果按下<select id="` + obj.id + `_keydown" ><option>w</option><option>a</option><option>s</option><option>d</option></select>
-    <select id="`+ obj.id + `_keydown_action" ><option>取消隱形</option><option>隱形</option><option>銷毀</option><option>左右正向</option><option>左右反向</option><option>左右反轉</option><option>上下正向</option><option>上下反向</option><option>上下反轉</option></select>
-    <button  onclick="KeyDownEventRegistered(`+ obj.id + `)">ok</button>
-    `;
+        cells.innerHTML = //`如果按下<select id="` + obj.id + `_keydown" ><option>w</option><option>a</option><option>s</option><option>d</option></select>
+            `如果按下<input  id="` + obj.id + `_keydown" size='1' type='text' value='w'/>
+        <select id="`+ obj.id + `_keydown_action" ><option>取消隱形</option><option>隱形</option><option>銷毀</option><option>左右正向</option><option>左右反向</option><option>左右反轉</option><option>上下正向</option><option>上下反向</option><option>上下反轉</option></select>
+        <button  onclick="KeyDownEventRegistered(`+ obj.id + `)">ok</button>
+        `;
 
         cells = eTable.insertRow(4);
         cells = cells.insertCell(0);
@@ -534,9 +541,30 @@ function ObjSelect(obj, move) {
     if (getByid("AnimeEvent_Choose").selected == true) {
         cells = eTable.insertRow(1);
         cells = cells.insertCell(0);
-        cells.innerHTML = `如果按下<select id="` + obj.id + `_keydownAnime" ><option>w</option><option>a</option><option>s</option><option>d</option></select>
+        cells.innerHTML =// `如果按下<select id="` + obj.id + `_keydownAnime" ><option>w</option><option>a</option><option>s</option><option>d</option></select>
+            `如果按下<input  id="` + obj.id + `_keydownAnime" size='1' type='text' value='w'/>
         轉換為第<input class="number_keydownAnime_target" id="`+ obj.id + `_keydownAnime_target" min="0" max="1000" type='number' value='1'/>型態
         <button  onclick="KeyDownAnimeEventRegistered(`+ obj.id + `)">ok</button>
+        `;
+        cells = eTable.insertRow(2);
+        cells = cells.insertCell(0);
+        cells.innerHTML = `當狀態為<input  id="` + obj.id + `_statusAnime" size='4' type='text' value='normal'/>
+        時保持第<input  id="` + obj.id + `_statusAnime_target" size='1' type='text' value='0'/>型態
+        <button  onclick="statusAnimeEventRegistered(`+ obj.id + `)">ok</button>
+        `;
+        cells = eTable.insertRow(3);
+        cells = cells.insertCell(0);
+        cells.innerHTML = `當狀態為<input  id="` + obj.id + `_statusFormeList" size='4' type='text' value='normal'/>
+        時保持<input  id="` + obj.id + `_statusFormeList_target" size='4' type='text' value='型態表1'/>型態表
+        <button  onclick="statusFormeListEventRegistered(`+ obj.id + `)">ok</button>
+        `;
+    }
+    if (getByid("StatusEvent_Choose").selected == true) {
+        cells = eTable.insertRow(1);
+        cells = cells.insertCell(0);
+        cells.innerHTML = `按住<input  id="` + obj.id + `_keyPressStatus" size='1' type='text' value='w'/>
+        時的狀態為<input  id="` + obj.id + `_keyPressStatus_target" size='6' type='text' value='走路'/>
+        <button  onclick="KeyPressStatusEventRegistered(`+ obj.id + `)">ok</button>
         `;
     }
     if (getByid("Variable_Choose").selected == true) {
@@ -545,6 +573,13 @@ function ObjSelect(obj, move) {
         cells.innerHTML = `設定<input id="` + obj.id + `_customVariable_target" value='變數1' size='6' type='text'/>,其值為
         <input id="`+ obj.id + `_customVariable_number" value='1' min="0" max="1000" type='number' />
         <button  onclick="CustomVariableRegistered(`+ obj.id + `)">ok</button>
+        `;
+        cells = eTable.insertRow(2);
+        cells = cells.insertCell(0);//JSON.parse("[3,4,5]")
+        cells.innerHTML = `設定型態表<input id="` + obj.id + `_customFormeList_name" value='型態表1' size='4' type='text'/>,其值為
+        <input id="`+ obj.id + `_customFormeList_list" value='[1,2,3]' size='4' type='text'/>,間隔
+        <input id="`+ obj.id + `_customFormeList_timer" value='500' min="10" max="1000000" type='number' />毫秒
+        <button  onclick="CustomFormeListRegistered(`+ obj.id + `)">ok</button>
         `;
     }
     var eTable2 = document.createElement("table");
@@ -719,7 +754,48 @@ function ObjSelect(obj, move) {
             cells.appendChild(button_tmp);
             getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
         }
-
+        if (eventobj[e1][0] == 'statusAnimeEventRegistered') {
+            cells.innerHTML = "當狀態為" + eventobj[e1][1] + "時保持第" + eventobj[e1][2] + "型態";//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }
+        if (eventobj[e1][0] == 'statusFormeListEventRegistered') {
+            cells.innerHTML = "當狀態為" + eventobj[e1][1] + "時保持" + eventobj[e1][2] + "型態表";//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }
+        if (eventobj[e1][0] == 'KeyPressStatusEventRegistered') {
+            cells.innerHTML = "按住" + eventobj[e1][1] + "時的狀態為" + eventobj[e1][2];//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }
         if (eventobj[e1][0] == 'KeyDownAnimeEventRegistered') {
             cells.innerHTML = "如果按下" + eventobj[e1][1] + "轉換為第" + eventobj[e1][2] + "型態";//+
             var button_tmp = document.createElement("BUTTON");
@@ -798,6 +874,28 @@ function ObjSelect(obj, move) {
         }
     }
 
+    var formeobj = getObjById(obj.id).forme;
+    for (var e2 = 0; e2 < formeobj.length; e2++) {
+        var cells = eTable2.insertRow(e1);//yes
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        if (formeobj[e2][0] == 'CustomFormeListRegistered') {
+            cells.innerHTML = "設定型態表" + formeobj[e2]["name"] + ",其值為" + JSON.stringify(formeobj[e2]["list"]) + ",間隔" +
+                formeobj[e2]["timer"] + "毫秒";//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_variable" + e2;
+            button_tmp.obj = formeobj[e2];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_variable" + (e2)).parentNode.replaceChild(button_tmp, getByid("button_variable" + e2));
+        }
+    }
+
     if (!move) {
         var image_tmp = document.createElement("IMG");
         image_tmp.id = "selectObjImg";
@@ -848,17 +946,36 @@ function ObjSelect(obj, move) {
     }
 
 }
+function CustomFormeListRegistered(id) {
+    try {
+        var obj = getObjById(id);
+        var custom = {
+            0: "CustomFormeListRegistered",
+            name: "" + getByid(id + "_customFormeList_name").value,
+            list: JSON.parse(getByid(id + "_customFormeList_list").value),
+            timer: parseInt(getByid(id + "_customFormeList_timer").value),
+            nowTicks: 0,
+            nowForme: JSON.parse(getByid(id + "_customFormeList_list").value)[0],
+            nowFrame: 0,
+            enable: true,
+            returnForme: function () { return this.nowForme; }
+        }
 
+        if (!obj.forme) { obj.forme = []; }
+        obj.forme.push(custom);
+    } catch (ex) {
+        console.log(ex);
+    }
+
+    getByid("RefleshImgButton").onclick();
+}
 function CustomVariableRegistered(id) {
     var obj = getObjById(id);
-    if (obj.variable) {
-        obj.variable.push(['CustomVariableRegistered',
-            getByid(id + "_customVariable_target").value, parseFloat(getByid(id + "_customVariable_number").value), false]);
-    } else {
-        obj.variable = [];
-        obj.variable.push(['CustomVariableRegistered',
-            getByid(id + "_customVariable_target").value, parseFloat(getByid(id + "_customVariable_number").value), false]);
-    }
+
+    if (!obj.variable) { obj.variable = []; }
+    obj.variable.push(['CustomVariableRegistered',
+
+        getByid(id + "_customVariable_target").value, parseFloat(getByid(id + "_customVariable_number").value), false]);
     getByid("RefleshImgButton").onclick();
 }
 
@@ -894,6 +1011,27 @@ function cloneLateralExpansion(id) {
     var obj = getObjById(id);
     obj.event.push(['cloneLateralExpansion',
         getByid(id + "_cloneLateralExpansion_obj").value, false]);
+    getByid("RefleshImgButton").onclick();
+}
+
+function statusFormeListEventRegistered(id) {
+    var obj = getObjById(id);
+    obj.event.push(['statusFormeListEventRegistered',
+        getByid(id + "_statusFormeList").value, getByid(id + "_statusFormeList_target").value, false]);
+    getByid("RefleshImgButton").onclick();
+}
+
+function statusAnimeEventRegistered(id) {
+    var obj = getObjById(id);
+    obj.event.push(['statusAnimeEventRegistered',
+        getByid(id + "_statusAnime").value, getByid(id + "_statusAnime_target").value, false]);
+    getByid("RefleshImgButton").onclick();
+}
+
+function KeyPressStatusEventRegistered(id) {
+    var obj = getObjById(id);
+    obj.event.push(['KeyPressStatusEventRegistered',
+        getByid(id + "_keyPressStatus").value, getByid(id + "_keyPressStatus_target").value, false]);
     getByid("RefleshImgButton").onclick();
 }
 

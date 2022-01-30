@@ -13,6 +13,26 @@
                 "./image/anime/warrior/warrior-145594_1280_edit_small.png"
             ],
             "url": "https://pixabay.com/zh/vectors/dragon-slayer-warrior-rpg-sprite-145565/"
+        },{
+            "title": "pink",
+            "title_tw": "粉紅外星人",
+            "classtype": "anime",
+            "classtype_tw": "動畫",
+            "path": "./image/anime/pink/alienPink_front.png",
+            "animeList": [
+                "./image/anime/pink/alienPink_front.png",
+                "./image/anime/pink/alienPink_climb1.png",
+                "./image/anime/pink/alienPink_climb2.png",
+                "./image/anime/pink/alienPink_duck.png",
+                "./image/anime/pink/alienPink_hit.png",
+                "./image/anime/pink/alienPink_jump.png",
+                "./image/anime/pink/alienPink_stand.png",
+                "./image/anime/pink/alienPink_swim1.png",
+                "./image/anime/pink/alienPink_swim2.png",
+                "./image/anime/pink/alienPink_walk1.png",
+                "./image/anime/pink/alienPink_walk2.png"
+            ],
+            "url": "https://opengameart.org/content/platformer-pack-redux-360-assets/"
         }
     ]
 }

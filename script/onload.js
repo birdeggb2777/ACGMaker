@@ -118,29 +118,30 @@ window.onload = function () {
         anime_json = anime_json.anime_json;
         //console.log(anime_json[0]);
         //  for (var j2 = 0; j2 < anime_json.length; j2++) {
-        var image_tmp = document.createElement("IMG");
-        image_tmp.width = imgListSize[0];
-        image_tmp.height = imgListSize[1];
-        image_tmp.src = anime_json[0].path;
-        image_tmp.alt = anime_json[0].title;
-        image_tmp.obj = anime_json[0];
-        image_tmp.animeList = [];
+        for (var j1 = 0; j1 < anime_json.length; j1++) {
 
-        for (var o = 0; o < image_tmp.obj.animeList.length; o++) {
-            var image = new Image();
-            image.src = image_tmp.obj.animeList[o];
-            ImageSrcList.push(image);
+            var image_tmp = document.createElement("IMG");
+            image_tmp.width = imgListSize[0];
+            image_tmp.height = imgListSize[1];
+            image_tmp.src = anime_json[j1].path;
+            image_tmp.alt = anime_json[j1].title;
+            image_tmp.obj = anime_json[j1];
+            image_tmp.animeList = [];
+
+            for (var o = 0; o < image_tmp.obj.animeList.length; o++) {
+                var image = new Image();
+                image.src = image_tmp.obj.animeList[o];
+                ImageSrcList.push(image);
+            }
+            //for (var j1 = 0; j1 < anime_json.length; j1++) {
+            //    image_tmp.animeList.push(anime_json[j1].path);
+            // }
+            image_tmp.className = "leftimg animeimg";
+            image_tmp.onmousedown = function () {
+                ImgObjChoose(this.obj);
+            }
+            getByid('AnimeListDiv').appendChild(image_tmp);
         }
-        //for (var j1 = 0; j1 < anime_json.length; j1++) {
-        //    image_tmp.animeList.push(anime_json[j1].path);
-        // }
-
-        image_tmp.className = "leftimg animeimg";
-        image_tmp.onmousedown = function () {
-            ImgObjChoose(this.obj);
-        }
-        getByid('AnimeListDiv').appendChild(image_tmp);
-
         // }
     });
 
@@ -214,7 +215,7 @@ window.onload = function () {
             width: 5, height: blockY + blockY
         };
         for (var d = 0; d < AllObjList.length; d++) {
-            if (AllObjList[d].type == "img" || AllObjList[d].type == "anime") {
+            if (AllObjList[d].type == "img" || AllObjList[d].type == "anime" || AllObjList[d].type == "scenes") {
                 if (AllObjList[d].class == "delete") continue;
                 if (ChooseObj && AllObjList[d] == ChooseObj) continue;
                 if (pounch(AllObjList[d], pouchObj)) {
@@ -228,7 +229,7 @@ window.onload = function () {
             width: blockX + blockX, height: 5
         };
         for (var d = 0; d < AllObjList.length; d++) {
-            if (AllObjList[d].type == "img" || AllObjList[d].type == "anime") {
+            if (AllObjList[d].type == "img" || AllObjList[d].type == "anime" || AllObjList[d].type == "scenes") {
                 if (AllObjList[d].class == "delete") continue;
                 if (ChooseObj && AllObjList[d] == ChooseObj) continue;
                 if (pounch(AllObjList[d], pouchObj)) {
@@ -253,10 +254,10 @@ window.onload = function () {
             rightPouchObjY = currY - blockY / 2;
         }
 
-
+        //已移除的不明功能，會阻止scenes物件對齊
         if (ChooseObj && ChooseObj.type && ChooseObj.type == "scenes") {
-            leftPouchObjX += GameObj.x;
-            rightPouchObjY += GameObj.y;
+           // leftPouchObjX += GameObj.x;
+           // rightPouchObjY += GameObj.y;
         }
 
         if (MouseLeftClick) {
@@ -320,6 +321,8 @@ window.onload = function () {
                     select: [],
                     broadcast: [],
                     variable: [],
+                    forme: [],
+                    status: "normal",
                     class: "角色",
                     rotate: 0
                 }
@@ -349,6 +352,8 @@ window.onload = function () {
                     select: [],
                     broadcast: [],
                     variable: [],
+                    forme: [],
+                    status: "normal",
                     class: "" + NowChoose.obj.assign_class,
                     rotate: 0
                 }
@@ -384,6 +389,8 @@ window.onload = function () {
                     select: [],
                     broadcast: [],
                     variable: [],
+                    forme: [],
+                    status: "normal",
                     class: "背景",
                     rotate: 0
                 };
@@ -415,6 +422,8 @@ window.onload = function () {
                     select: [],
                     broadcast: [],
                     variable: [],
+                    status: "normal",
+                    forme: [],
                     class: "動畫",
                     rotate: 0
                 }
