@@ -49,12 +49,14 @@ GameObj.img = null;
 GameObj.id = 0;
 GameObj.event = [];
 GameObj.select = [];
+GameObj.variable = [];
 GameObj.broadcast = [];
+GameObj.forme = [];
 GameObj.class = "GameWorld";
 GameObj.name = "GameWorld";
 GameObj.type = "GameWorld";
-GameObj.status = "PlayGame";//MakeGame
-GameObj.version = "0.0.4.2";
+GameObj.State = "PlayGame";//MakeGame
+GameObj.version = "0.0.4.3";
 GameObj.KeyPressList = [];
 
 function clearGameWorld() {

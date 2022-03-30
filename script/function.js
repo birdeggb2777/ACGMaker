@@ -6,6 +6,20 @@ function getClass(str) {
     return document.getElementsByClassName(str);
 }
 
+function PathCompare(path1, path2) {
+    if (path1 == path2) return true;
+    if (!PathCompare.A || PathCompare.A2) {
+        PathCompare.A = document.createElement("A");
+        PathCompare.A2 = document.createElement("A");
+    }
+
+    PathCompare.A.href = path1;
+    if (PathCompare.A.href == path2) return true;
+    PathCompare.A2.href = path2;
+    if (PathCompare.A2.href == path1) return true;
+    if (PathCompare.A.href == PathCompare.A2.href) return true;
+    return false;
+}
 
 function getObjById(id) {
     if (id == 0) return GameObj;
@@ -18,6 +32,18 @@ function getObjByClass(class1) {
     for (var i = 0; i < AllObjList.length; i++) {
         if (AllObjList[i].class == class1) return AllObjList[i];
     }
+}
+
+function createPounchObj(obj, x, y) {
+    if (!x) x = 0;
+    if (!y) y = 0;
+    createPounchObj.obj = {};
+    createPounchObj.obj.x = obj.x + x;
+    createPounchObj.obj.y = obj.y + y;
+    createPounchObj.obj.width = obj.width;
+    createPounchObj.obj.height = obj.height;
+    createPounchObj.obj.type = obj.type;
+    return createPounchObj.obj;
 }
 
 function pounch(obj, obj2) {
@@ -87,14 +113,14 @@ function DeleteObj(obj) {
 }
 
 function changeGameWorldStatus() {
-    if (GameObj.status == "MakeGame") return "PlayGame";
-    else if (GameObj.status == "PlayGame") return "MakeGame";
+    if (GameObj.State == "MakeGame") return "PlayGame";
+    else if (GameObj.State == "PlayGame") return "MakeGame";
     else return "MakeGame";
 }
 
 function displayGameWorldStatus() {
-    if (GameObj.status == "MakeGame") return "開發模式";
-    else if (GameObj.status == "PlayGame") return "遊戲模式(模擬)";
+    if (GameObj.State == "MakeGame") return "開發模式";
+    else if (GameObj.State == "PlayGame") return "遊戲模式(模擬)";
     else return "開發模式";
 }
 
@@ -127,10 +153,14 @@ function convertJSONtoGameWorld(json) {
         objList[i].img.src = objList[i].src;
     }
     AllObjList = objList;
+    if (!AllObjList[0].variable) AllObjList[0].variable = [];
+    if (!AllObjList[0].forme) AllObjList[0].forme = [];
+    //flag3
+    AllObjList[0].State = GameObj.State;
     GameObj = AllObjList[0];
 }
 
-function includeElementFromEvent(event,str) {
+function includeElementFromEvent(event, str) {
     for (var e1 = 0; e1 < event.length; e1++) {
         if (event[e1][0] == str) {
             return true;

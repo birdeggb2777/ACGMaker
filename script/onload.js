@@ -151,7 +151,7 @@ window.onload = function () {
         return [currX, currY];
     }
     getByid("game").onmousedown = function (e) {
-        //if (GameObj.status == "PlayGame") return;
+        //if (GameObj.State == "PlayGame") return;
         if (e.which == 1) MouseLeftClick = true;
         else if (e.which == 2) MouseMiddleClick = true;
         else if (e.which == 3) MouseRightClick = true;
@@ -187,14 +187,14 @@ window.onload = function () {
         }
     }
     getByid("game").onmouseup = function (e) {
-        //if (GameObj.status == "PlayGame") return;
+        //if (GameObj.State == "PlayGame") return;
         //ChooseObj = null;
         MouseLeftClick = false;
         MouseRightClick = false;
         MouseMiddleClick = false;
     }
     getByid("game").onmousemove = function (e) {
-        //if (GameObj.status == "PlayGame") return;
+        //if (GameObj.State == "PlayGame") return;
         var canvas = document.getElementById('game');
         if (canvas.getContext) {
             var ctx = canvas.getContext('2d');
@@ -333,7 +333,7 @@ window.onload = function () {
                     broadcast: [],
                     variable: [],
                     forme: [],
-                    status: "normal",
+                    State: "normal",
                     class: "角色",
                     rotate: 0
                 }
@@ -364,7 +364,7 @@ window.onload = function () {
                     broadcast: [],
                     variable: [],
                     forme: [],
-                    status: "normal",
+                    State: "normal",
                     class: "" + NowChoose.obj.assign_class,
                     rotate: 0
                 }
@@ -401,7 +401,7 @@ window.onload = function () {
                     broadcast: [],
                     variable: [],
                     forme: [],
-                    status: "normal",
+                    State: "normal",
                     class: "背景",
                     rotate: 0
                 };
@@ -433,7 +433,7 @@ window.onload = function () {
                     select: [],
                     broadcast: [],
                     variable: [],
-                    status: "normal",
+                    State: "normal",
                     forme: [],
                     class: "動畫",
                     rotate: 0

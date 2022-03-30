@@ -70,7 +70,7 @@ function GameWorldSelect(obj, move) {
     cells = Table.insertRow(6);
     cells = cells.insertCell(0);
     cells.style = "word-break:break-word; word-wrap:break-word;"
-    cells.innerHTML = "模式: " + "<input type='button'  value='" + displayGameWorldStatus() + "' size='8' onclick='ChooseObj.status=changeGameWorldStatus();ObjSelect(GameObj);refleshGame();'/>" +
+    cells.innerHTML = "模式: " + "<input type='button'  value='" + displayGameWorldStatus() + "' size='8' onclick='ChooseObj.State=changeGameWorldStatus();ObjSelect(GameObj);refleshGame();'/>" +
         " 版本: " + ChooseObj.version + "";
     ;
 
@@ -180,14 +180,7 @@ function GameWorldSelect(obj, move) {
         cells.innerHTML = `<button onclick="ExportGAME();">輸出遊戲</button>`;
     }
     if (getByid("Event_Choose").selected == true) {
-        cells = eTable.insertRow(1);
-        cells = cells.insertCell(0);
-        cells.style = "word-break:break-word; word-wrap:break-word;"
-        cells.innerHTML = `當按下<input  id="` + obj.id + `_KeydownGameWorldJump_key" size='1' type='text' value='w'/>,啟動跳躍,
-        Y軸移動<input  id="`+ obj.id + `_KeydownGameWorldJump_y"  min="-1000" max="1000" type='number' value='-4' style='width:60px;'/>,持續
-    <input  id="`+ obj.id + `_KeydownGameWorldJump_steps"  min="0" max="1000" type='number' value='10' style='width:60px;'/>
-    <button  onclick="KeydownGameWorldJumpRegistered(`+ obj.id + `)">ok</button>
-    `;
+
     }
     if (getByid("SpecialEvent_Choose").selected == true) {
         cells = eTable.insertRow(1);
@@ -259,22 +252,6 @@ function GameWorldSelect(obj, move) {
             getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
         }
 
-        if (eventobj[e1][0] == 'KeydownGameWorldJumpRegistered') {
-            cells.innerHTML = "當按下" + eventobj[e1][1] + ",啟動跳躍,Y軸移動" + eventobj[e1][2] +
-                ",持續" + eventobj[e1][3];//+
-            var button_tmp = document.createElement("BUTTON");
-            button_tmp.id = "button_event" + e1;
-            button_tmp.obj = eventobj[e1];
-            button_tmp.style.float = "right middle";
-            button_tmp.innerText = "刪除";
-            button_tmp.onclick = function () {
-                this.obj[0] = "delete";
-                getByid("RefleshImgButton").onclick();
-            }
-            cells.appendChild(button_tmp);
-            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
-        }
-
         if (eventobj[e1][0] == 'ScreenPounchBorderYRegistered') {
             cells.innerHTML = "當" + eventobj[e1][1] + "與" + eventobj[e1][2] + "距離" + eventobj[e1][3] + "以內時,視野X增加" +
                 eventobj[e1][4] + "Y增加" + eventobj[e1][5];//+
@@ -311,7 +288,7 @@ function GameWorldSelect(obj, move) {
 
 function ObjSelect(obj, move) {
 
-    if (obj == GameObj) {
+    if (obj == GameObj || obj.type == "GameWorld") {
         GameWorldSelect(obj, move);
         return;
     }
@@ -491,13 +468,23 @@ function ObjSelect(obj, move) {
         cells = eTable.insertRow(2);
         cells = cells.insertCell(0);
         cells.style = "word-break:break-word; word-wrap:break-word;"
+        cells.innerHTML = //`如果按住<select id="` + obj.id + `_keydowning"><option>w</option><option>a</option><option>s</option><option>d</option></select>
+            `如果按住<input  id="` + obj.id + `_keydowningState" size='1' type='text' value='w'/>且狀態為<input  id="` + obj.id + `_keydowningState_status" size='4' type='text' value='normal'/>,
+        <select id="`+ obj.id + `__keydowningState_direction"><option>往右移動</option><option>往左移動</option><option>往上移動</option><option>往下移動</option></select>
+        <select id="`+ obj.id + `__keydowningState_move"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>7</option><option>10</option><option>15</option><option>20</option></select>格。
+        <button onclick="keydowningStateMoveRegistered(`+ obj.id + `)";>ok</button>
+        `;
+
+        cells = eTable.insertRow(3);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
         cells.innerHTML = `如果碰到
         <input id="`+ obj.id + `_pounching_obj" size='6' type='text' value='輸入類別'/>
         廣播<input id="`+ obj.id + `_pounching_broadcast" size='6' type='text' value='事件2'/>
         <button onclick="KeyPounchRegistered(`+ obj.id + `)";>ok</button>
         `;
 
-        cells = eTable.insertRow(3);
+        cells = eTable.insertRow(4);
         cells = cells.insertCell(0);
         cells.style = "word-break:break-word; word-wrap:break-word;"
         cells.innerHTML = //`如果按下<select id="` + obj.id + `_keydownBroadcast" ><option>w</option><option>a</option><option>s</option><option>d</option><option>space</option></select>
@@ -506,7 +493,7 @@ function ObjSelect(obj, move) {
         <button  onclick="KeyDownBroadcastRegistered(`+ obj.id + `)">ok</button>
         `;
 
-        cells = eTable.insertRow(3);
+        cells = eTable.insertRow(5);
         cells = cells.insertCell(0);
         cells.style = "word-break:break-word; word-wrap:break-word;"
         cells.innerHTML = //`如果按下<select id="` + obj.id + `_keydown" ><option>w</option><option>a</option><option>s</option><option>d</option></select>
@@ -515,7 +502,7 @@ function ObjSelect(obj, move) {
         <button  onclick="KeyDownEventRegistered(`+ obj.id + `)">ok</button>
         `;
 
-        cells = eTable.insertRow(4);
+        cells = eTable.insertRow(6);
         cells = cells.insertCell(0);
         cells.style = "word-break:break-word; word-wrap:break-word;"
         cells.innerHTML = `如果收到廣播<input id="` + obj.id + `_broadcast_get" size='6' type='text' value='事件1'/>
@@ -523,7 +510,15 @@ function ObjSelect(obj, move) {
     <button onclick="broadcastRegistered(`+ obj.id + `)">ok</button>   `;
 
 
-
+        cells = eTable.insertRow(7);
+        cells = cells.insertCell(0);
+        cells.style = "word-break:break-word; word-wrap:break-word;"
+        cells.innerHTML = `當按下<input  id="` + obj.id + `_KeydownGameWorldJump_key" size='1' type='text' value='w'/>,啟動跳躍,
+        Y軸移動<input  id="`+ obj.id + `_KeydownGameWorldJump_y"  min="-1000" max="1000" type='number' value='6' style='width:60px;'/>,持續
+    <input  id="`+ obj.id + `_KeydownGameWorldJump_steps"  min="0" max="1000" type='number' value='10' style='width:60px;'/>
+    ，但沒踩著<input  id="` + obj.id + `_KeydownGameWorldJump_pounchGravit" size='6' type='text' value='場景'/>時除外
+    <button  onclick="KeydownGameWorldJumpRegistered(`+ obj.id + `)">ok</button>
+    `;
     }
     if (getByid("CloneEvent_Choose").selected == true) {
         cells = eTable.insertRow(1);
@@ -678,6 +673,20 @@ function ObjSelect(obj, move) {
             cells.appendChild(button_tmp);
             getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
         }
+        if (eventobj[e1][0] == 'keydowningStateMoveRegistered') {
+            cells.innerHTML = "如果按住" + eventobj[e1][1] + "且狀態為" + eventobj[e1][4] + "," + eventobj[e1][2] + eventobj[e1][3];//+
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }
         if (eventobj[e1][0] == 'KeyPounchRegistered') {
             cells.innerHTML = "如果碰到" + eventobj[e1][1] + ":廣播" + eventobj[e1][2];//+
             var button_tmp = document.createElement("BUTTON");
@@ -748,6 +757,23 @@ function ObjSelect(obj, move) {
             cells.appendChild(button_tmp);
             getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
         }
+
+        if (eventobj[e1][0] == 'KeydownGameWorldJumpRegistered') {
+            cells.innerHTML = "當按下" + eventobj[e1][1] + ",啟動跳躍,Y軸移動" + eventobj[e1][2] +
+                ",持續" + eventobj[e1][3] + "，但沒踩著" + eventobj[e1][4] + "時除外";
+            var button_tmp = document.createElement("BUTTON");
+            button_tmp.id = "button_event" + e1;
+            button_tmp.obj = eventobj[e1];
+            button_tmp.style.float = "right middle";
+            button_tmp.innerText = "刪除";
+            button_tmp.onclick = function () {
+                this.obj[0] = "delete";
+                getByid("RefleshImgButton").onclick();
+            }
+            cells.appendChild(button_tmp);
+            getByid("button_event" + e1).parentNode.replaceChild(button_tmp, getByid("button_event" + e1));
+        }
+
         if (eventobj[e1][0] == 'cloneWaitRegistered') {
             cells.innerHTML = "如果分身產生,等待" + eventobj[e1][1] + "毫秒後," + eventobj[e1][2];//+
             var button_tmp = document.createElement("BUTTON");
@@ -1039,7 +1065,7 @@ function CustomFormeListRegistered(id) {
             nowForme: JSON.parse(getByid(id + "_customFormeList_list").value)[0],
             nowFrame: 0,
             enable: true//,
-           // returnForme: function () { return this.nowForme; }
+            // returnForme: function () { return this.nowForme; }
         }
 
         if (!obj.forme) { obj.forme = []; }
@@ -1080,7 +1106,7 @@ function KeydownGameWorldJumpRegistered(id) {
     var obj = getObjById(id);
     obj.event.push(['KeydownGameWorldJumpRegistered',
         getByid(id + "_KeydownGameWorldJump_key").value, getByid(id + "_KeydownGameWorldJump_y").value,
-        getByid(id + "_KeydownGameWorldJump_steps").value, 0, false]);
+        getByid(id + "_KeydownGameWorldJump_steps").value, getByid(id + "_KeydownGameWorldJump_pounchGravit").value, 0, false]);
     getByid("RefleshImgButton").onclick();
 }
 
@@ -1213,8 +1239,17 @@ function KeyPounchRegistered(id) {
         getByid(id + "_pounching_obj").value, getByid(id + "_pounching_broadcast").value, false]);
     getByid("RefleshImgButton").onclick();
 }
-function KeyDowningMoveRegistered(id) {
 
+function keydowningStateMoveRegistered(id) {
+    var obj = getObjById(id);
+    obj.event.push(['keydowningStateMoveRegistered',
+        getByid(id + "_keydowningState").value, getByid(id + "__keydowningState_direction").value, getByid(id + "__keydowningState_move").value,
+        getByid(id + "_keydowningState_status").value, false]);
+
+    getByid("RefleshImgButton").onclick();
+}
+
+function KeyDowningMoveRegistered(id) {
     var obj = getObjById(id);
     obj.event.push(['KeyDowningMoveRegistered',
         getByid(id + "_keydowning").value, getByid(id + "_keydowning_direction").value, getByid(id + "_keydowning_move").value, false]);

@@ -2,7 +2,7 @@
 function WindowRegisterKeyDowning() {
 
     function KeyDown(KeyboardKeys) {
-        if (AllObjList[0].status == "MakeGame") return;
+        if (AllObjList[0].State == "MakeGame") return;
         if (document.activeElement.tagName == "INPUT") return;//正在打text時不要發動鍵盤事件
         var key = KeyboardKeys.which;
         //按下按鍵
@@ -13,20 +13,44 @@ function WindowRegisterKeyDowning() {
             return a;
         }, []);
 
-        for (var e1 = 0; e1 < AllObjList[0].event.length; e1++) {
-            if (AllObjList[0].event[e1][0] == 'KeydownGameWorldJumpRegistered' &&
-                key == keyCode[AllObjList[0].event[e1][1]]) {
-                const JumpKeyEvent_ = AllObjList[0].event[e1];
-                const steps_ = 50 * parseFloat(JumpKeyEvent_[3]);
-                const move_y = parseFloat(JumpKeyEvent_[2]);
-                JumpKeyEvent_[4] = steps_;
-                var interval1 = setInterval(function () {
-                    if (JumpKeyEvent_[4] <= 0) clearInterval(this);
-                    else {
-                        JumpKeyEvent_[4] -= 50;
-                        AllObjList[0].originY = AllObjList[0].y += parseFloat(JumpKeyEvent_[2]);
+        for (var i = 0; i < AllObjList.length; i++) {
+            if (AllObjList[i].class == "delete") continue;
+            for (var e1 = 0; e1 < AllObjList[i].event.length; e1++) {
+                if (AllObjList[i].event[e1][0] == 'KeydownGameWorldJumpRegistered' &&
+                    key == keyCode[AllObjList[i].event[e1][1]]) {
+                    const JumpKeyEvent_ = AllObjList[i].event[e1];
+                    if (JumpKeyEvent_[5] > 0) continue;
+                    var pounchList = [];
+                    for (var i2 = 0; i2 < AllObjList.length; i2++) {
+                        if (AllObjList[i2].class == JumpKeyEvent_[4] && AllObjList[i2] != AllObjList[i]) {
+                            pounchList.push(AllObjList[i2]);
+                        }
                     }
-                }, 50);
+                    var pounchGravity = false;
+                    //如果往下掉就會撞到了
+                    for (var j = 0; j < pounchList.length; j++) {
+                        if (pounch(createPounchObj(AllObjList[i], 0, 3), pounchList[j]) == true) {
+                            pounchGravity = true; break;
+                        }
+                    }
+                    if (pounchGravity == false) continue;
+                    const steps_ = 200 * 2 * parseFloat(JumpKeyEvent_[3]);
+                    const move_y = parseFloat(JumpKeyEvent_[2]);
+                    const jumpobj = AllObjList[i];
+                    JumpKeyEvent_[5] = steps_;
+                    if (AllObjList[0].intervalList) {
+                        AllObjList[0].intervalList["" + AllObjList[i].id + "_" + e1 + "_KeydownGameWorldJumpRegistered"] = function () {
+                            if (JumpKeyEvent_[5] <= 0) return;//clearInterval(this);
+                            else {
+                                JumpKeyEvent_[5] -= 200;
+                                jumpobj.originY = jumpobj.y -= parseFloat(move_y);
+                            }
+                        }
+                    }
+                    // jumpobj.interval = setInterval(function () {
+                    //     
+                    // }, 200);
+                }
             }
         }
 
@@ -37,6 +61,10 @@ function WindowRegisterKeyDowning() {
                     if (AllObjList[i].event[e1][0] == 'KeyDowningMoveRegistered' &&
                         key == keyCode[AllObjList[i].event[e1][1]]) {
                         AllObjList[i].event[e1][4] = true;
+                    }
+                    if (AllObjList[i].event[e1][0] == 'keydowningStateMoveRegistered' &&
+                        key == keyCode[AllObjList[i].event[e1][1]]) {
+                        AllObjList[i].event[e1][5] = true;
                     }
 
                     if (AllObjList[i].event[e1][0] == 'KeyDownAnimeEventRegistered' &&
@@ -88,7 +116,7 @@ function WindowRegisterKeyDowning() {
     }
 
     function KeyUp(KeyboardKeys) {
-        if (AllObjList[0].status == "MakeGame") return;
+        if (AllObjList[0].State == "MakeGame") return;
         var key = KeyboardKeys.which;
         //放開按鍵
         for (var i = 0; i < AllObjList[0].KeyPressList.length; i++) {
@@ -106,15 +134,24 @@ function WindowRegisterKeyDowning() {
                         key == keyCode[AllObjList[i].event[e1][1]]) {
                         AllObjList[i].event[e1][4] = false;
                     }
+                    if (AllObjList[i].event[e1][0] == 'keydowningStateMoveRegistered' &&
+                        key == keyCode[AllObjList[i].event[e1][1]]) {
+                        AllObjList[i].event[e1][5] = false;
+                    }
                 }
                 //getByid("RefleshImgButton").onclick();
             }
         }
     }
 
+    //註冊的事件
+    setInterval(function () {
+        if (!AllObjList[0].intervalList) AllObjList[0].intervalList = [];
+        for (var funcName in AllObjList[0].intervalList) AllObjList[0].intervalList[funcName]();
+    }, 10);
     //GameWorld的座標事件
     setInterval(function () {
-        if (AllObjList[0].status == "MakeGame") return;
+        if (AllObjList[0].State == "MakeGame") return;
         for (var ec = 0; ec < AllObjList[0].event.length; ec++) {
             if (AllObjList[0].event[ec][0] == 'ScreenGameWorldYRegistered') {
                 AllObjList[0].x += parseFloat(AllObjList[0].event[ec][1]);
@@ -195,13 +232,67 @@ function WindowRegisterKeyDowning() {
 
     //按住鍵盤事件
     setInterval(function () {
-        if (AllObjList[0].status == "MakeGame") return;
+        if (AllObjList[0].State == "MakeGame") return;
         for (var i = 0; i < AllObjList.length; i++) {
             if (AllObjList[i].class == "delete") continue;
             if (AllObjList[i].event) {
                 for (var e1 = 0; e1 < AllObjList[i].event.length; e1++) {
                     if (AllObjList[i].event[e1][0] == 'KeyDowningMoveRegistered' &&
                         AllObjList[i].event[e1][4] == true) {
+                        //AllObjList[i].event[e1][3]=true;
+                        //遇到障礙物停止前進
+                        var pounchList = [];
+                        for (var ec = 0; ec < AllObjList[i].event.length; ec++) {
+                            if (AllObjList[i].event[ec][0] == 'pounchStopRegistered') {
+                                for (var j = 0; j < AllObjList.length; j++) {
+                                    if (AllObjList[j].class == AllObjList[i].event[ec][1])
+                                        pounchList.push(AllObjList[j]);
+                                }
+
+                            }
+                        }
+
+                        if (AllObjList[i].event[e1][2] == "往右移動") {
+                            AllObjList[i].x += parseInt(AllObjList[i].event[e1][3]);
+                            //碰到障礙物就後退
+                            for (var j = 0; j < pounchList.length; j++) {
+                                if (pounch(AllObjList[i], pounchList[j]) == true) {
+                                    AllObjList[i].x -= parseInt(AllObjList[i].event[e1][3]);
+                                }
+                            }
+
+                        }
+                        else if (AllObjList[i].event[e1][2] == "往左移動") {
+                            AllObjList[i].x -= parseInt(AllObjList[i].event[e1][3]);
+                            //碰到障礙物就後退
+                            for (var j = 0; j < pounchList.length; j++) {
+                                if (pounch(AllObjList[i], pounchList[j]) == true) {
+                                    AllObjList[i].x += parseInt(AllObjList[i].event[e1][3]);
+                                }
+                            }
+                        }
+                        else if (AllObjList[i].event[e1][2] == "往上移動") {
+                            AllObjList[i].y -= parseInt(AllObjList[i].event[e1][3]);
+                            //碰到障礙物就後退
+                            for (var j = 0; j < pounchList.length; j++) {
+                                if (pounch(AllObjList[i], pounchList[j]) == true) {
+                                    AllObjList[i].y += parseInt(AllObjList[i].event[e1][3]);
+                                }
+                            }
+                        }
+                        else if (AllObjList[i].event[e1][2] == "往下移動") {
+                            AllObjList[i].y += parseInt(AllObjList[i].event[e1][3]);
+                            //碰到障礙物就後退
+                            for (var j = 0; j < pounchList.length; j++) {
+                                if (pounch(AllObjList[i], pounchList[j]) == true) {
+                                    AllObjList[i].y -= parseInt(AllObjList[i].event[e1][3]);
+                                }
+                            }
+                        }
+                        // getByid("RefleshImgButton").onclick();
+                    }
+                    else if (AllObjList[i].event[e1][0] == 'keydowningStateMoveRegistered' &&
+                        AllObjList[i].event[e1][5] == true && AllObjList[i].event[e1][4] == AllObjList[i].State) {
                         //AllObjList[i].event[e1][3]=true;
                         //遇到障礙物停止前進
                         var pounchList = [];
@@ -261,7 +352,7 @@ function WindowRegisterKeyDowning() {
 
     //通常型態設定
     setInterval(function () {
-        if (AllObjList[0].status == "MakeGame") return;
+        if (AllObjList[0].State == "MakeGame") return;
         for (var i = 0; i < AllObjList.length; i++) {
             if (AllObjList[i].class == "delete") continue;
             if (AllObjList[i].forme) {
@@ -282,7 +373,7 @@ function WindowRegisterKeyDowning() {
     }, 50);
     //狀態與動畫
     setInterval(function () {
-        if (AllObjList[0].status == "MakeGame") return;
+        if (AllObjList[0].State == "MakeGame") return;
         //按住某鍵或碰到某物
         for (var i = 0; i < AllObjList.length; i++) {
             if (AllObjList[i].class == "delete") continue;
@@ -294,7 +385,7 @@ function WindowRegisterKeyDowning() {
                     if (AllObjList[i].event[e1][0] == 'KeyPressStatusEventRegistered') {
                         if (AllObjList[i].event[e1][1]) {
                             if (AllObjList[0].KeyPressList.includes(keyCode[AllObjList[i].event[e1][1]])) {
-                                AllObjList[i].status = "" + AllObjList[i].event[e1][2];
+                                AllObjList[i].State = "" + AllObjList[i].event[e1][2];
                                 flag = true;
                             }
                         }
@@ -318,14 +409,14 @@ function WindowRegisterKeyDowning() {
                             }
                             if (pounch0 == true) {
                                 if (AllObjList[i].class != "delete") {
-                                    AllObjList[i].status = "" + AllObjList[i].event[e1][2];
+                                    AllObjList[i].State = "" + AllObjList[i].event[e1][2];
                                     flag = true;
                                 };
                             }
                         }
                     }
                 }
-                if (flag == false) AllObjList[i].status = "normal";
+                if (flag == false) AllObjList[i].State = "normal";
             }
         }
         /*
@@ -339,12 +430,12 @@ function WindowRegisterKeyDowning() {
                             if (AllObjList[i].event[e1][0] == 'KeyPressStatusEventRegistered') {
                                 if (AllObjList[i].event[e1][1]) {
                                     if (AllObjList[0].KeyPressList.includes(keyCode[AllObjList[i].event[e1][1]])) {
-                                        AllObjList[i].status = "" + AllObjList[i].event[e1][2];
+                                        AllObjList[i].State = "" + AllObjList[i].event[e1][2];
                                         flag = true;
                                     }
                                 }
                             }
-                            if (flag == false) AllObjList[i].status = "normal";
+                            if (flag == false) AllObjList[i].State = "normal";
                         }
                     }
                 }
@@ -369,14 +460,14 @@ function WindowRegisterKeyDowning() {
                                     }
                                 }
                                 if (pounch0 == true) {
-                                    if (AllObjList[i].class != "delete") AllObjList[i].status = "" + AllObjList[i].event[e1][2];
+                                    if (AllObjList[i].class != "delete") AllObjList[i].State = "" + AllObjList[i].event[e1][2];
                                     flag = true;
                                 }
                             }
                         }
-                        //if (flag == false) AllObjList[i].status = "normal";
+                        //if (flag == false) AllObjList[i].State = "normal";
                     }
-                    if (flag == false) AllObjList[i].status = "normal";
+                    if (flag == false) AllObjList[i].State = "normal";
                 }*/
         //保持型態
         for (var i = 0; i < AllObjList.length; i++) {
@@ -385,8 +476,9 @@ function WindowRegisterKeyDowning() {
                 for (var e1 = 0; e1 < AllObjList[i].event.length; e1++) {
                     if (AllObjList[i].event[e1][0] == 'statusAnimeEventRegistered') {
                         for (var j = 0; j < AllObjList.length; j++) {
-                            if (AllObjList[i].status == AllObjList[i].event[e1][1]) {
-                                AllObjList[i].img.src = AllObjList[i].animeList[AllObjList[i].event[e1][2]];
+                            if (AllObjList[i].State == AllObjList[i].event[e1][1]) {
+                                if (!PathCompare(AllObjList[i].img.src, AllObjList[i].animeList[AllObjList[i].event[e1][2]]))
+                                    AllObjList[i].img.src = AllObjList[i].animeList[AllObjList[i].event[e1][2]];
                             }
                         }
                     }
@@ -400,12 +492,13 @@ function WindowRegisterKeyDowning() {
                 for (var e1 = 0; e1 < AllObjList[i].event.length; e1++) {
                     if (AllObjList[i].event[e1][0] == 'statusFormeListEventRegistered') {
                         for (var j = 0; j < AllObjList.length; j++) {
-                            if (AllObjList[i].status == AllObjList[i].event[e1][1]) {
+                            if (AllObjList[i].State == AllObjList[i].event[e1][1]) {
                                 if (AllObjList[i].forme) {
                                     for (var f = 0; f < AllObjList[i].forme.length; f++) {
                                         var forme = AllObjList[i].forme[f];
                                         if (forme.name == AllObjList[i].event[e1][2])
-                                            AllObjList[i].img.src = AllObjList[i].animeList[forme.nowForme];
+                                            if (!PathCompare(AllObjList[i].img.src, AllObjList[i].animeList[forme.nowForme]))
+                                                AllObjList[i].img.src = AllObjList[i].animeList[forme.nowForme];
                                     }
                                 }
                             }
@@ -420,7 +513,7 @@ function WindowRegisterKeyDowning() {
 
     //通常事件
     setInterval(function () {
-        if (AllObjList[0].status == "MakeGame") return;
+        if (AllObjList[0].State == "MakeGame") return;
         for (var i = 0; i < AllObjList.length; i++) {
             if (AllObjList[i].class == "delete") continue;
             if (AllObjList[i].event) {
@@ -746,6 +839,13 @@ function WindowRegisterKeyDowning() {
 
     window.addEventListener("keydown", KeyDown, true);
     window.addEventListener("keyup", KeyUp, true);
+    //防止空白鍵滾動頁面
+    window.addEventListener('keydown', function (e) {
+        if (e.keyCode == 32 && e.target == document.body) {
+            e.preventDefault();
+        }
+    });
+
 }
 
 setInterval(function () {
