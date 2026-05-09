@@ -22,7 +22,7 @@ https://birdeggb2777.github.io/ACGMaker/animation/index.html
 ### 遊戲製作
 https://birdeggb2777.github.io/ACGMaker/game/ACGMaker.html
 
-備註：遊戲製作的操作是有些複雜，可以先看影片(四年前錄製的)：https://youtu.be/KpF_Z_d44Ng
+備註：遊戲製作的操作是有些複雜，可以先看影片(四年前錄製的)：https://youtu.be/mxMMEseiEIQ
 
 ---
 
