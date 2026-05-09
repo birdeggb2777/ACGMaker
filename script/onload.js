@@ -15,7 +15,6 @@ window.onload = function () {
         rawFile.send(null);
     }
 
-
     readTextFile("image/material_json.json", function (text) {
         material_json = JSON.parse(text);
         material_json = material_json.material_json;
@@ -38,13 +37,17 @@ window.onload = function () {
                     image_tmp.onmousedown = function () {
                         ImgObjChoose(this.obj);
                     }
+                    image_tmp.ondragstart = function (e) {
+                        dragalt = e.target.alt;
+                        MouseDrag = "enter";
+                        NowChoose = e.target;
+                        ChooseObj = undefined;
+                    }
                     getByid('MaterialListDiv').appendChild(image_tmp);
-
                 }
             }
         }
     });
-
 
     readTextFile("image/image_json.json", function (text) {
         image_json = JSON.parse(text);
@@ -64,6 +67,12 @@ window.onload = function () {
             image_tmp.className = "leftimg objimg";
             image_tmp.onmousedown = function () {
                 ImgObjChoose(this.obj);
+            }
+            image_tmp.ondragstart = function (e) {
+                dragalt = e.target.alt;
+                MouseDrag = "enter";
+                NowChoose = e.target;
+                ChooseObj = undefined;
             }
             getByid('ImgListDiv').appendChild(image_tmp);
         }
@@ -87,6 +96,12 @@ window.onload = function () {
             image_tmp.onmousedown = function () {
                 ImgObjChoose(this.obj);
             }
+            image_tmp.ondragstart = function (e) {
+                dragalt = e.target.alt;
+                MouseDrag = "enter";
+                NowChoose = e.target;
+                ChooseObj = undefined;
+            }
             getByid('WaterBallListDiv').appendChild(image_tmp);
         }
     });
@@ -108,6 +123,12 @@ window.onload = function () {
             image_tmp.className = "leftimg backgroundimg";
             image_tmp.onmousedown = function () {
                 ImgObjChoose(this.obj);
+            }
+            image_tmp.ondragstart = function (e) {
+                dragalt = e.target.alt;
+                MouseDrag = "enter";
+                NowChoose = e.target;
+                ChooseObj = undefined;
             }
             getByid('BackgroundListDiv').appendChild(image_tmp);
         }
@@ -139,6 +160,12 @@ window.onload = function () {
             image_tmp.className = "leftimg animeimg";
             image_tmp.onmousedown = function () {
                 ImgObjChoose(this.obj);
+            }
+            image_tmp.ondragstart = function (e) {
+                dragalt = e.target.alt;
+                MouseDrag = "enter";
+                NowChoose = e.target;
+                ChooseObj = undefined;
             }
             getByid('AnimeListDiv').appendChild(image_tmp);
         }
@@ -447,47 +474,27 @@ window.onload = function () {
         }
     }
 
-    interact('.leftimg').draggable({
-        onmove(event) {
-            dragalt = event.target.alt;
-            MouseDrag = "enter";
-            NowChoose = event.target;
-            ChooseObj = undefined;
-        }
-    })
-
-
-    interact('#game').dropzone({
-        accept: '.leftimg',
-        ondropactivate: function (event) {
-            event.target.classList.add('drop-active');
-        },
-        ondragenter: function (event) {
-            var draggableElement = event.relatedTarget
-            var dropzoneElement = event.target
-            dropzoneElement.classList.add('drop-target');
-            draggableElement.classList.add('can-drop');
-            MouseDrag = "enter";
-        },
-        ondragleave: function (event) {
-            event.target.classList.remove('drop-target');
-            event.relatedTarget.classList.remove('can-drop');
-            MouseDrag = "leave";
-            //NowChoose = undefined;
-        },
-        ondrop: function (event) {
-            MouseDrag = false;
-            MouseDrag = "complete";
-        },
-        ondropdeactivate: function (event) {
-            event.target.classList.remove('drop-active');
-            event.target.classList.remove('drop-target');
-            // NowChoose = undefined;
-        }
-    })
     //選擇GameWorld
     getByid("GameWorld_Choose").selected = true;
     ChooseObj = GameObj;
     ObjSelect(ChooseObj);
     checkPouch = true;
+
+    getByid("game").ondropactivate = function (e) {
+        e.preventDefault();
+    }
+    getByid("game").ondragenter = function (e) {
+        MouseDrag = "enter";
+    }
+    getByid("game").ondragleave = function (e) {
+        MouseDrag = "leave";
+    }
+    getByid("game").ondragover = function (e) {
+        e.preventDefault();
+    }
+    getByid("game").ondrop = function (e) {
+        e.preventDefault();
+        MouseDrag = false;
+        MouseDrag = "complete";
+    }
 }

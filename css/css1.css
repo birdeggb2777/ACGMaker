@@ -1,3 +1,15 @@
+body {
+    display: flex;
+    width: 100%;
+    overflow: hidden;
+    align-items: flex-start;
+    background-color: rgb(220, 220, 230);
+}
+
+#game {
+    background-color: rgb(240, 240, 240);
+}
+
 .blackboard {
     border-width: 3px;
     border-style: dashed;
@@ -15,6 +27,7 @@
     width: 350;
     height: 600;
 }
+
 #game {
     float: left;
 }
@@ -35,9 +48,9 @@
 
 .number_keydownAnime_target {
     width: 4em;
-  }
+}
 
-.LeftImgListDiv{
+.LeftImgListDiv {
     height: 200;
     overflow: hidden;
     overflow-y: scroll;
