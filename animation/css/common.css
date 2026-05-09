@@ -1,0 +1,92 @@
+.white {
+    color: white;
+}
+
+.center {
+    display: flex;
+    /* 水平置中 */
+    justify-content: center;
+    /* 垂直置中 */
+    align-content: center;
+    flex-wrap: wrap;
+}
+
+.fullheight {
+    height: 100%;
+}
+
+.hide {
+    display: none;
+}
+
+.darkInput {
+    color: #fff;
+    background-color: rgb(68, 68, 68);
+    border-radius: 4px;
+    border-color: #000000;
+    left: 10px;
+    /*width: 120px;*/
+    /*height: 85%;*/
+}
+
+.fullSlider {
+    width: 95%;
+}
+
+select {
+    font-size: 16px;
+}
+
+input {
+    font-size: 16px;
+}
+
+.layerdark {
+    background-color: rgb(75, 75, 75);
+    position: absolute;
+    transform: translate(2px, 5px);
+    width: 40%;
+}
+
+#tools_block {
+    overflow-y: auto;
+}
+
+#layers_block {
+    overflow-y: auto;
+}
+
+.top_icon {
+    height: 100%;
+}
+
+.top_icon:hover {
+    background-color: rgb(96, 96, 112);
+}
+
+.top_icon:active {
+    background-color: rgb(66, 66, 152);
+}
+
+.left_icon:active {}
+
+#alphaColorDiv {
+    background-image: linear-gradient(45deg, #ccc 25%, transparent 0, transparent 75%, #ccc 0),
+        linear-gradient(45deg, #ccc 25%, transparent 0, transparent 75%, #ccc 0);
+    background-position: 0 0,
+        7px 7px;
+    background-size: 14px 14px;
+}
+
+.layerNameInput {
+    background-color: transparent;
+    position: absolute;
+    outline: none;
+    border: 0px solid;
+}
+
+.verticalSlider {
+    writing-mode: vertical-lr;
+    direction: rtl;
+    vertical-align: middle;
+}

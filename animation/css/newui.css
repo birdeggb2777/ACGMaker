@@ -1,0 +1,103 @@
+#circle-cursor {
+    width: 20px;
+    /* 預設寬度 */
+    height: 20px;
+    /* 預設高度 */
+    border: 2px solid #000000;
+    outline: 2px solid white;
+    outline-offset: -4px;
+    /* 負數值越大，越往中心縮 */
+
+    border-radius: 50%;
+    /* 變成圓形 */
+    position: fixed;
+    pointer-events: none;
+    /* 重要：讓滑鼠事件穿透，才點得到下層 */
+    transform: translate(-50%, -50%);
+    /* 確保圓心對準游標尖端 */
+    z-index: 9999;
+    transition: width 0.2s, height 0.2s;
+    /* 變大縮小時的平滑過度 */
+}
+
+#canvas_area {
+    cursor: none;
+}
+
+label,
+input {
+    user-drag: none;
+}
+
+canvas {
+    /* 禁止瀏覽器所有的預設觸控行為(如捲動、縮放) */
+    touch-action: none;
+}
+
+.caterpillar {
+  /* 套用動畫：名稱、持續時間、跳躍方式、無限循環 */
+  animation: invert-step 1.5s steps(1, end) infinite;
+}
+
+@keyframes invert-step {
+  0% {
+    filter: invert(1);
+  }
+  50% {
+    filter: none;
+  }
+}
+
+
+/*改寫自：https://www.tpisoftware.com/tpu/articleDetails/2744*/
+input[type=checkbox] {
+    height: 0;
+    width: 0;
+    visibility: hidden;
+}
+.checklabel {
+    cursor: pointer;
+    width: 50px;
+    height: 25px;
+    background: grey;
+    display: block;
+    border-radius: 25px;
+    position: relative;
+    border: 2px solid #98a0ab;
+}
+.checklabel:after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 22px;
+    height: 22px;
+    background: #fff;
+    border-radius: 25px;
+    transition: 0.3s;
+}
+.switch-txt::before,
+.switch-txt::after {
+    display: block;
+    color: #fff;
+    font-weight: bold;
+    box-sizing: border-box;
+}
+.switch-txt::before {
+    content: attr(turnOn);
+    color: #fff;
+}
+.switch-txt::after {
+    content: attr(turnOff);
+    color: #ccc;
+}
+input:checked+label {
+    background: rgb(0, 120, 210);
+}
+label:active:after {
+    width: 25px;
+}
+input:checked+label:after {
+    left: calc(100% - 5px);
+    transform: translateX(-100%);
+}

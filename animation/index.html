@@ -1,0 +1,420 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="./css/window.css">
+    <link rel="stylesheet" href="./css/panel.css">
+    <link rel="stylesheet" href="./css/menu.css">
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/other.css">
+    <link rel="stylesheet" href="./css/project.css">
+    <link rel="stylesheet" href="./css/picture.css">
+    <link rel="stylesheet" href="./css/newui.css">
+</head>
+
+<body>
+    <div id="cover_div"></div>
+    <div id="outer_div">
+        <!-- 上面的表單 -->
+        <div id="menu" class="menu">
+            <span class="menuspan" id="OpenFileMenu">
+                <label class="menulabel">檔案</label>
+                <div class="childmenu drawer" id="fileMenu" style="display: none;">
+                    <span class="childMenuBlock">新建</span>
+                    <span class="childMenuBlock" id="createProjectFromClip">從剪貼簿新建</span>
+                    <!--<span class="childMenuBlock">從內建圖片新建</span>-->
+                    <span class="childMenuBlock" id="openFromFile">開啟舊檔</span>
+                    <span class="childMenuBlock" id="saveToFile">儲存影像</span>
+                    <span class="childMenuBlock" style="color: gray;">儲存檔案</span>
+                    <span class="childMenuBlock" style="color: gray;">匯出專案</span>
+                </div>
+            </span>
+            <span class="menuspan" id="OpenEditMenu">
+                <label class="menulabel">編輯</label>
+                <div class="childmenu drawer" id="editMenu" style="display: none;left: 61px;">
+                    <span class="childMenuBlock" id="copyFullImg2clip">複製完整圖片影像</span>
+                    <span class="childMenuBlock" id="copyLayerImg2clip">複製目前圖層影像</span>
+                    <span class="childMenuBlock" style="color: gray;">貼上</span>
+                    <!--<span class="childMenuBlock">復原</span>
+                    <span class="childMenuBlock">重做</span>-->
+                </div>
+            </span>
+            <span class="menuspan" id="OpenImageMenu">
+                <label class="menulabel">影像</label>
+                <div class="childmenu drawer" id="imageMenu" style="display: none;left: 113px;">
+                    <span class="childMenuBlock filter" id="invertColor">色彩反轉</span>
+                    <span class="childMenuBlock filter" id="grayScale">灰階化</span>
+                    <span class="childMenuBlock prefilter" id="binarization">二值化...</span>
+                    <span class="childMenuBlock prefilter" id="brightnessContrast">亮度與對比度調整...</span>
+                    <span class="childMenuBlock prefilter" id="rgbAdj">RGB色彩調整...</span>
+                    <span class="childMenuBlock prefilter" id="hsvAdj">色相、飽和度、明度...</span>
+                    <span class="childMenuBlock prefilter" id="colorTemperature">白平衡...</span>
+                    <span class="childMenuBlock filter" id="autoColorBalance">自動白平衡</span>
+                    <span class="childMenuBlock prefilter" id="Posterization">色調分離...</span>
+                    <span class="childMenuBlock filter" id="xFlip">水平翻轉</span>
+                    <span class="childMenuBlock filter" id="yFlip">垂直翻轉</span>
+                </div>
+            </span>
+            <span class="menuspan" id="OpenFilterMenu">
+                <label class="menulabel">濾鏡</label>
+                <div class="childmenu drawer" id="filterMenu" style="display: none;left: 165px;">
+                    <!--<span class="childMenuBlock prefilter" id="blur">模糊...</span>-->
+                    <span class="childMenuBlock prefilter" id="glassBlur">玻璃模糊...</span>
+                    <span class="childMenuBlock filter" id="overexposed">過度曝光</span>
+                    <span class="childMenuBlock filter" id="sharpening">銳利化</span>
+                    <span class="childMenuBlock filter" id="smooth">平滑化</span>
+                    <span class="childMenuBlock prefilter" id="mosaic">馬賽克...</span>
+                    <span class="childMenuBlock prefilter" id="emboss">浮雕...</span>
+                    <span class="childMenuBlock prefilter" id="tile">磁磚...</span>
+                    <span class="childMenuBlock prefilter" id="noise">雜訊...</span>
+                    <span class="childMenuBlock prefilter" id="airbrush">噴槍...</span>
+                </div>
+            </span>
+            <span class="menuspan" id="selectMenu">
+                <label class="menulabel">範圍選擇</label>
+                <div class="childmenu drawer" id="selectMenu" style="display: none;left: 217px;">
+                    <span class="childMenuBlock" id="selectEmpty">解除選擇</span>
+                </div>
+            </span>
+            <!--<span class="menuspan" id="OpenEngineerImageMenu">
+                <label class="menulabel">工程影像</label>
+                <div class="childmenu drawer" id="engineerImageMenu" style="display: none;left: 217px;">
+                    <span class="childMenuBlock">一階微分(Laplacian)</span>
+                    <span class="childMenuBlock">二階微分(Laplacian)</span>
+                    <span class="childMenuBlock">直方圖均衡化</span>
+                    <span class="childMenuBlock">卷積</span>
+                    <span class="childMenuBlock">骨架化(細線化)</span>
+                    <span class="childMenuBlock">傅立葉變換</span>
+                    <span class="childMenuBlock">變換矩陣</span>
+                    <span class="childMenuBlock">WindowLevel</span>
+                </div>
+            </span>-->
+            <span class="menuspan" id="OpenLayerMenu">
+                <label class="menulabel">圖層</label>
+                <div class="childmenu drawer" id="layerMenu" style="display: none;left: 301px;"><!--left: 301px;-->
+                    <span class="childMenuBlock" id="addNewLayer">新圖層</span>
+                </div>
+            </span>
+            <!--<span class="menuspan" id="OpenAutoMenu">
+                <label class="menulabel">自動機</label>
+                <div class="childmenu drawer" id="autoMenu" style="display: none;left: 353px;">
+                    <span class="childMenuBlock">批次操作多張影像</span>
+                    <span class="childMenuBlock">批次轉檔</span>
+                    <span class="childMenuBlock">過程紀錄器</span>
+                </div>
+            </span>
+            <span class="menuspan" id="OpenQaMenu">
+                <label class="menulabel">說明</label>
+                <div class="childmenu drawer" id="qaMenu" style="display: none;left: 405px;">
+                </div>
+            </span>-->
+        </div>
+        <!-- 工作區 -->
+        <div id="workspace" class="workspace">
+            <!-- 左邊的筆刷選擇區 -->
+            <div id="left_out" class="left_out">
+                <div id="tool_choiser">
+                    <div id="left_icon_div">
+                        <img id="handTool" class="left_icon" src="./image/hand.png" style="background-color: rgb(68, 68, 153);">
+                        <img id="selectTool1" class="left_icon" src="./image/dotted_rect.png">
+                        <img id="pencilTool" class="left_icon" src="./image/pencil2.png">
+                        <img id="oilTool" class="left_icon" src="./image/oil.png">
+                        <img id="sprayTool" class="left_icon" src="./image/spray.png">
+                        <img id="waterpenTool" class="left_icon" src="./image/waterpen.png">
+                        <img id="erasorTool" class="left_icon" src="./image/erasor.png">
+                        <img id="lineTool" class="left_icon" src="./image/line.png">
+                        <img id="gradientTool" class="left_icon" src="./image/gradient.png">
+                        <img id="selectTool2" class="left_icon" src="./image/fairywand.png">
+                        <img id="eggTool" class="left_icon" src="./image/eastereggs.png">
+                        <img id="dropperTool" class="left_icon" src="./image/dropper.png">
+                    </div>
+                    <!-- 用途不明 -->
+                    <div id="left_tool_div"></div>
+                </div>
+            </div>
+            <div id="right_out" class="right_out">
+                <!-- 專案選擇區 -->
+                <div id="project_slide">
+                    <span class="project_block" id="project_block">
+                        <label class="white fullheight projectlabel">不存在的專案</label>
+                    </span>
+                </div>
+                <!-- 快速工具&畫布&圖層，等快速操作工具 -->
+                <div id="right_inner">
+                    <!-- 畫布&上方的快速工具 -->
+                    <div id="edit_block">
+                        <!-- 上方的快速工具 -->
+                        <div id="edit_tool" style="display: flex;">
+                            <img id="colorpalette" class="top_icon" src="./image/colorpalette.png">
+                            <div id="foregroundColorDiv" class="top_icon" style="margin-left: 2px; width: 35px; scale: 0.8; border-color: white; border-style: double; background-color: rgb(128, 164, 221);"></div>
+                            <div id="backgroundColorDiv" class="top_icon" style="margin-left: 2px; width: 35px; scale: 0.6; border-color: white; border-style: solid; background-color: rgb(255, 255, 255);"></div>
+                            <div id="alphaColorDiv" class="top_icon" style="margin-left: 2px; width: 35px; scale: 0.6; border-color: white; border-style: solid;"></div>
+                        </div>
+                        <!-- 畫布工具 -->
+                        <div id="canvas_area" style="position: relative;">
+                            <div id="PictureContainer" style="position: absolute; width: 512px; height: 512px; transform-origin: 0px 0px; transform: scale(1,1) translate(0px, 0px);">
+                                <canvas id="picture" width="1142" height="852" style="position: absolute; /*width: 100%; height: 100%;*/"></canvas>
+                                <canvas id="MarkPicture" style="position: absolute; /*width: 100%; height: 100%;*/"></canvas>
+                                <div id="circle-cursor" style="position: absolute;z-index: 20;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 右邊 -->
+                    <div id="resources_block">
+                        <!-- 資源調動工具 -->
+                        <div id="tools_block">
+                            <div id="handToolPanel" class="panel">
+                                <label style="color: white; line-height: 30px;">畫布對齊位置:　</label>
+                                <select class="darkInput" id="handToolAlign">
+                                    <option value="Upper left corner">靠左上角</option>
+                                    <option value="center">置中</option>
+                                    <option value="Cursor position" selected="selected">游標位置</option>
+                                </select><br>
+                                <table style="width: 100%">
+                                    <tr>
+                                        <th scope="col">
+                                            <div style="border-radius: 15px;background:#b6bac4;padding-top: 2px;">
+                                                <img width="64" height="64" src="./image/btn/left_top.png" id="handToolAlignValue1" style="border: 2px solid #000000;">
+                                                <br>靠左上角
+                                            </div>
+                                        </th>
+                                        <th scope="col">
+                                            <div style="border-radius: 15px;background:#b6bac4;padding-top: 2px;">
+                                                <img width="64" height="64" src="./image/btn/center_center.png" id="handToolAlignValue2" style="border: 2px solid #000000;">
+                                                <br>置中
+                                            </div>
+                                        </th>
+                                        <th scope="col">
+                                            <div style="border-radius: 15px;background:#d6def8;padding-top: 2px;">
+                                                <img width="64" height="64" src="./image/btn/cursor_center.png" id="handToolAlignValue3" style="border: 2px solid #000000;">
+                                                <br>游標位置
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </table>
+                                <hr>
+                            </div>
+                            <div id="selectTool2Panel" class="panel" style="display: none">
+                                <label style="color: white; line-height: 30px;">顏色誤差：</label>
+                                <input type="number" min="1" max="100" value="10" id="selectTool2DiffNum" style="top:5px;width:50px"><br>
+                                <input type="range" min="1" max="100" value="10" id="selectTool2Diff" style="top:5px;width:85%"><br>
+                            </div>
+                            <div id="pencilToolPanel" class="panel" style="display: none">
+                                <label style="color: white; line-height: 30px;">筆的種類:　</label>
+                                <select class="darkInput" id="pencilType">
+                                    <option value="鉛筆">鉛筆</option>
+                                    <option value="原子筆">原子筆</option>
+                                    <option value="沾水筆">沾水筆</option>
+                                </select><br>
+                                <table style="width: 100%">
+                                    <tr>
+                                        <th scope="col">
+                                            <div style="border-radius: 15px;background:#d6def8;padding-top: 2px;">
+                                                <img width="64" height="64" src="./image/btn/pencil.png" id="pencilTypeValue1" style="border: 2px solid #000000;">
+                                                <br>鉛筆
+                                            </div>
+                                        </th>
+                                        <th scope="col">
+                                            <div style="border-radius: 15px;background:#b6bac4;padding-top: 2px;">
+                                                <img width="64" height="64" src="./image/btn/pencil2.png" id="pencilTypeValue2" style="border: 2px solid #000000;">
+                                                <br>原子筆
+                                            </div>
+                                        </th>
+                                        <th scope="col">
+                                            <div style="border-radius: 15px;background:#b6bac4;padding-top: 2px;">
+                                                <img width="64" height="64" src="./image/btn/pencil3.png" id="pencilTypeValue3" style="border: 2px solid #000000;">
+                                                <br>沾水筆
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </table>
+                                <hr>
+                                <label style="color: white; line-height: 30px;">大小：</label>
+                                <input type="number" min="1" max="200" value="20" id="pencilSizeNum" style="top:5px;width:50px"><br>
+                                <input type="range" min="1" max="200" value="20" id="pencilSize" style="top:5px;width:85%"><br>
+                                <label style="color: white; line-height: 30px;">不透明度：</label>
+                                <input type="number" min="0" max="100" value="95" id="pencilOpacityNum" style="top:5px;width:50px"><br>
+                                <input type="range" min="0" max="100" value="95" id="pencilOpacity" style="top:5px;width:85%"><br>
+                                <label style="color: white; line-height: 30px;">反鋸齒：</label>
+                                <input type="number" min="1" max="50" value="5" id="pencilAntiAliasingNum" style="top:5px;width:50px"><br>
+                                <input type="range" min="1" max="50" value="5" id="pencilAntiAliasing" style="top:5px;width:85%"><br>
+                                <label style="color: white; line-height: 30px;">隨筆壓改變透明度：</label>
+                                <input type="checkbox" id="pencilOpacityPressure" checked />
+                                <label for="pencilOpacityPressure" class="checklabel"> </label>
+                            </div>
+                            <div id="waterpenToolPanel" class="panel" style="display: none">
+                                <label style="color: white; line-height: 30px;">大小：</label>
+                                <input type="number" min="1" max="200" value="45" id="waterpenSizeNum" style="top:5px;width:50px"><br>
+                                <input type="range" min="1" max="200" value="45" id="waterpenSize" style="top:5px;width:85%"><br>
+                                <label style="color: white; line-height: 30px;">不透明度：</label>
+                                <input type="number" min="0" max="100" value="95" id="waterpenOpacityNum" style="top:5px;width:50px"><br>
+                                <input type="range" min="0" max="100" value="95" id="waterpenOpacity" style="top:5px;width:85%"><br>
+                                <label style="color: white; line-height: 30px;">顏料量：</label>
+                                <input type="number" min="0" max="100" value="25" id="waterpenPigmentNum" style="top:5px;width:50px"><br>
+                                <input type="range" min="0" max="100" value="25" id="waterpenPigment" style="top:5px;width:85%"><br>
+                            </div>
+                            <div id="erasorToolPanel" class="panel" style="display: none">
+                                <label style="color: white; line-height: 30px;">大小：</label>
+                                <input type="number" min="1" max="200" value="42" id="erasorSizeNum" style="top:5px;width:50px"><br>
+                                <input type="range" min="1" max="200" value="42" id="erasorSize" style="top:5px;width:85%"><br>
+                                <label style="color: white; line-height: 30px;">不透明度：</label>
+                                <input type="number" min="0" max="100" value="95" id="erasorOpacityNum" style="top:5px;width:50px"><br>
+                                <input type="range" min="0" max="100" value="95" id="erasorOpacity" style="top:5px;width:85%"><br>
+                                <label style="color: white; line-height: 30px;">反鋸齒：</label>
+                                <input type="number" min="0" max="50" value="5" id="erasorAntiAliasingNum" style="top:5px;width:50px"><br>
+                                <input type="range" min="0" max="50" value="5" id="erasorAntiAliasing" style="top:5px;width:85%"><br>
+                                <label style="color: white; line-height: 30px;">隨筆壓改變透明度：</label>
+                                <input type="checkbox" id="erasorOpacityPressure" checked />
+                                <label for="erasorOpacityPressure" class="checklabel"> </label>
+                                <hr>
+                            </div>
+                            <div id="sprayToolPanel" class="panel" style="display: none">
+                                <label style="color: white; line-height: 30px;">大小：</label>
+                                <input type="number" min="1" max="200" value="50" id="spraySizeNum" style="top:5px;width:50px"><br>
+                                <input type="range" min="1" max="200" value="50" id="spraySize" style="top:5px;width:85%"><br>
+                                <label style="color: white; line-height: 30px;">散佈範圍(%)：</label>
+                                <input type="number" min="1" max="100" value="5" id="sprayRangeNum" style="top:5px;width:50px"><br>
+                                <input type="range" min="1" max="100" value="5" id="sprayRange" style="top:5px;width:85%"><br>
+                                <hr>
+                            </div>
+                            <div id="oilToolPanel" class="panel" style="display: none">
+                                <label style="color: white; line-height: 30px;">區隔方式：</label>
+                                <select class="darkInput" id="oilSeparation">
+                                    <option value="color">依色彩</option>
+                                    <option value="gradient">依梯度</option>
+                                </select><br>
+                                <label style="color: white; line-height: 30px;">顏色誤差：</label>
+                                <input type="number" min="0" max="100" value="15" id="oilColorDiffNum" style="top:5px;width:50px"><br>
+                                <input type="range" min="0" max="100" value="15" id="oilColorDiffSize" style="top:5px;width:85%"><br>
+                                <hr>
+                            </div>
+                            <div id="dropperToolPanel" class="panel" style="display: none">
+                                <label style="color: white; line-height: 30px;">顏色獲取來源：</label>
+                                <select class="darkInput" id="dropperSource">
+                                    <option value="layer" selected>從圖層</option>
+                                    <option value="full">從顯示的畫面</option>
+                                </select><br>
+                            </div>
+                            <div id="eggToolPanel" class="panel" style="display: none">
+                                <label style="color: white; line-height: 30px;">素材(暫不提供，請使用者自行添加)：</label><br>
+                                <table style="width: 100%">
+                                    <tr>
+                                        <th scope="col">
+                                            <div style="border-radius: 15px;background:#d6def8;padding-top: 2px;">
+                                                <img width="50" height="50" src="./image/eastereggs.png" id="eggToolImgEggValue1" style="border: 2px solid #000000;">
+                                                <br>素材1
+                                            </div>
+                                        </th>
+                                        <th scope="col">
+                                            <div style="border-radius: 15px;background:#b6bac4;padding-top: 2px;">
+                                                <img width="50" height="50" src="./image/eastereggs.png" id="eggToolImgEggValue2" style="border: 2px solid #000000;">
+                                                <br>素材2
+                                            </div>
+                                        </th>
+                                        <th scope="col">
+                                            <div style="border-radius: 15px;background:#b6bac4;padding-top: 2px;">
+                                                <img width="50" height="50" src="./image/eastereggs.png" id="eggToolImgEggValue3" style="border: 2px solid #000000;">
+                                                <br>素材3
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="lineToolPanel" class="panel" style="display: none">
+                                <label style="color: white; line-height: 30px;">形狀：</label>
+                                <select class="darkInput" id="lineToolShape">
+                                    <option value="circle" selected>圓形</option>
+                                    <option value="rect">矩形</option>
+                                    <option value="line">直線</option>
+                                    <!--<option value="ten">十字線</option>-->
+                                </select><br>
+                                <table style="width: 100%">
+                                    <tr>
+                                        <th scope="col">
+                                            <div style="border-radius: 15px;background:#d6def8;padding-top: 2px;">
+                                                <img width="50" height="50" src="./image/btn/circle.png" id="lineToolShapeValue1" style="border: 2px solid #000000;">
+                                                <br>圓形
+                                            </div>
+                                        </th>
+                                        <th scope="col">
+                                            <div style="border-radius: 15px;background:#b6bac4;padding-top: 2px;">
+                                                <img width="50" height="50" src="./image/btn/rect.png" id="lineToolShapeValue2" style="border: 2px solid #000000;">
+                                                <br>矩形
+                                            </div>
+                                        </th>
+                                        <th scope="col">
+                                            <div style="border-radius: 15px;background:#b6bac4;padding-top: 2px;">
+                                                <img width="50" height="50" src="./image/btn/line.png" id="lineToolShapeValue3" style="border: 2px solid #000000;">
+                                                <br>直線
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </table>
+                                <hr>
+                                <label style="color: white; line-height: 30px;">對齊方式：</label>
+                                <select class="darkInput" id="lineToolAlign">
+                                    <option value="center" selected>中心點</option>
+                                    <option value="twice">兩端</option>
+                                </select><br>
+                                <table style="width: 100%">
+                                    <tr>
+                                        <th scope="col">
+                                            <div style="border-radius: 15px;background:#d6def8;padding-top: 2px;">
+                                                <img width="50" height="50" src="./image/btn/shape_center.png" id="lineToolAlignValue1" style="border: 2px solid #000000;">
+                                                <br>中心點
+                                            </div>
+                                        </th>
+                                        <th scope="col">
+                                            <div style="border-radius: 15px;background:#b6bac4;padding-top: 2px;">
+                                                <img width="50" height="50" src="./image/btn/shape_twice.png" id="lineToolAlignValue2" style="border: 2px solid #000000;">
+                                                <br>兩端
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </table>
+                                <label style="color: white; line-height: 30px;">大小：</label>
+                                <input type="number" min="1" max="200" value="8" id="lineSizeNum" style="top:5px;width:50px"><br>
+                                <input type="range" min="1" max="200" value="8" id="lineSize" style="top:5px;width:85%"><br>
+                                <label style="color: white; line-height: 30px;">不透明度：</label>
+                                <input type="number" min="0" max="100" value="95" id="lineOpacityNum" style="top:5px;width:50px"><br>
+                                <input type="range" min="0" max="100" value="95" id="lineOpacity" style="top:5px;width:85%"><br>
+                                <label style="color: white; line-height: 30px;">反鋸齒：</label>
+                                <input type="number" min="1" max="5" value="1" id="lineAntiAliasingNum" style="top:5px;width:50px"><br>
+                                <input type="range" min="1" max="5" value="1" id="lineAntiAliasing" style="top:5px;width:85%"><br>
+
+                                <hr>
+                            </div>
+                        </div>
+                        <!-- 圖層 -->
+                        <div id="layers_block">
+                            <div id="layers_container">
+                                <!--<div class="layer_block">
+                                    <img class="layerImg" width="35" height="35" src="./image/eye.png">
+                                    <img class="layerImg" width="35" height="35" src="./image/pen.png">
+                                    <input class="white layerdark layerNameInput" type="text" name="圖片">
+                                </div>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 狀態列 -->
+        <div id="status_bar" class="status_bar"><span id="status_text" class="white">目前座標：(-81, 668)</span></div>
+    </div>
+    <script src="./scripts/core/common.js"></script>
+    <script src="./scripts/core/struct.js"></script>
+    <script src="./scripts/core/layer.js"></script>
+
+    <script src="./scripts/core/event.js"></script>
+    <script src="./scripts/core/cmd.js"></script>
+    <script src="./scripts/ui/gui.js"></script>
+    <script src="./scripts/ui/window.js"></script>
+
+    <script src="./scripts/paint/brush.js"></script>
+    <script src="./scripts/paint/filter.js"></script>
+
+    <script src="./scripts/interface/project.js"></script>
+    <script src="./scripts/interface/io.js"></script>
+</body>
+
+</html>

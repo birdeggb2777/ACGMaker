@@ -1,0 +1,48 @@
+.filterWindow {
+    border-style: solid;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+
+    flex-grow: 1;
+}
+
+.windowTitle {
+    background-color: rgb(78, 78, 78);
+    color: rgb(212, 212, 212);
+    height: 25px;
+    width: 100%;
+    text-align: center;
+}
+
+.windowContent {
+    background-color: rgb(120, 120, 120);
+    color: white;
+   /* display: flex;*/
+    flex-direction: column;
+
+    flex-grow: 1;
+
+    padding: 25px;
+    position: relative;
+}
+
+.WindowClose {
+    height: 100%;
+    float: right;
+}
+.WindowClose:hover {
+    background-color: rgb(112, 86, 86);
+}
+
+.WindowButton {
+    color: #fff;
+    background-color: rgb(83, 83, 83);
+    border-radius: 15px;
+    font-size: 18px;
+    padding: 7px 14px;
+}
+
+.WindowButton:hover {
+    background-color: rgb(102, 102, 102);
+}

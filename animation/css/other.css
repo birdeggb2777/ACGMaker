@@ -1,0 +1,189 @@
+#outer_div {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    border-style: solid;
+    /* 100% viewport height */
+}
+
+#cover_div {
+    height: 100%;
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+    position: absolute;
+    z-index: 10;
+    opacity: 0.5;
+    display: none;
+    /* 100% viewport height */
+}
+
+.workspace {
+    background-color: rgb(212, 153, 153);
+    width: 100vw;
+    display: flex;
+    flex-direction: row;
+
+    flex-grow: 1;
+    /* Fill the remaining space */
+}
+
+#left_out {
+    display: flex;
+    flex-direction: column;
+    /*width: 20%;*/
+    width: 40px;
+    background-color: rgb(50, 50, 50);
+}
+
+
+#mode_choiser {
+    width: 100%;
+    height: 60.5px;
+    border-style: solid;
+}
+
+#tool_choiser {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+}
+
+#left_icon_div {
+    width: 40px;
+    height: 100%;
+    border-width: 1px;
+    border-style: none solid;
+}
+
+#left_tool_div {
+    flex-grow: 1;
+}
+
+#right_out {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#right_inner {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+}
+
+#edit_block {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    /*width: 40%;*/
+    width: 60%;
+
+    border-style: none solid;
+}
+
+#edit_tool {
+    height: 35px;
+    width: 100%;
+    background-color: rgb(78, 78, 78);
+}
+
+.tool_icon {
+    height: 100%;
+}
+
+#canvas_area {
+    flex-grow: 1;
+    background-color: rgb(50, 50, 50);
+    border-style: solid none;
+    overflow: hidden;
+    position: relative;
+    border-width: 1px;
+    z-index: 50;
+}
+
+#edit_timeline {
+    height: 20%;
+    background-color: rgb(50, 50, 58);
+}
+
+#resources_block {
+    flex-grow: 1;
+    background-color: rgb(78, 78, 78);
+}
+
+#status_bar {
+    height: 30px;
+    line-height: 23px;
+    background-color: rgb(78, 78, 78);
+    border-width: 2px;
+    border-style: solid none none none;
+}
+
+.left_icon {
+    width: 100%;
+}
+
+#tools_block {
+    width: 100%;
+    height: 40%;
+    background-color: rgb(108, 108, 108);
+}
+
+#layers_block {
+    width: 100%;
+    height: 60%;
+    border-style: solid none none none;
+    position: relative;
+}
+
+#layers_container {
+    bottom: 0px;
+     position: absolute;
+    width: 100%;
+}
+
+.layer_block {
+    width: 100%;
+    /*height: 35px;*/
+    background-color: rgb(68, 68, 68);
+    line-height: 35px;
+    border-style: solid none;
+    border-width: 1px;
+    /*position: absolute;*/
+    bottom: 0px;
+}
+
+.layerImg {
+    border-style: solid;
+    border-width: 1px;
+}
+
+.layerImg:hover {
+    background-color: rgb(96, 96, 112);
+}
+
+.layerLabel {
+    margin-left: 5px;
+    position: absolute;
+}
+
+.layerLabel:hover {
+    background-color: rgb(96, 96, 112);
+}
+
+#picture {
+    background-color: #EEE;
+    background-image:
+        linear-gradient(45deg, #888 25%, transparent 0, transparent 75%, #888 0),
+        linear-gradient(45deg, #888 25%, transparent 0, transparent 75%, #888 0);
+    /*background-position: 0 0, 8px 8px;
+    background-size: 16px 16px;*/
+    background-position: 0 0, 2vw 2vw;
+    background-size: 4vw 4vw;
+    /*transform-origin: center;
+    transform-origin: 0, 0;*/
+}
+
+.left_icon:hover {
+    background-color: rgb(96, 96, 112);
+}
