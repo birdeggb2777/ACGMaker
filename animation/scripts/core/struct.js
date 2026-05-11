@@ -6,6 +6,24 @@ class Selection {
         this.content = content ? content : null;
         this.map = null;
     }
+    rect2pixel() {
+        if (this.type != "rect") return;
+        this.content = this.getMap();
+        this.type = "pixel";
+    }
+    reverse() {
+        this.rect2pixel();
+        const width = this.content.w, height = this.content.h;
+        for (var h = 0; h < height; h++) {
+            const pixelRow = this.content.d2[h];
+            for (var w = 0; w < width * 4; w += 4) {
+                pixelRow[w + 0] = 1 - pixelRow[w + 0];
+                pixelRow[w + 1] = 1 - pixelRow[w + 1];
+                pixelRow[w + 2] = 1 - pixelRow[w + 2];
+                pixelRow[w + 3] = 1 - pixelRow[w + 3];
+            }
+        }
+    }
     getMap() {
         if (this.map) return this.map;
         if (this.type == "pixel" && this.content) {

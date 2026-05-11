@@ -69,6 +69,7 @@ class Command {
         if (ToolSelector.brush == sprayTool) invokeSprayTool();
         if (ToolSelector.brush == lineTool) invokeLineTool();
         if (ToolSelector.brush == gradientTool) invokeGradientTool();
+        if (ToolSelector.brush == oilTool) invokeOilTool();
 
         if (ToolSelector.layer && ToolSelector.layer.display == false) GUI.setStatusAlert("請注意，您選擇的圖層不在顯示狀態，可能會看不見繪製的內容！！！");
     }

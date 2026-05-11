@@ -73,6 +73,7 @@
                 <label class="menulabel">範圍選擇</label>
                 <div class="childmenu drawer" id="selectMenu" style="display: none;left: 217px;">
                     <span class="childMenuBlock" id="selectEmpty">解除選擇</span>
+                    <span class="childMenuBlock" id="reverseEmpty">反轉選擇範圍</span>
                 </div>
             </span>
             <!--<span class="menuspan" id="OpenEngineerImageMenu">
@@ -277,12 +278,34 @@
                                 <hr>
                             </div>
                             <div id="oilToolPanel" class="panel" style="display: none">
-                                <label style="color: white; line-height: 30px;">區隔方式：</label>
+                                <label style="color: white; line-height: 30px;">填充方式:　</label>
+                                <select class="darkInput" id="fillType">
+                                    <option value="油漆桶">油漆桶</option>
+                                    <option value="填充線">填充線</option>
+                                </select><br>
+                                <table style="width: 100%">
+                                    <tr>
+                                        <th scope="col">
+                                            <div style="border-radius: 15px;background:#d6def8;padding-top: 2px;">
+                                                <img width="64" height="64" src="./image/oil.png" id="oilTypeValue1" style="border: 2px solid #000000;">
+                                                <br>油漆桶
+                                            </div>
+                                        </th>
+                                        <th scope="col">
+                                            <div style="border-radius: 15px;background:#b6bac4;padding-top: 2px;">
+                                                <img width="64" height="64" src="./image/line.png" id="oilTypeValue2" style="border: 2px solid #000000;">
+                                                <br>填充線
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </table>
+
+                                <label style="color: white; line-height: 30px;">區隔方式(油漆桶)：</label>
                                 <select class="darkInput" id="oilSeparation">
                                     <option value="color">依色彩</option>
                                     <option value="gradient">依梯度</option>
                                 </select><br>
-                                <label style="color: white; line-height: 30px;">顏色誤差：</label>
+                                <label style="color: white; line-height: 30px;">顏色誤差(油漆桶)：</label>
                                 <input type="number" min="0" max="100" value="15" id="oilColorDiffNum" style="top:5px;width:50px"><br>
                                 <input type="range" min="0" max="100" value="15" id="oilColorDiffSize" style="top:5px;width:85%"><br>
                                 <hr>

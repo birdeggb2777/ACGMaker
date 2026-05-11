@@ -109,16 +109,16 @@ getByid("handToolAlignValue3").parentNode.onclick = function () {
 }
 
 getByid("eggToolImgEggValue1").parentNode.onclick = function () {
-     enableBtnWithId(["eggToolImgEggValue1", "eggToolImgEggValue2", "eggToolImgEggValue3"], false);
-     enableBtnWithId(["eggToolImgEggValue1"], true);
+    enableBtnWithId(["eggToolImgEggValue1", "eggToolImgEggValue2", "eggToolImgEggValue3"], false);
+    enableBtnWithId(["eggToolImgEggValue1"], true);
 }
 getByid("eggToolImgEggValue2").parentNode.onclick = function () {
-     enableBtnWithId(["eggToolImgEggValue1", "eggToolImgEggValue2", "eggToolImgEggValue3"], false);
-     enableBtnWithId(["eggToolImgEggValue2"], true);
+    enableBtnWithId(["eggToolImgEggValue1", "eggToolImgEggValue2", "eggToolImgEggValue3"], false);
+    enableBtnWithId(["eggToolImgEggValue2"], true);
 }
 getByid("eggToolImgEggValue3").parentNode.onclick = function () {
-     enableBtnWithId(["eggToolImgEggValue1", "eggToolImgEggValue2", "eggToolImgEggValue3"], false);
-     enableBtnWithId(["eggToolImgEggValue3"], true);
+    enableBtnWithId(["eggToolImgEggValue1", "eggToolImgEggValue2", "eggToolImgEggValue3"], false);
+    enableBtnWithId(["eggToolImgEggValue3"], true);
 }
 
 getByid("dropperSource").onchange = function () {
@@ -130,13 +130,28 @@ getByid("oilColorDiffNum").oninput = getByid("oilColorDiffSize").oninput = funct
     getByid("oilColorDiffNum").value = getByid("oilColorDiffSize").value = this.value;
 }
 
+getByid("fillType").onchange = function () {
+    oilTool.fillType = "" + this.value;
+    enableBtnWithId(["oilTypeValue1", "oilTypeValue2"], false);
+    if ("" + this.value == "油漆桶") enableBtnWithId(["oilTypeValue1"], true);
+    if ("" + this.value == "填充線") enableBtnWithId(["oilTypeValue2"], true);
+}
+getByid("oilTypeValue1").parentNode.onclick = function () {
+    getByid("fillType").value = "油漆桶";
+    getByid("fillType").onchange();
+}
+getByid("oilTypeValue2").parentNode.onclick = function () {
+    getByid("fillType").value = "填充線";
+    getByid("fillType").onchange();
+}
+
 getByid("selectTool2DiffNum").oninput = getByid("selectTool2Diff").oninput = function () {
     selectTool2.ColorDiff = parseInt(this.value);
     getByid("selectTool2DiffNum").value = getByid("selectTool2Diff").value = this.value;
 }
 
 getByid("lineToolShape").onchange = function () {
-    lineTool.shape = "" + this.value; 
+    lineTool.shape = "" + this.value;
     enableBtnWithId(["lineToolShapeValue1", "lineToolShapeValue2", "lineToolShapeValue3"], false);
     if ("" + this.value == "circle") enableBtnWithId(["lineToolShapeValue1"], true);
     if ("" + this.value == "rect") enableBtnWithId(["lineToolShapeValue2"], true);
@@ -294,6 +309,7 @@ pencilTool.opacityWithPressure = true;
 var oilTool = new Brush(); oilTool.id = "oilTool";
 oilTool.Separation = "color";
 oilTool.ColorDiff = 15;
+oilTool.fillType = "油漆桶";
 var sprayTool = new Brush(); sprayTool.id = "sprayTool";
 sprayTool.size = 50;
 sprayTool.range = 5;
@@ -814,181 +830,273 @@ function invokeLineTool() {
 }
 
 function invokeOilTool() {
+    var fillType = oilTool.fillType;
+    if (fillType == "油漆桶") {
 
-    // 這個是要直接修改的pixelData
-    var pixelData = ToolSelector.layer.pixelData;
+        if (ToolSelector.path.length >= 1) return;
+        // 這個是要直接修改的pixelData
+        var pixelData = ToolSelector.layer.pixelData;
 
-    var root = ToolSelector.project.layerManager, cache = root.cache.cache.d2, layer = ToolSelector.layer;
-    const active = ToolSelector.project.layerManager.cache.active.d2;
-    const pixels = layer.pixelData.d2;
+        var root = ToolSelector.project.layerManager, cache = root.cache.cache.d2, layer = ToolSelector.layer;
+        const active = ToolSelector.project.layerManager.cache.active.d2;
+        const pixels = layer.pixelData.d2;
 
-    var temp = new PixelData(ToolSelector.layer.width, ToolSelector.layer.height, 4);
-    var [left, top, right, bottom] = [layer.x, layer.y, layer.x + layer.width, layer.y + layer.height];
+        var temp = new PixelData(ToolSelector.layer.width, ToolSelector.layer.height, 4);
+        var [left, top, right, bottom] = [layer.x, layer.y, layer.x + layer.width, layer.y + layer.height];
 
-    // 前一次畫過的不再拿出來 
-    var point = Canvas.mouseClickPoint;
-    var ColorDifference = oilTool.ColorDiff;
+        // 前一次畫過的不再拿出來 
+        var point = Canvas.mouseClickPoint;
+        var ColorDifference = oilTool.ColorDiff;
 
-    //建立參照表，數值小於它就可以填充
-    if (oilTool.Separation == "color") {
-        var [clickColorR, clickColorG, clickColorB, clickColorA] = getRgbaByPointFromPixelData(point, ToolSelector.layer.pixelData)
+        //建立參照表，數值小於它就可以填充
+        if (oilTool.Separation == "color") {
+            var [clickColorR, clickColorG, clickColorB, clickColorA] = getRgbaByPointFromPixelData(point, ToolSelector.layer.pixelData)
 
-        for (var h = top; h < bottom; h++) {
-            for (var w = left * 4; w < right * 4; w += 4) {
-                var currentColor = pixels[h][w + 0] + pixels[h][w + 1] + pixels[h][w + 2] + pixels[h][w + 3];
-                var clickColor = clickColorR + clickColorG + clickColorB + clickColorA;
-                var gap = ((clickColorR - pixels[h][w + 0]) ** 2 + (clickColorG - pixels[h][w + 1]) ** 2 + (clickColorB - pixels[h][w + 2]) ** 2 + (clickColorA - pixels[h][w + 3]) ** 2) ** 0.5;
+            for (var h = top; h < bottom; h++) {
+                for (var w = left * 4; w < right * 4; w += 4) {
+                    var currentColor = pixels[h][w + 0] + pixels[h][w + 1] + pixels[h][w + 2] + pixels[h][w + 3];
+                    var clickColor = clickColorR + clickColorG + clickColorB + clickColorA;
+                    var gap = ((clickColorR - pixels[h][w + 0]) ** 2 + (clickColorG - pixels[h][w + 1]) ** 2 + (clickColorB - pixels[h][w + 2]) ** 2 + (clickColorA - pixels[h][w + 3]) ** 2) ** 0.5;
 
-                temp.d2[h][w + 0] = temp.d2[h][w + 1] = temp.d2[h][w + 2] = temp.d2[h][w + 3] = gap;
+                    temp.d2[h][w + 0] = temp.d2[h][w + 1] = temp.d2[h][w + 2] = temp.d2[h][w + 3] = gap;
+                }
+            }
+
+            for (var h = top; h < bottom; h++) {
+                const pixelRow = pixels[h], cacheRow = cache[h];
+                for (var w = left * 4; w < right * 4; w += 4) {
+                    cacheRow[w + 0] = 0;
+                    cacheRow[w + 1] = 0;
+                    cacheRow[w + 2] = 0;
+                    cacheRow[w + 3] = 0;
+                }
+            }
+        } else if (oilTool.Separation == "gradient") {
+            // 往右、往左、往下、往上
+            for (var h = top; h < bottom; h++) {
+                for (var w = left * 4; w < right * 4; w += 4) {
+                    var currentColor = pixels[h][w + 0] + pixels[h][w + 1] + pixels[h][w + 2] + pixels[h][w + 3];
+
+                    if (h == top || w == left * 4 || h == bottom - 1 || w == right * 4 - 4) {
+                        // 請留意可能的錯誤
+                        //var currentColorRight = currentColorLeft = currentColorBottom = currentColorTop = currentColor;
+                        var gapRight = gapLeft = gapBottom = gapTop = 0;
+                    } else {
+                        var currentColorRight = pixels[h][w + 0 + 4] + pixels[h][w + 1 + 4] + pixels[h][w + 2 + 4] + pixels[h][w + 3 + 4];
+                        var currentColorLeft = pixels[h][w + 0 - 4] + pixels[h][w + 1 - 4] + pixels[h][w + 2 - 4] + pixels[h][w + 3 - 4];
+                        var currentColorBottom = pixels[h + 1][w + 0] + pixels[h + 1][w + 1] + pixels[h + 1][w + 2] + pixels[h + 1][w + 3];
+                        var currentColorTop = pixels[h - 1][w + 0] + pixels[h - 1][w + 1] + pixels[h - 1][w + 2] + pixels[h - 1][w + 3];
+
+                        var gapRight = ((pixels[h][w + 0] - pixels[h][w + 0 + 4]) ** 2 + (pixels[h][w + 1] - pixels[h][w + 1 + 4]) ** 2 + (pixels[h][w + 2] - pixels[h][w + 2 + 4]) ** 2 + (pixels[h][w + 3] - pixels[h][w + 3 + 4]) ** 2) ** 0.5;
+                        var gapLeft = ((pixels[h][w + 0] - pixels[h][w + 0 - 4]) ** 2 + (pixels[h][w + 1] - pixels[h][w + 1 - 4]) ** 2 + (pixels[h][w + 2] - pixels[h][w + 2 - 4]) ** 2 + (pixels[h][w + 3] - pixels[h][w + 3 - 4]) ** 2) ** 0.5;
+                        var gapBottom = ((pixels[h][w + 0] - pixels[h + 1][w + 0]) ** 2 + (pixels[h][w + 1] - pixels[h + 1][w + 1]) ** 2 + (pixels[h][w + 2] - pixels[h + 1][w + 2]) ** 2 + (pixels[h][w + 3] - pixels[h + 1][w + 3]) ** 2) ** 0.5;
+                        var gapTop = ((pixels[h][w + 0] - pixels[h - 1][w + 0]) ** 2 + (pixels[h][w + 1] - pixels[h - 1][w + 1]) ** 2 + (pixels[h][w + 2] - pixels[h - 1][w + 2]) ** 2 + (pixels[h][w + 3] - pixels[h - 1][w + 3]) ** 2) ** 0.5;
+                    }
+
+                    temp.d2[h][w + 0] = gapRight;
+                    temp.d2[h][w + 1] = gapLeft;
+                    temp.d2[h][w + 2] = gapBottom;
+                    temp.d2[h][w + 3] = gapTop;
+                }
+            }
+
+            for (var h = top; h < bottom; h++) {
+                const pixelRow = pixels[h], cacheRow = cache[h];
+                for (var w = left * 4; w < right * 4; w += 4) {
+                    cacheRow[w + 0] = 0;
+                    cacheRow[w + 1] = 0;
+                    cacheRow[w + 2] = 0;
+                    cacheRow[w + 3] = 0;
+                }
             }
         }
+        function CrossWater2(arr, mask) {
+            var nextArr = [];
+            if (mask) {
+                for (var i = 0; i < arr.length; i++) {
+                    var point = arr[i];
 
+                    //由左至右
+                    for (var w = (point.x + 1) * 4, w0 = (point.x + 1); w < right * 4; w += 4, w0++) {
+                        if (cache[point.y][w] == 0 && temp.d2[point.y][w + 0] <= ColorDifference && mask[point.y][w] === 1) {
+                            cache[point.y][w] = 7;
+                            nextArr.push(new Point(w0, point.y));
+                        } else break;
+                    }
+
+                    //從右到左
+                    for (var w = (point.x - 1) * 4, w0 = (point.x - 1); w >= left * 4; w -= 4, w0--) {
+                        if (cache[point.y][w] == 0 && temp.d2[point.y][w + 1] <= ColorDifference && mask[point.y][w] === 1) {
+                            cache[point.y][w] = 7;
+                            nextArr.push(new Point(w0, point.y));
+                        } else break;
+                    }
+
+                    //從上到下
+                    for (var h = point.y + 1; h < bottom; h++) {
+                        if (cache[h][point.x * 4] == 0 && temp.d2[h][point.x * 4 + 2] <= ColorDifference && mask[h][point.x * 4] === 1) {
+                            cache[h][point.x * 4] = 7;
+                            nextArr.push(new Point(point.x, h));
+                        } else break;
+                    }
+
+                    //從下到上
+                    for (var h = point.y - 1; h >= top; h--) {
+                        if (cache[h][point.x * 4] == 0 && temp.d2[h][point.x * 4 + 3] <= ColorDifference && mask[h][point.x * 4] === 1) {
+                            cache[h][point.x * 4] = 7;
+                            nextArr.push(new Point(point.x, h));
+                        } else break;
+                    }
+                }
+            } else {
+                for (var i = 0; i < arr.length; i++) {
+                    var point = arr[i];
+
+                    //由左至右
+                    for (var w = (point.x + 1) * 4, w0 = (point.x + 1); w < right * 4; w += 4, w0++) {
+                        if (cache[point.y][w] == 0 && temp.d2[point.y][w + 0] <= ColorDifference) {
+                            cache[point.y][w] = 7;
+                            nextArr.push(new Point(w0, point.y));
+                        } else break;
+                    }
+
+                    //從右到左
+                    for (var w = (point.x - 1) * 4, w0 = (point.x - 1); w >= left * 4; w -= 4, w0--) {
+                        if (cache[point.y][w] == 0 && temp.d2[point.y][w + 1] <= ColorDifference) {
+                            cache[point.y][w] = 7;
+                            nextArr.push(new Point(w0, point.y));
+                        } else break;
+                    }
+
+                    //從上到下
+                    for (var h = point.y + 1; h < bottom; h++) {
+                        if (cache[h][point.x * 4] == 0 && temp.d2[h][point.x * 4 + 2] <= ColorDifference) {
+                            cache[h][point.x * 4] = 7;
+                            nextArr.push(new Point(point.x, h));
+                        } else break;
+                    }
+
+                    //從下到上
+                    for (var h = point.y - 1; h >= top; h--) {
+                        if (cache[h][point.x * 4] == 0 && temp.d2[h][point.x * 4 + 3] <= ColorDifference) {
+                            cache[h][point.x * 4] = 7;
+                            nextArr.push(new Point(point.x, h));
+                        } else break;
+                    }
+                }
+            }
+            return nextArr;
+        }
+
+        var mask = null;
+        if (ToolSelector.hasSelection && ToolSelector.selection.getMap()) mask = ToolSelector.selection.getMap().d2;
+
+        var PointArr = [point];
+        while (PointArr.length > 0) PointArr = CrossWater2(PointArr, mask);
+
+        var color = ToolSelector.color;
         for (var h = top; h < bottom; h++) {
             const pixelRow = pixels[h], cacheRow = cache[h];
             for (var w = left * 4; w < right * 4; w += 4) {
-                cacheRow[w + 0] = 0;
-                cacheRow[w + 1] = 0;
-                cacheRow[w + 2] = 0;
-                cacheRow[w + 3] = 0;
-            }
-        }
-    } else if (oilTool.Separation == "gradient") {
-        // 往右、往左、往下、往上
-        for (var h = top; h < bottom; h++) {
-            for (var w = left * 4; w < right * 4; w += 4) {
-                var currentColor = pixels[h][w + 0] + pixels[h][w + 1] + pixels[h][w + 2] + pixels[h][w + 3];
-
-                if (h == top || w == left * 4 || h == bottom - 1 || w == right * 4 - 4) {
-                    // 請留意可能的錯誤
-                    //var currentColorRight = currentColorLeft = currentColorBottom = currentColorTop = currentColor;
-                    var gapRight = gapLeft = gapBottom = gapTop = 0;
-                } else {
-                    var currentColorRight = pixels[h][w + 0 + 4] + pixels[h][w + 1 + 4] + pixels[h][w + 2 + 4] + pixels[h][w + 3 + 4];
-                    var currentColorLeft = pixels[h][w + 0 - 4] + pixels[h][w + 1 - 4] + pixels[h][w + 2 - 4] + pixels[h][w + 3 - 4];
-                    var currentColorBottom = pixels[h + 1][w + 0] + pixels[h + 1][w + 1] + pixels[h + 1][w + 2] + pixels[h + 1][w + 3];
-                    var currentColorTop = pixels[h - 1][w + 0] + pixels[h - 1][w + 1] + pixels[h - 1][w + 2] + pixels[h - 1][w + 3];
-
-                    var gapRight = ((pixels[h][w + 0] - pixels[h][w + 0 + 4]) ** 2 + (pixels[h][w + 1] - pixels[h][w + 1 + 4]) ** 2 + (pixels[h][w + 2] - pixels[h][w + 2 + 4]) ** 2 + (pixels[h][w + 3] - pixels[h][w + 3 + 4]) ** 2) ** 0.5;
-                    var gapLeft = ((pixels[h][w + 0] - pixels[h][w + 0 - 4]) ** 2 + (pixels[h][w + 1] - pixels[h][w + 1 - 4]) ** 2 + (pixels[h][w + 2] - pixels[h][w + 2 - 4]) ** 2 + (pixels[h][w + 3] - pixels[h][w + 3 - 4]) ** 2) ** 0.5;
-                    var gapBottom = ((pixels[h][w + 0] - pixels[h + 1][w + 0]) ** 2 + (pixels[h][w + 1] - pixels[h + 1][w + 1]) ** 2 + (pixels[h][w + 2] - pixels[h + 1][w + 2]) ** 2 + (pixels[h][w + 3] - pixels[h + 1][w + 3]) ** 2) ** 0.5;
-                    var gapTop = ((pixels[h][w + 0] - pixels[h - 1][w + 0]) ** 2 + (pixels[h][w + 1] - pixels[h - 1][w + 1]) ** 2 + (pixels[h][w + 2] - pixels[h - 1][w + 2]) ** 2 + (pixels[h][w + 3] - pixels[h - 1][w + 3]) ** 2) ** 0.5;
-                }
-
-                temp.d2[h][w + 0] = gapRight;
-                temp.d2[h][w + 1] = gapLeft;
-                temp.d2[h][w + 2] = gapBottom;
-                temp.d2[h][w + 3] = gapTop;
+                if (cache[h][w] != 7) continue;
+                pixelRow[w + 0] = color.r;
+                pixelRow[w + 1] = color.g;
+                pixelRow[w + 2] = color.b;
+                pixelRow[w + 3] = color.a;
             }
         }
 
-        for (var h = top; h < bottom; h++) {
-            const pixelRow = pixels[h], cacheRow = cache[h];
-            for (var w = left * 4; w < right * 4; w += 4) {
-                cacheRow[w + 0] = 0;
-                cacheRow[w + 1] = 0;
-                cacheRow[w + 2] = 0;
-                cacheRow[w + 3] = 0;
-            }
-        }
+        GUI.refleshSandwichAndFullCanvas();
     }
-    function CrossWater2(arr, mask) {
-        var nextArr = [];
-        if (mask) {
-            for (var i = 0; i < arr.length; i++) {
-                var point = arr[i];
+    else if (fillType == "填充線") {
+        var root = ToolSelector.project.layerManager, cache = root.cache.cache.d2, layer = ToolSelector.layer;
 
-                //由左至右
-                for (var w = (point.x + 1) * 4, w0 = (point.x + 1); w < right * 4; w += 4, w0++) {
-                    if (cache[point.y][w] == 0 && temp.d2[point.y][w + 0] <= ColorDifference && mask[point.y][w] === 1) {
-                        cache[point.y][w] = 7;
-                        nextArr.push(new Point(w0, point.y));
-                    } else break;
-                }
+        if (ToolSelector.path.length <= 1) return;
+        if (ToolSelector.colorIndex == 2) return;
 
-                //從右到左
-                for (var w = (point.x - 1) * 4, w0 = (point.x - 1); w >= left * 4; w -= 4, w0--) {
-                    if (cache[point.y][w] == 0 && temp.d2[point.y][w + 1] <= ColorDifference && mask[point.y][w] === 1) {
-                        cache[point.y][w] = 7;
-                        nextArr.push(new Point(w0, point.y));
-                    } else break;
-                }
+        // 這個是要直接修改的pixelData
+        var pixelData = ToolSelector.project.layerManager.cache.active;
+        if (ToolSelector.path.length == 2) pixelData.clear();
 
-                //從上到下
-                for (var h = point.y + 1; h < bottom; h++) {
-                    if (cache[h][point.x * 4] == 0 && temp.d2[h][point.x * 4 + 2] <= ColorDifference && mask[h][point.x * 4] === 1) {
-                        cache[h][point.x * 4] = 7;
-                        nextArr.push(new Point(point.x, h));
-                    } else break;
-                }
+        var size = 4, halfSize = size / 1;
 
-                //從下到上
-                for (var h = point.y - 1; h >= top; h--) {
-                    if (cache[h][point.x * 4] == 0 && temp.d2[h][point.x * 4 + 3] <= ColorDifference && mask[h][point.x * 4] === 1) {
-                        cache[h][point.x * 4] = 7;
-                        nextArr.push(new Point(point.x, h));
-                    } else break;
-                }
+        var rgba = ToolSelector.color.toRGBAList();
+        rgba[3] = parseInt(255 * (ToolSelector.brush.opacity / 100.0));
+        createCircle(halfSize, rgba, ToolSelector.brush.antiAliasing);
+
+        // 透明色會用完全覆蓋的方式
+        var 混合方式 = 混合模式.筆刷;
+        var startPoint = Canvas.mouseClickPoint;
+
+        function getRotationDirection(p1, p2) {
+            const origin = startPoint;
+            const v1 = { x: p1.x - origin.x, y: p1.y - origin.y };
+            const v2 = { x: p2.x - origin.x, y: p2.y - origin.y };
+            // 計算外積
+            const crossProduct = v1.x * v2.y - v1.y * v2.x;
+            return crossProduct;
+            //if (crossProduct > 0) return crossProduct; // 逆時針
+            //if (crossProduct < 0) return crossProduct; // 順時針
+            return 0;// 平行
+        }
+
+        var originDirection = 0;
+        for (var e = 1; e < Canvas.pathCurrentIndex - 1; e++) {
+            if (getRotationDirection(ToolSelector.path[e], ToolSelector.path[e - 1]) != 0) {
+                originDirection = getRotationDirection(ToolSelector.path[e], ToolSelector.path[e - 1]);
+                break;
             }
-        } else {
-            for (var i = 0; i < arr.length; i++) {
-                var point = arr[i];
+        }
+        if (Canvas.pathCurrentIndex > 2) {
+            if (getRotationDirection(ToolSelector.path[Canvas.pathCurrentIndex], ToolSelector.path[Canvas.pathCurrentIndex + 1]) * originDirection < 0)
+                混合方式 = 混合模式.完全透明;
+        }
 
-                //由左至右
-                for (var w = (point.x + 1) * 4, w0 = (point.x + 1); w < right * 4; w += 4, w0++) {
-                    if (cache[point.y][w] == 0 && temp.d2[point.y][w + 0] <= ColorDifference) {
-                        cache[point.y][w] = 7;
-                        nextArr.push(new Point(w0, point.y));
-                    } else break;
-                }
+        for (var e = Canvas.pathCurrentIndex + 1; e < ToolSelector.path.length; e++) {
+            //var endPoint = ToolSelector.path[ToolSelector.path.length - 1];
+            var endPoint = ToolSelector.path[e];
+            var endPoint0 = ToolSelector.path[e - 1];
+            var Paths = path2LinkPath([endPoint0, endPoint]);
 
-                //從右到左
-                for (var w = (point.x - 1) * 4, w0 = (point.x - 1); w >= left * 4; w -= 4, w0--) {
-                    if (cache[point.y][w] == 0 && temp.d2[point.y][w + 1] <= ColorDifference) {
-                        cache[point.y][w] = 7;
-                        nextArr.push(new Point(w0, point.y));
-                    } else break;
-                }
+            for (var e2 = 0; e2 < Paths.length; e2++) {
+                var [previewPoint2, point2, distance2] = Paths[e2];
 
-                //從上到下
-                for (var h = point.y + 1; h < bottom; h++) {
-                    if (cache[h][point.x * 4] == 0 && temp.d2[h][point.x * 4 + 2] <= ColorDifference) {
-                        cache[h][point.x * 4] = 7;
-                        nextArr.push(new Point(point.x, h));
-                    } else break;
-                }
+                for (var i2 = 0; i2 <= distance2; i2++) {
+                    var ratio2 = i2 / distance2;
+                    var currentPoint2 = new Point((previewPoint2.x + (point2.x - previewPoint2.x) * ratio2) | 0, (previewPoint2.y + (point2.y - previewPoint2.y) * ratio2) | 0);
+                    var path = path2LinkPath([startPoint, new Point(currentPoint2.x, currentPoint2.y)]);
 
-                //從下到上
-                for (var h = point.y - 1; h >= top; h--) {
-                    if (cache[h][point.x * 4] == 0 && temp.d2[h][point.x * 4 + 3] <= ColorDifference) {
-                        cache[h][point.x * 4] = 7;
-                        nextArr.push(new Point(point.x, h));
-                    } else break;
+                    for (var p = 0; p < path.length; p++) {
+                        // 路徑中的一格格 (注意跳格的情況不列入)
+                        var [previewPoint, point, distance] = path[p];
+                        //前一座標到當前座標的距離
+                        for (var i = 0; i <= distance; i++) {
+                            var ratio = i / distance;
+                            var currentPoint = new Point((previewPoint.x + (point.x - previewPoint.x) * ratio) | 0, (previewPoint.y + (point.y - previewPoint.y) * ratio) | 0);
+                            const Y = currentPoint.y, X = currentPoint.x;
+
+                            pastePixelData(Brush.cache, 0, 0, size, size, pixelData, X - halfSize, Y - halfSize, size, size, 混合方式);
+                        }
+                    }
                 }
             }
         }
-        return nextArr;
+        // 找出最大點及最小點，僅更新該區域，省運算量
+        /*var minX = Canvas.width, maxX = 0, minY = Canvas.height, maxY = 0;
+        var path = [startPoint, endPoint];
+        for (var p = 0; p < path.length; p++) {
+            if (minX >= path[p].x) minX = path[p].x;
+            if (minY >= path[p].y) minY = path[p].y;
+            if (maxX <= path[p].x) maxX = path[p].x;
+            if (maxY <= path[p].y) maxY = path[p].y;
+        }*/
+
+        // 往外多擴張一px
+        ToolSelector.project.layerManager.needRefleshRect = true;
+
+        Canvas.pathCurrentIndex = ToolSelector.path.length - 1;
+        GUI.refleshCanvas();
     }
-
-    var mask = null;
-    if (ToolSelector.hasSelection && ToolSelector.selection.getMap()) mask = ToolSelector.selection.getMap().d2;
-
-    var PointArr = [point];
-    while (PointArr.length > 0) PointArr = CrossWater2(PointArr, mask);
-
-    var color = ToolSelector.color;
-    for (var h = top; h < bottom; h++) {
-        const pixelRow = pixels[h], cacheRow = cache[h];
-        for (var w = left * 4; w < right * 4; w += 4) {
-            if (cache[h][w] != 7) continue;
-            pixelRow[w + 0] = color.r;
-            pixelRow[w + 1] = color.g;
-            pixelRow[w + 2] = color.b;
-            pixelRow[w + 3] = color.a;
-        }
-    }
-
-    GUI.refleshSandwichAndFullCanvas();
-    return;
 }
 
 function invokeSprayTool() {
@@ -1377,6 +1485,11 @@ getByid("dropperTool").onmousemove = function () { GUI.setStatusText("滴管工�
 
 getByid("selectEmpty").onclick = function () {
     ToolSelector.selection = null;
+    GUI.refleshMarkCanvas();
+}
+
+getByid("reverseEmpty").onclick = function () {
+    if (ToolSelector.selection) ToolSelector.selection.reverse();
     GUI.refleshMarkCanvas();
 }
 

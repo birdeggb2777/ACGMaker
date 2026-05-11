@@ -29,6 +29,7 @@ getByid("canvas_area").onpointerdown = function (e) {
     if (Canvas.mouseDownRight) Command.cmd("brushRight", null);
     // 可放到其他程式碼區域
     if (ToolSelector.brush == pencilTool || ToolSelector.brush == waterpenTool || ToolSelector.brush == erasorTool || ToolSelector.brush == sprayTool || ToolSelector.brush == lineTool) beginPencilTool();
+    if (ToolSelector.brush == oilTool && oilTool.fillType == "填充線") beginPencilTool();
 }
 
 getByid("canvas_area").onpointerup = function (e) {
@@ -45,6 +46,7 @@ getByid("canvas_area").onpointerup = function (e) {
     Command.cmd("brushEnd", null);
     // 可放到其他程式碼區域
     if (ToolSelector.brush == pencilTool || ToolSelector.brush == waterpenTool || ToolSelector.brush == erasorTool || ToolSelector.brush == sprayTool || ToolSelector.brush == lineTool) endPencilTool();
+    if (ToolSelector.brush == oilTool && oilTool.fillType == "填充線") endPencilTool();
 }
 
 function isPointInRect(point, rect) {

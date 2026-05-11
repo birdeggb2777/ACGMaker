@@ -26,6 +26,7 @@ class 混合模式 {
     static 完全覆蓋 = 100;
     static 筆刷 = 201;
     static 連續塗抹 = 210;
+    static 完全透明 = 270;
     static 橡皮擦 = 251;
 }
 
@@ -197,6 +198,21 @@ function pastePixelData(來源, sx, sy, sWidth, sHeight, 目標, dx, dy, dWidth,
                         target[w4 + 1] = (來源Row[來源X + 1]) * inv255;
                         target[w4 + 2] = (來源Row[來源X + 2]) * inv255;
                         target[w4 + 3] = (來源Row[來源X + 3]) * inv255 * pressure;
+                    }
+                }
+                break;
+            case 混合模式.完全透明:
+                for (let h = top; h < bottom; h++) {
+                    const 來源Y = clamp((sy + (h - dy) * 比例Y) | 0, 0, 來源.h);
+                    const target = 目標.d2[h], 來源Row = 來源.d2[來源Y];
+                    for (let w = left, w4 = left * 4; w < right; w++, w4 += 4) {
+                        const v = (sx + (w - dx) * 比例X) | 0;
+                        const 來源X = v > 來源.w ? 來源.w : (v < 0 ? 0 : v) * 4;
+                        //if (來源Row[來源X + 3] * inv255 <= target[w4 + 3]) continue;
+                        target[w4 + 0] = 0;
+                        target[w4 + 1] = 0;
+                        target[w4 + 2] = 0;
+                        target[w4 + 3] = 0;
                     }
                 }
                 break;
