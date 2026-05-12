@@ -393,10 +393,21 @@ function invokeEggTool1() {
 
 // 選擇工具1
 function invokeSelectTool1() {
+    if (ToolSelector.path.length <= 1) {
+        ToolSelector.selection = null;
+        GUI.refleshMarkCanvas();
+        return;
+    }
     var startPoint = Canvas.mouseClickPoint;
     var endPoint = ToolSelector.path[ToolSelector.path.length - 1];
-    if (ToolSelector.path.length <= 1) ToolSelector.selection = null;
-    else ToolSelector.selection = new Selection("rect", new Rect(startPoint.x, startPoint.y, endPoint.x, endPoint.y));
+
+    var top = startPoint.y < endPoint.y ? startPoint.y : endPoint.y;
+    var bottom = startPoint.y > endPoint.y ? startPoint.y : endPoint.y;
+    var left = startPoint.x < endPoint.x ? startPoint.x : endPoint.x;
+    var right = startPoint.x > endPoint.x ? startPoint.x : endPoint.x;
+
+    if (top == bottom || left == right) ToolSelector.selection = null;
+    else ToolSelector.selection = new Selection("rect", new Rect(left, top, right, bottom));
     GUI.refleshMarkCanvas();
 }
 

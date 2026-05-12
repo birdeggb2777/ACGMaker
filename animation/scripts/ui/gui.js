@@ -79,7 +79,7 @@ class GUI {
                             if (pixels[h - 1][w - 4] == 0 || pixels[h - 1][w] == 0 || pixels[h - 1][w + 4] == 0 ||
                                 pixels[h][w - 4] == 0 || pixels[h][w] == 0 || pixels[h][w + 4] == 0 ||
                                 pixels[h + 1][w - 4] == 0 || pixels[h + 1][w] == 0 || pixels[h + 1][w + 4] == 0) {
-                                const indexX = (w / 5) | 0, indexY = (h / 20) | 0;
+                                const indexX = (w / 80) | 0, indexY = (h / 20) | 0;
                                 const isWhite = (indexX + indexY) % 2 === 0;
                                 if (isWhite) {
                                     data[h * 4 * width + w] = data[h * 4 * width + w + 1] = data[h * 4 * width + w + 2] = 0;
