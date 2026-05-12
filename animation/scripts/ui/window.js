@@ -145,6 +145,129 @@ class createProjectWindow {
     }
 }
 
+
+class pasteImgWindow {
+    static windows = {};
+    static MouseDownPoint = null;
+    constructor(img) {
+        this.createWindow(img);
+    }
+
+    createWindow(img) {
+        var outer_div = getByid("outer_div");
+
+        var root = ToolSelector.project.layerManager;
+
+        this.window = createElem("div"); this.window.className = "childWindow";
+        this.window.style.zIndex = "100";
+        this.windowTitle = createElem("div"); this.windowTitle.className = "windowTitle";
+        this.windowClose = createElem("img"); this.windowClose.className = "windowClose";
+        this.windowContent = createElem("div"); this.windowContent.className = "windowContent";
+        this.window.style.position = "absolute";
+
+        this.window.style.width = outer_div.offsetWidth / 2 + "px"
+        this.window.style.height = outer_div.offsetHeight / 2 + "px"
+
+        this.window.style.left = (outer_div.offsetWidth / 2 - outer_div.offsetWidth / 4) + 'px';
+        this.window.style.top = (outer_div.offsetHeight / 2 - outer_div.offsetHeight / 4) + 'px';
+
+        this.windowTitle.innerText = "新建";
+        this.windowTitle.style.userSelect = "none";
+        this.windowTitle.window = this.windowClose.window = this.window;
+        this.windowClose.closeWindow = this.closeWindow;
+        this.windowClose.src = "./image/close.png";
+
+        this.window.appendChild(this.windowTitle);
+        this.window.appendChild(this.windowContent);
+        this.windowTitle.appendChild(this.windowClose);
+
+        this.normalLabel = createElem("label");
+        this.normalLabel.innerText = "偵測到貼上圖片的動作，請從下方選擇其中一個：";
+        this.windowContent.appendChild(this.normalLabel);
+
+        this.windowContent.appendChild(createElem("br"));
+        const ProjectButton = createElem("button"); ProjectButton.innerText = "使用剪貼簿影像，建立新的專案";
+        this.windowContent.appendChild(ProjectButton);
+        ProjectButton.window = this;
+        ProjectButton.onclick = function () {
+            var project = new Project();
+            ACGM.projects.push(project);
+            ToolSelector.project = project;
+
+            project.layerManager = new LayerManager(img.width, img.height, 1);
+            var layer = new Layer(0, 0, 0, img.width, img.height, 1); layer.opacity = 1.0;
+            project.name = layer.name = "剪貼簿";
+            ///////////////
+            var canvas = createElem("canvas"), ctx = canvas.getContext('2d');
+            canvas.width = img.width; canvas.height = img.height
+            ctx.drawImage(img, 0, 0);
+            var data = ctx.getImageData(0, 0, img.width, img.height).data;
+            ///////////////
+            for (var i = 0; i < layer.pixelData.d1.length; i++)layer.pixelData.d1[i] = data[i];
+            ToolSelector.layer = layer;
+            project.layerManager.layers.push(layer);
+            project.layerManager.needRefleshRect = true;
+            createSandwich();
+            GUI.refleshGUI();
+            Canvas.AutoFitTransform()
+            this.window.closeWindow();
+        }
+
+        const OnlyPasteButton = createElem("button"); OnlyPasteButton.innerText = "將剪貼簿影像，貼到目前專案的新圖層";
+        this.windowContent.appendChild(OnlyPasteButton);
+        OnlyPasteButton.window = this;
+        OnlyPasteButton.onclick = function () {
+            var canvas = createElem("canvas"), ctx = canvas.getContext('2d');
+            canvas.width = img.width; canvas.height = img.height
+            ctx.drawImage(img, 0, 0);
+            var data = ctx.getImageData(0, 0, img.width, img.height).data;
+            var layer = addNewLayer();
+            layer.name = "剪貼簿";
+            Brush.cache = new PixelData(img.width, img.height, 4);
+            for (var i = 0; i < Brush.cache.d1.length; i++)Brush.cache.d1[i] = data[i];
+            pastePixelData(Brush.cache, 0, 0, img.width, img.height, ToolSelector.layer.pixelData, 0, 0, img.width, img.height, 混合模式.完全覆蓋, 1.0);
+            root.needRefleshRect = true;
+            createFullSandwich();
+            GUI.refleshGUI();
+            this.window.closeWindow();
+        }
+        OnlyPasteButton.style.margin = ProjectButton.style.margin = "5px";
+
+        outer_div.appendChild(this.window);
+        getByid("cover_div").style.display = "block";
+
+        const windowTitle = this.windowTitle;
+        this.windowTitle.onmousedown = function (e) {
+            this.mouseDown = true;
+            // 相對於視窗的座標
+            this.clientPoint = new Point(e.clientX, e.clientY);
+            this.offsetPoint = new Point(e.offsetX, e.offsetY);
+        }
+        getByid("outer_div").onmousemove = function (e) {
+            if (!windowTitle.mouseDown) return;
+            // 相對於視窗的座標
+            const x = e.clientX, y = e.clientY;
+            windowTitle.window.style.left = windowTitle.clientPoint.x - windowTitle.offsetPoint.x + (x - windowTitle.clientPoint.x) + "px";
+            windowTitle.window.style.top = windowTitle.clientPoint.y - windowTitle.offsetPoint.y + (y - windowTitle.clientPoint.y) + "px";
+        }
+        getByid("outer_div").onmouseup = function (e) {
+            windowTitle.mouseDown = false;
+        }
+
+        this.windowClose.onclick = function () {
+            this.closeWindow();
+        }
+    }
+
+    closeWindow(e) {
+        if (e) e.stopImmediatePropagation();
+        if (this.window.window) getByid("outer_div").removeChild(this.window.window);
+        if (this.window) getByid("outer_div").removeChild(this.window);
+        else removeChild(this.window);
+        getByid("cover_div").style.display = "none";
+    }
+}
+
 class ColorWindow {
     static windows = {};
     static MouseDownPoint = null;

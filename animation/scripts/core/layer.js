@@ -551,4 +551,5 @@ function addNewLayer() {
     root.needRefleshRect = true;
     createFullSandwich();
     GUI.refleshGUI();
+    return layer;
 }
