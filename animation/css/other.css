@@ -117,6 +117,7 @@
     background-color: rgb(78, 78, 78);
     border-width: 2px;
     border-style: solid none none none;
+    z-index: 60;
 }
 
 .left_icon {

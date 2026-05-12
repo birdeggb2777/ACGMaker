@@ -130,6 +130,11 @@ getByid("oilColorDiffNum").oninput = getByid("oilColorDiffSize").oninput = funct
     getByid("oilColorDiffNum").value = getByid("oilColorDiffSize").value = this.value;
 }
 
+getByid("oilOpacityNum").oninput = getByid("oilOpacity").oninput = function () {
+    oilTool.opacity = parseInt(this.value);
+    getByid("oilOpacityNum").value = getByid("oilOpacity").value = this.value;
+}
+
 getByid("fillType").onchange = function () {
     oilTool.fillType = "" + this.value;
     enableBtnWithId(["oilTypeValue1", "oilTypeValue2"], false);
@@ -687,6 +692,36 @@ function createHoleCircle(halfSize, rgbaList, edgeWidth = 0, lineWidth = 1) {
         }
     }
 }
+
+function createTriangle(rgbaList, minX_, minY_, maxX_, maxY_, inputPoint) {
+    function isPointInTriangle(p, p0, p1, p2) {
+        const crossProduct = (pA, pB, pC) => {
+            return (pA.x - pC.x) * (pB.y - pC.y) - (pA.y - pC.y) * (pB.x - pC.x);
+        };
+        const d1 = crossProduct(p, p0, p1), d2 = crossProduct(p, p1, p2), d3 = crossProduct(p, p2, p0);
+        const has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0), has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+        return !(has_neg && has_pos);
+    }
+    var point = new Point(maxX_ - minX_, maxY_ - minY_);
+    Brush.cache = new F32PixelData(maxX_ - minX_ + 1, maxY_ - minY_ + 1, 4);
+
+    var minY = 0;
+    var minX = 0;
+    var maxY = maxY_ - minY_;
+    var maxX = maxX_ - minX_;
+    var [r, g, b, a] = rgbaList;
+    var [p0, p1, p2] = inputPoint;
+    for (var y = minY; y <= maxY; y++) {
+        for (var x = minX; x <= maxX; x++) {
+            let inTriangle = isPointInTriangle(new Point(x + minX_, y + minY_), p0, p1, p2);
+            if (inTriangle <= 0) continue;
+            Brush.cache.d2[y][x * 4 + 0] = r;
+            Brush.cache.d2[y][x * 4 + 1] = g;
+            Brush.cache.d2[y][x * 4 + 2] = b;
+            Brush.cache.d2[y][x * 4 + 3] = a;
+        }
+    }
+}
 function createCircle(halfSize, rgbaList, edgeWidth = 0) {
     var point = new Point(halfSize * 2, halfSize * 2);
     Brush.cache = new F32PixelData(halfSize * 2 + 1, halfSize * 2 + 1, 4);
@@ -1016,84 +1051,28 @@ function invokeOilTool() {
 
         // 這個是要直接修改的pixelData
         var pixelData = ToolSelector.project.layerManager.cache.active;
-        if (ToolSelector.path.length == 2) pixelData.clear();
 
         var size = 4, halfSize = size / 1;
 
         var rgba = ToolSelector.color.toRGBAList();
         rgba[3] = parseInt(255 * (ToolSelector.brush.opacity / 100.0));
-        createCircle(halfSize, rgba, ToolSelector.brush.antiAliasing);
 
         // 透明色會用完全覆蓋的方式
-        var 混合方式 = 混合模式.筆刷;
+        var 混合方式 = 混合模式.反向塗抹;
         var startPoint = Canvas.mouseClickPoint;
-
-        function getRotationDirection(p1, p2) {
-            const origin = startPoint;
-            const v1 = { x: p1.x - origin.x, y: p1.y - origin.y };
-            const v2 = { x: p2.x - origin.x, y: p2.y - origin.y };
-            // 計算外積
-            const crossProduct = v1.x * v2.y - v1.y * v2.x;
-            return crossProduct;
-            //if (crossProduct > 0) return crossProduct; // 逆時針
-            //if (crossProduct < 0) return crossProduct; // 順時針
-            return 0;// 平行
-        }
-
-        var originDirection = 0;
-        for (var e = 1; e < Canvas.pathCurrentIndex - 1; e++) {
-            if (getRotationDirection(ToolSelector.path[e], ToolSelector.path[e - 1]) != 0) {
-                originDirection = getRotationDirection(ToolSelector.path[e], ToolSelector.path[e - 1]);
-                break;
-            }
-        }
+        var minX = Canvas.width, maxX = 0, minY = Canvas.height, maxY = 0;
         if (Canvas.pathCurrentIndex > 2) {
-            if (getRotationDirection(ToolSelector.path[Canvas.pathCurrentIndex], ToolSelector.path[Canvas.pathCurrentIndex + 1]) * originDirection < 0)
-                混合方式 = 混合模式.完全透明;
-        }
-
-        for (var e = Canvas.pathCurrentIndex + 1; e < ToolSelector.path.length; e++) {
-            //var endPoint = ToolSelector.path[ToolSelector.path.length - 1];
-            var endPoint = ToolSelector.path[e];
-            var endPoint0 = ToolSelector.path[e - 1];
-            var Paths = path2LinkPath([endPoint0, endPoint]);
-
-            for (var e2 = 0; e2 < Paths.length; e2++) {
-                var [previewPoint2, point2, distance2] = Paths[e2];
-
-                for (var i2 = 0; i2 <= distance2; i2++) {
-                    var ratio2 = i2 / distance2;
-                    var currentPoint2 = new Point((previewPoint2.x + (point2.x - previewPoint2.x) * ratio2) | 0, (previewPoint2.y + (point2.y - previewPoint2.y) * ratio2) | 0);
-                    var path = path2LinkPath([startPoint, new Point(currentPoint2.x, currentPoint2.y)]);
-
-                    for (var p = 0; p < path.length; p++) {
-                        // 路徑中的一格格 (注意跳格的情況不列入)
-                        var [previewPoint, point, distance] = path[p];
-                        //前一座標到當前座標的距離
-                        for (var i = 0; i <= distance; i++) {
-                            var ratio = i / distance;
-                            var currentPoint = new Point((previewPoint.x + (point.x - previewPoint.x) * ratio) | 0, (previewPoint.y + (point.y - previewPoint.y) * ratio) | 0);
-                            const Y = currentPoint.y, X = currentPoint.x;
-
-                            pastePixelData(Brush.cache, 0, 0, size, size, pixelData, X - halfSize, Y - halfSize, size, size, 混合方式);
-                        }
-                    }
-                }
+            var path = [startPoint, ToolSelector.path[Canvas.pathCurrentIndex], ToolSelector.path[Canvas.pathCurrentIndex + 1]];
+            for (var p = 0; p < path.length; p++) {
+                if (minX >= path[p].x) minX = path[p].x;
+                if (minY >= path[p].y) minY = path[p].y;
+                if (maxX <= path[p].x) maxX = path[p].x;
+                if (maxY <= path[p].y) maxY = path[p].y;
             }
+            createTriangle(rgba, minX, minY, maxX, maxY, [startPoint, ToolSelector.path[Canvas.pathCurrentIndex + 1], ToolSelector.path[Canvas.pathCurrentIndex]]);
+            pastePixelData(Brush.cache, 0, 0, maxX - minX, maxY - minY, pixelData, minX, minY, maxX - minX, maxY - minY, 混合方式);
+            ToolSelector.project.layerManager.needRefleshRect = new Rect(minX, minY, maxX, maxY);;
         }
-        // 找出最大點及最小點，僅更新該區域，省運算量
-        /*var minX = Canvas.width, maxX = 0, minY = Canvas.height, maxY = 0;
-        var path = [startPoint, endPoint];
-        for (var p = 0; p < path.length; p++) {
-            if (minX >= path[p].x) minX = path[p].x;
-            if (minY >= path[p].y) minY = path[p].y;
-            if (maxX <= path[p].x) maxX = path[p].x;
-            if (maxY <= path[p].y) maxY = path[p].y;
-        }*/
-
-        // 往外多擴張一px
-        ToolSelector.project.layerManager.needRefleshRect = true;
-
         Canvas.pathCurrentIndex = ToolSelector.path.length - 1;
         GUI.refleshCanvas();
     }

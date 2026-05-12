@@ -37,6 +37,114 @@ getByid("colorpalette").onclick = function (e) {
     else ColorWindow.DisplayColorWindow(e);
 }
 
+
+getByid("createNewProject").onclick = function (e) {
+    new createProjectWindow();
+}
+
+class createProjectWindow {
+    static windows = {};
+    static MouseDownPoint = null;
+    constructor() {
+        this.createWindow();
+    }
+
+    createWindow() {
+        var outer_div = getByid("outer_div");
+
+        var root = ToolSelector.project.layerManager;
+
+        this.window = createElem("div"); this.window.className = "childWindow";
+        this.window.style.zIndex = "100";
+        this.windowTitle = createElem("div"); this.windowTitle.className = "windowTitle";
+        this.windowClose = createElem("img"); this.windowClose.className = "windowClose";
+        this.windowContent = createElem("div"); this.windowContent.className = "windowContent";
+        this.window.style.position = "absolute";
+
+        this.window.style.width = outer_div.offsetWidth / 2 + "px"
+        this.window.style.height = outer_div.offsetHeight / 2 + "px"
+
+        this.window.style.left = (outer_div.offsetWidth / 2 - outer_div.offsetWidth / 4) + 'px';
+        this.window.style.top = (outer_div.offsetHeight / 2 - outer_div.offsetHeight / 4) + 'px';
+
+        this.windowTitle.innerText = "新建";
+        this.windowTitle.style.userSelect = "none";
+        this.windowTitle.window = this.windowClose.window = this.window;
+        this.windowClose.closeWindow = this.closeWindow;
+        this.windowClose.src = "./image/close.png";
+
+        this.window.appendChild(this.windowTitle);
+        this.window.appendChild(this.windowContent);
+        this.windowTitle.appendChild(this.windowClose);
+
+        this.projectNameLabel = createElem("label");
+        this.projectNameLabel.innerText = "專案名稱：";
+        this.windowContent.appendChild(this.projectNameLabel);
+        this.projectNameTextBox = createElem("input", null, "inputText");
+        this.projectNameTextBox.type = "text", this.projectNameTextBox.value = "新建插圖";
+        this.windowContent.appendChild(this.projectNameTextBox);
+
+        this.projectWidth = createElem("label"), this.projectWidth.innerText = "寬度：";
+        this.projectHeight = createElem("label"), this.projectHeight.innerText = "高度：";
+        this.projectWidthTextBox = createElem("input", null, "inputText");
+        this.projectWidthTextBox.type = "number", this.projectWidthTextBox.value = "1024";
+        this.projectHeightTextBox = createElem("input", null, "inputText");
+        this.projectHeightTextBox.type = "number", this.projectHeightTextBox.value = "768";
+
+        this.windowContent.appendChild(createElem("br"));
+        this.windowContent.appendChild(this.projectWidth);
+        this.windowContent.appendChild(this.projectWidthTextBox);
+        this.windowContent.appendChild(createElem("br"));
+        this.windowContent.appendChild(this.projectHeight);
+        this.windowContent.appendChild(this.projectHeightTextBox);
+
+        this.windowContent.appendChild(createElem("br"));
+        this.windowContent.appendChild(createElem("br"));
+        const button = createElem("button"); button.innerText = "建立";
+        this.windowContent.appendChild(button);
+        button.window = this, button.projectNameTextBox = this.projectNameTextBox, button.projectWidthTextBox = this.projectWidthTextBox, button.projectHeightTextBox = this.projectHeightTextBox;
+        button.onclick = function () {
+            if (parseInt(this.projectWidthTextBox.value) <= 10 || parseInt(this.projectHeightTextBox.value) <= 10)
+                return GUI.setStatusAlert("長度與寬度請設在10以上！！！");
+            createANewProject("" + this.projectNameTextBox.value, parseInt(this.projectWidthTextBox.value), parseInt(this.projectHeightTextBox.value));
+            this.window.closeWindow();
+        }
+
+        outer_div.appendChild(this.window);
+        getByid("cover_div").style.display = "block";
+
+        const windowTitle = this.windowTitle;
+        this.windowTitle.onmousedown = function (e) {
+            this.mouseDown = true;
+            // 相對於視窗的座標
+            this.clientPoint = new Point(e.clientX, e.clientY);
+            this.offsetPoint = new Point(e.offsetX, e.offsetY);
+        }
+        getByid("outer_div").onmousemove = function (e) {
+            if (!windowTitle.mouseDown) return;
+            // 相對於視窗的座標
+            const x = e.clientX, y = e.clientY;
+            windowTitle.window.style.left = windowTitle.clientPoint.x - windowTitle.offsetPoint.x + (x - windowTitle.clientPoint.x) + "px";
+            windowTitle.window.style.top = windowTitle.clientPoint.y - windowTitle.offsetPoint.y + (y - windowTitle.clientPoint.y) + "px";
+        }
+        getByid("outer_div").onmouseup = function (e) {
+            windowTitle.mouseDown = false;
+        }
+
+        this.windowClose.onclick = function () {
+            this.closeWindow();
+        }
+    }
+
+    closeWindow(e) {
+        if (e) e.stopImmediatePropagation();
+        if (this.window.window) getByid("outer_div").removeChild(this.window.window);
+        if (this.window) getByid("outer_div").removeChild(this.window);
+        else removeChild(this.window);
+        getByid("cover_div").style.display = "none";
+    }
+}
+
 class ColorWindow {
     static windows = {};
     static MouseDownPoint = null;

@@ -29,12 +29,28 @@ class ToolSelector {
     static get hasSelection() { return ToolSelector?.selection?.content }
 }
 
+function createANewProject(projectName = "預設專案", width = 512, height = 512) {
+    var project = new Project();
+    ACGM.projects.push(project);
+    ToolSelector.project = project;
+    project.name = projectName;
+    project.layerManager = new LayerManager(width, height, 1);
+    addNewLayer();
+    ToolSelector.layer.pixelData.fillColor(new Color(220, 220, 220, 255));
+    project.layerManager.needRefleshRect = true;
+    createFullSandwich();
+    GUI.refleshGUI();
+    Canvas.AutoFitTransform();
+}
+
 function initACGM() {
+    setHandTool();
+    createANewProject();
     //var project = new Project();
     //ACGM.projects.push(project);
     //ToolSelector.project = project;
     createProjectByPath("./image/example.jpg");
-    var project = ToolSelector.project ;
+    var project = ToolSelector.project;
 
     ToolSelector.前背透色 = [new Color(128, 164, 221, 255), new Color(255, 255, 255, 255), new Color(0, 0, 0, 0)];
     ToolSelector.colorIndex = 0;

@@ -19,7 +19,7 @@
             <span class="menuspan" id="OpenFileMenu">
                 <label class="menulabel">檔案</label>
                 <div class="childmenu drawer" id="fileMenu" style="display: none;">
-                    <span class="childMenuBlock">新建</span>
+                    <span class="childMenuBlock" id="createNewProject">新建</span>
                     <span class="childMenuBlock" id="createProjectFromClip">從剪貼簿新建</span>
                     <!--<span class="childMenuBlock">從內建圖片新建</span>-->
                     <span class="childMenuBlock" id="openFromFile">開啟舊檔</span>
@@ -299,7 +299,7 @@
                                         </th>
                                     </tr>
                                 </table>
-
+                                <hr>
                                 <label style="color: white; line-height: 30px;">區隔方式(油漆桶)：</label>
                                 <select class="darkInput" id="oilSeparation">
                                     <option value="color">依色彩</option>
@@ -308,7 +308,10 @@
                                 <label style="color: white; line-height: 30px;">顏色誤差(油漆桶)：</label>
                                 <input type="number" min="0" max="100" value="15" id="oilColorDiffNum" style="top:5px;width:50px"><br>
                                 <input type="range" min="0" max="100" value="15" id="oilColorDiffSize" style="top:5px;width:85%"><br>
-                                <hr>
+                                <br>
+                                <label style="color: white; line-height: 30px;">不透明度：</label>
+                                <input type="number" min="0" max="100" value="95" id="oilOpacityNum" style="top:5px;width:50px"><br>
+                                <input type="range" min="0" max="100" value="95" id="oilOpacity" style="top:5px;width:85%"><br>
                             </div>
                             <div id="dropperToolPanel" class="panel" style="display: none">
                                 <label style="color: white; line-height: 30px;">顏色獲取來源：</label>

@@ -24,6 +24,24 @@
     cursor: none;
 }
 
+button {
+    background: #4e4e4e;
+    color: white;
+    border-radius: 5px;
+    padding: 5px 15px 5px 10px;
+}
+button:hover {
+  background-color: #d6def8; /* 滑鼠移過後的背景色 */
+  color: #4e4e4e;
+}
+
+.inputText {
+    background-color: #555555;
+    color: whitesmoke;
+    padding: 3px;
+    margin: 2px;
+}
+
 label,
 input {
     user-drag: none;
@@ -35,17 +53,18 @@ canvas {
 }
 
 .caterpillar {
-  /* 套用動畫：名稱、持續時間、跳躍方式、無限循環 */
-  animation: invert-step 1.5s steps(1, end) infinite;
+    /* 套用動畫：名稱、持續時間、跳躍方式、無限循環 */
+    animation: invert-step 1.5s steps(1, end) infinite;
 }
 
 @keyframes invert-step {
-  0% {
-    filter: invert(1);
-  }
-  50% {
-    filter: none;
-  }
+    0% {
+        filter: invert(1);
+    }
+
+    50% {
+        filter: none;
+    }
 }
 
 
@@ -55,6 +74,7 @@ input[type=checkbox] {
     width: 0;
     visibility: hidden;
 }
+
 .checklabel {
     cursor: pointer;
     width: 50px;
@@ -65,6 +85,7 @@ input[type=checkbox] {
     position: relative;
     border: 2px solid #98a0ab;
 }
+
 .checklabel:after {
     content: '';
     position: absolute;
@@ -76,6 +97,7 @@ input[type=checkbox] {
     border-radius: 25px;
     transition: 0.3s;
 }
+
 .switch-txt::before,
 .switch-txt::after {
     display: block;
@@ -83,20 +105,25 @@ input[type=checkbox] {
     font-weight: bold;
     box-sizing: border-box;
 }
+
 .switch-txt::before {
     content: attr(turnOn);
     color: #fff;
 }
+
 .switch-txt::after {
     content: attr(turnOff);
     color: #ccc;
 }
+
 input:checked+label {
     background: rgb(0, 120, 210);
 }
+
 label:active:after {
     width: 25px;
 }
+
 input:checked+label:after {
     left: calc(100% - 5px);
     transform: translateX(-100%);

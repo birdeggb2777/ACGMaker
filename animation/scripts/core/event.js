@@ -11,6 +11,7 @@ getByid("workspace").onpointerdown = function () {
 }
 
 getByid("canvas_area").onpointerdown = function (e) {
+    if (e?.target?.parentNode?.id == "ColorWindow") return;
     if (e.button > 1 && e.pointerType === 'pen') Canvas.mouseDownLeft = true;
     else {
         if (e.button == 0) Canvas.mouseDownLeft = true;
@@ -33,6 +34,7 @@ getByid("canvas_area").onpointerdown = function (e) {
 }
 
 getByid("canvas_area").onpointerup = function (e) {
+    if (e?.target?.parentNode?.id == "ColorWindow") return;
     if (e.pointerType === 'pen') Canvas.mouseDownLeft = false;
     if (e.button == 0) Canvas.mouseDownLeft = false;
     if (e.button == 1) Canvas.mouseDownMiddle = false;
@@ -61,6 +63,7 @@ getByid("canvas_area").oncontextmenu = function (e) {
 };
 
 getByid("canvas_area").onpointermove = function (e) {
+    if (e?.target?.parentNode?.id == "ColorWindow") return;
     var point = new Point(e.pageX - this.getBoundingClientRect().left - 0, e.pageY - this.getBoundingClientRect().top - 0);
     var currentPoint = Canvas.getCurrentPoint(point);
     Canvas.mouseNowPoint = point.copy();
