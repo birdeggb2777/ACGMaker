@@ -73,22 +73,24 @@ class GUI {
                 var pixels = ToolSelector.selection.content.d2;
                 var ImgData = ctx.createImageData(pictrue.width, pictrue.height), data = ImgData.data;
                 const width = pictrue.width, height = pictrue.height;
-                for (var h = 1; h < height - 1; h++) {
-                    for (var w = 4; w < width * 4 - 4; w += 4) {
+                for (var h = 0; h < height; h++) {
+                    for (var w = 0; w < width * 4; w += 4) {
                         if (pixels[h][w] > 0 /*&& ((h / 5) | 0) % 2 == 0 && ((w / 20) | 0) % 2 == 0*/) {
-                            if (pixels[h - 1][w - 4] == 0 || pixels[h - 1][w] == 0 || pixels[h - 1][w + 4] == 0 ||
+                            if (h == 0 || w == 0 || h == height - 1 || w == width * 4 - 4) {
+                                const indexX = (w / 80) | 0, indexY = (h / 20) | 0;
+                                const isWhite = (indexX + indexY) % 2 === 0;
+                                if (isWhite) data[h * 4 * width + w] = data[h * 4 * width + w + 1] = data[h * 4 * width + w + 2] = 0;
+                                else data[h * 4 * width + w] = data[h * 4 * width + w + 1] = data[h * 4 * width + w + 2] = 255;
+                                data[h * 4 * width + w + 3] = 255;
+                            }
+                            else if (pixels[h - 1][w - 4] == 0 || pixels[h - 1][w] == 0 || pixels[h - 1][w + 4] == 0 ||
                                 pixels[h][w - 4] == 0 || pixels[h][w] == 0 || pixels[h][w + 4] == 0 ||
                                 pixels[h + 1][w - 4] == 0 || pixels[h + 1][w] == 0 || pixels[h + 1][w + 4] == 0) {
                                 const indexX = (w / 80) | 0, indexY = (h / 20) | 0;
                                 const isWhite = (indexX + indexY) % 2 === 0;
-                                if (isWhite) {
-                                    data[h * 4 * width + w] = data[h * 4 * width + w + 1] = data[h * 4 * width + w + 2] = 0;
-                                    data[h * 4 * width + w + 3] = 255;
-                                } else {
-                                    data[h * 4 * width + w] = data[h * 4 * width + w + 1] = data[h * 4 * width + w + 2] = data[h * 4 * width + w + 3] = 255;
-                                }
-                                // data[(h + 1) * 4 * width + w + 4] = data[(h + 1) * 4 * width + w + 1 + 4] = data[(h + 1) * 4 * width + w + 2 + 4] = 0;
-                                // data[h * 4 * width + w] = data[h * 4 * width + w + 1] = data[h * 4 * width + w + 2] = data[h * 4 * width + w + 3] = data[(h + 1) * 4 * width + w + 3 + 4] = 255;
+                                if (isWhite) data[h * 4 * width + w] = data[h * 4 * width + w + 1] = data[h * 4 * width + w + 2] = 0;
+                                else data[h * 4 * width + w] = data[h * 4 * width + w + 1] = data[h * 4 * width + w + 2] = 255;
+                                data[h * 4 * width + w + 3] = 255;
                             }
 
                         }

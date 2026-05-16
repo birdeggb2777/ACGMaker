@@ -49,6 +49,102 @@ function invokeFilter(filterName) {
             GUI.refleshSandwichAndFullCanvas();
         }
     }
+    if (filterName == "smooth") {
+        if (layer.type == 圖層類型.影像) {
+            const root = ToolSelector.project.layerManager, cache = root.cache.cache.d2;
+            const pixels = layer.pixelData.d2;
+            const idx = [0, 1, 2, 3, 4, 5, 6, 7, 8], k = 4;
+
+            for (var h = top; h < bottom; h++) {
+                const pixelRow = pixels[h], cacheRow = cache[h];
+                for (var w = left * 4; w < right * 4; w += 4) {
+                    cacheRow[w + 0] = pixelRow[w + 0];
+                    cacheRow[w + 1] = pixelRow[w + 1];
+                    cacheRow[w + 2] = pixelRow[w + 2];
+                    cacheRow[w + 3] = pixelRow[w + 3];
+                }
+            }
+
+            if (mask) {
+                for (var h = top + 1; h < bottom - 1; h++) {
+                    const pixelRow = pixels[h], NcacheRow = cache[h], PcacheRow = cache[h - 1], LcacheRow = cache[h + 1], maskRow = mask[h];
+                    for (var w = left * 4 + 4, w0 = left; w < right * 4 - 4; w += 4, w0++) {
+                        if (maskRow[w + 0] === 0) continue;
+                        const nums = [
+                            PcacheRow[w - 4] + PcacheRow[w - 4 + 1] + PcacheRow[w - 4 + 2], PcacheRow[w] + PcacheRow[w + 1] + PcacheRow[w + 2], PcacheRow[w + 4] + PcacheRow[w + 4 + 1] + PcacheRow[w + 4 + 2],
+                            NcacheRow[w - 4] + NcacheRow[w - 4 + 1] + NcacheRow[w - 4 + 2], NcacheRow[w] + NcacheRow[w + 1] + NcacheRow[w + 2], NcacheRow[w + 4] + NcacheRow[w + 4 + 1] + NcacheRow[w + 4 + 2],
+                            LcacheRow[w - 4] + LcacheRow[w - 4 + 1] + LcacheRow[w - 4 + 2], LcacheRow[w] + LcacheRow[w + 1] + LcacheRow[w + 2], LcacheRow[w + 4] + LcacheRow[w + 4 + 1] + LcacheRow[w + 4 + 2]
+                        ]
+                        for (let i = 0; i <= k; i++) {
+                            let maxJ = i, maxVal = nums[idx[i]];
+                            // 找出剩下的數字中最大的一個
+                            for (let j = i + 1; j < 9; j++) {
+                                if (nums[idx[j]] > maxVal) maxVal = nums[idx[j]], maxJ = j;
+                            }
+                            // 交換 Index
+                            if (maxJ !== i) {
+                                let temp = idx[i];
+                                idx[i] = idx[maxJ];
+                                idx[maxJ] = temp;
+                            }
+                        }
+                        const index = idx[k];
+                        switch (idx[k]) {
+                            case 0: r = PcacheRow[w - 4], g = PcacheRow[w - 4 + 1], b = PcacheRow[w - 4 + 2]; break;
+                            case 1: r = PcacheRow[w + 0], g = PcacheRow[w + 1 + 0], b = PcacheRow[w + 2 + 0]; break;
+                            case 2: r = PcacheRow[w + 4], g = PcacheRow[w + 4 + 1], b = PcacheRow[w + 4 + 2]; break;
+                            case 3: r = NcacheRow[w - 4], g = NcacheRow[w - 4 + 1], b = NcacheRow[w - 4 + 2]; break;
+                            case 4: r = NcacheRow[w + 0], g = NcacheRow[w + 1 + 0], b = NcacheRow[w + 2 + 0]; break;
+                            case 5: r = NcacheRow[w + 4], g = NcacheRow[w + 4 + 1], b = NcacheRow[w + 4 + 2]; break;
+                            case 6: r = LcacheRow[w - 4], g = LcacheRow[w - 4 + 1], b = LcacheRow[w - 4 + 2]; break;
+                            case 7: r = LcacheRow[w + 0], g = LcacheRow[w + 1 + 0], b = LcacheRow[w + 2 + 0]; break;
+                            case 8: r = LcacheRow[w + 4], g = LcacheRow[w + 4 + 1], b = LcacheRow[w + 4 + 2]; break;
+                        }
+                        pixelRow[w + 0] = r, pixelRow[w + 1] = g, pixelRow[w + 2] = b;
+                    }
+                }
+            } else {
+                for (var h = top + 1; h < bottom - 1; h++) {
+                    const pixelRow = pixels[h], NcacheRow = cache[h], PcacheRow = cache[h - 1], LcacheRow = cache[h + 1];
+                    for (var w = left * 4 + 4, w0 = left; w < right * 4 - 4; w += 4, w0++) {
+                        const nums = [
+                            PcacheRow[w - 4] + PcacheRow[w - 4 + 1] + PcacheRow[w - 4 + 2], PcacheRow[w] + PcacheRow[w + 1] + PcacheRow[w + 2], PcacheRow[w + 4] + PcacheRow[w + 4 + 1] + PcacheRow[w + 4 + 2],
+                            NcacheRow[w - 4] + NcacheRow[w - 4 + 1] + NcacheRow[w - 4 + 2], NcacheRow[w] + NcacheRow[w + 1] + NcacheRow[w + 2], NcacheRow[w + 4] + NcacheRow[w + 4 + 1] + NcacheRow[w + 4 + 2],
+                            LcacheRow[w - 4] + LcacheRow[w - 4 + 1] + LcacheRow[w - 4 + 2], LcacheRow[w] + LcacheRow[w + 1] + LcacheRow[w + 2], LcacheRow[w + 4] + LcacheRow[w + 4 + 1] + LcacheRow[w + 4 + 2]
+                        ]
+                        for (let i = 0; i <= k; i++) {
+                            let maxJ = i, maxVal = nums[idx[i]];
+                            // 找出剩下的數字中最大的一個
+                            for (let j = i + 1; j < 9; j++) {
+                                if (nums[idx[j]] > maxVal) maxVal = nums[idx[j]], maxJ = j;
+                            }
+                            // 交換 Index
+                            if (maxJ !== i) {
+                                let temp = idx[i];
+                                idx[i] = idx[maxJ];
+                                idx[maxJ] = temp;
+                            }
+                        }
+                        const index = idx[k];
+                        switch (idx[k]) {
+                            case 0: r = PcacheRow[w - 4], g = PcacheRow[w - 4 + 1], b = PcacheRow[w - 4 + 2]; break;
+                            case 1: r = PcacheRow[w + 0], g = PcacheRow[w + 1 + 0], b = PcacheRow[w + 2 + 0]; break;
+                            case 2: r = PcacheRow[w + 4], g = PcacheRow[w + 4 + 1], b = PcacheRow[w + 4 + 2]; break;
+                            case 3: r = NcacheRow[w - 4], g = NcacheRow[w - 4 + 1], b = NcacheRow[w - 4 + 2]; break;
+                            case 4: r = NcacheRow[w + 0], g = NcacheRow[w + 1 + 0], b = NcacheRow[w + 2 + 0]; break;
+                            case 5: r = NcacheRow[w + 4], g = NcacheRow[w + 4 + 1], b = NcacheRow[w + 4 + 2]; break;
+                            case 6: r = LcacheRow[w - 4], g = LcacheRow[w - 4 + 1], b = LcacheRow[w - 4 + 2]; break;
+                            case 7: r = LcacheRow[w + 0], g = LcacheRow[w + 1 + 0], b = LcacheRow[w + 2 + 0]; break;
+                            case 8: r = LcacheRow[w + 4], g = LcacheRow[w + 4 + 1], b = LcacheRow[w + 4 + 2]; break;
+                        }
+                        pixelRow[w + 0] = r, pixelRow[w + 1] = g, pixelRow[w + 2] = b;
+                    }
+                }
+            }
+            GUI.refleshSandwichAndFullCanvas();
+            return;
+        }
+    }
     if (filterName == "autoColorBalance"/*"自動色彩平衡"*/) {
         const pixels = layer.pixelData.d2;
         var maxR = 0, maxG = 0, maxB = 0;
@@ -353,8 +449,6 @@ function invokeFilter(filterName) {
                         }
                     }
                 }
-
-
                 GUI.refleshSandwichAndFullCanvas();
             }
         }
@@ -801,6 +895,7 @@ function invokeFilter(filterName) {
             }
         }
     }
+   
     if (filterName == "玻璃模糊") {
         if (layer.type == 圖層類型.影像) {
             var preview = ToolSelector.filter.preview, 強度 = parseFloat(ToolSelector.filter.強度);
@@ -1206,77 +1301,217 @@ function invokeFilter(filterName) {
             }
         }
     }
-    if (filterName == "色調分離") {
+    if (filterName == "色調分離·改") {
         if (layer.type == 圖層類型.影像) {
             var preview = ToolSelector.filter.preview, 色彩數 = parseInt(ToolSelector.filter.色彩數);
             var root = ToolSelector.project.layerManager, cache = root.cache.cache.d2;
             const active = ToolSelector.project.layerManager.cache.active.d2;
             const pixels = layer.pixelData.d2;
+            if (ToolSelector.filter.關鍵色 != true) {
+                var colorList = new Array(256);
+                for (var i = 0; i < 256; i++)  colorList[i] = i;
+                if (色彩數 <= 0) 色彩數 = 1;
+                var newNum = 255 / (色彩數);
+                for (var i = 0; i < 128; i++) {
+                    for (var j = 0; j < 256; j += newNum)
+                        if (i >= j) colorList[i] = j;
+                }
+                for (var i = 128; i < 256; i++) {
+                    for (var j = 255; j >= 0; j -= newNum)
+                        if (i <= j) colorList[i] = j;
+                }
 
-            var colorList = new Array(256);
-            for (var i = 0; i < 256; i++)  colorList[i] = i;
-            if (色彩數 <= 0) 色彩數 = 1;
-            var newNum = 255 / (色彩數);
-            for (var i = 0; i < 128; i++) {
-                for (var j = 0; j < 256; j += newNum)
-                    if (i >= j) colorList[i] = j;
-            }
-            for (var i = 128; i < 256; i++) {
-                for (var j = 255; j >= 0; j -= newNum)
-                    if (i <= j) colorList[i] = j;
-            }
-
-            if (preview) {
-                if (mask) {
-                    for (var h = top; h < bottom; h++) {
-                        const pixelRow = pixels[h], activeRow = active[h], maskRow = mask[h];
-                        for (var w = left * 4; w < right * 4; w += 4) {
-                            if (maskRow[w + 0] === 0) continue;
-                            activeRow[w + 0] = colorList[pixelRow[w + 0]] / 255.0;
-                            activeRow[w + 1] = colorList[pixelRow[w + 1]] / 255.0;
-                            activeRow[w + 2] = colorList[pixelRow[w + 2]] / 255.0;
-                            activeRow[w + 3] = pixelRow[w + 3] / 255.0;
+                if (preview) {
+                    if (mask) {
+                        for (var h = top; h < bottom; h++) {
+                            const pixelRow = pixels[h], activeRow = active[h], maskRow = mask[h];
+                            for (var w = left * 4; w < right * 4; w += 4) {
+                                if (maskRow[w + 0] === 0) continue;
+                                activeRow[w + 0] = colorList[pixelRow[w + 0]] / 255.0;
+                                activeRow[w + 1] = colorList[pixelRow[w + 1]] / 255.0;
+                                activeRow[w + 2] = colorList[pixelRow[w + 2]] / 255.0;
+                                activeRow[w + 3] = pixelRow[w + 3] / 255.0;
+                            }
+                        }
+                    } else {
+                        for (var h = top; h < bottom; h++) {
+                            const pixelRow = pixels[h], activeRow = active[h];
+                            for (var w = left * 4; w < right * 4; w += 4) {
+                                activeRow[w + 0] = colorList[pixelRow[w + 0]] / 255.0;
+                                activeRow[w + 1] = colorList[pixelRow[w + 1]] / 255.0;
+                                activeRow[w + 2] = colorList[pixelRow[w + 2]] / 255.0;
+                                activeRow[w + 3] = pixelRow[w + 3] / 255.0;
+                            }
                         }
                     }
+
+                    ToolSelector.project.layerManager.needRefleshRect = true;
+                    GUI.refleshCanvas();
                 } else {
-                    for (var h = top; h < bottom; h++) {
-                        const pixelRow = pixels[h], activeRow = active[h];
-                        for (var w = left * 4; w < right * 4; w += 4) {
-                            activeRow[w + 0] = colorList[pixelRow[w + 0]] / 255.0;
-                            activeRow[w + 1] = colorList[pixelRow[w + 1]] / 255.0;
-                            activeRow[w + 2] = colorList[pixelRow[w + 2]] / 255.0;
-                            activeRow[w + 3] = pixelRow[w + 3] / 255.0;
+                    if (mask) {
+                        for (var h = top; h < bottom; h++) {
+                            const pixelRow = pixels[h], activeRow = active[h], maskRow = mask[h];
+                            for (var w = left * 4; w < right * 4; w += 4) {
+                                if (maskRow[w + 0] === 0) continue;
+                                pixelRow[w + 0] = colorList[pixelRow[w + 0]];
+                                pixelRow[w + 1] = colorList[pixelRow[w + 1]];
+                                pixelRow[w + 2] = colorList[pixelRow[w + 2]];
+                                pixelRow[w + 3] = pixelRow[w + 3];
+                            }
+                        }
+                    } else {
+                        for (var h = top; h < bottom; h++) {
+                            const pixelRow = pixels[h], activeRow = active[h];
+                            for (var w = left * 4; w < right * 4; w += 4) {
+                                pixelRow[w + 0] = colorList[pixelRow[w + 0]];
+                                pixelRow[w + 1] = colorList[pixelRow[w + 1]];
+                                pixelRow[w + 2] = colorList[pixelRow[w + 2]];
+                                pixelRow[w + 3] = pixelRow[w + 3];
+                            }
+                        }
+                    }
+
+                    GUI.refleshSandwichAndFullCanvas();
+                }
+            }
+            else {
+                var K_value = 色彩數;
+                const pixelsD1 = layer.pixelData.d1;
+                var rList = [];
+                for (var r = 0; r <= 255; r += 50) {
+                    var gList = [];
+                    for (var g = 0; g <= 255; g += 50) {
+                        var bList = [];
+                        for (var b = 0; b <= 255; b += 50) {
+                            bList.push([]);
+                        }
+                        gList.push(bList);
+                    }
+                    rList.push(gList);
+                }
+
+                function distance(p1, p2) {
+                    let r = p1.r - p2.r;
+                    let g = p1.g - p2.g;
+                    let b = p1.b - p2.b;
+                    return Math.sqrt(r * r + g * g + b * b);
+                }
+
+                for (let i = 0; i < pixelsD1.length; i += 4) {
+                    let r = pixelsD1[i];
+                    let g = pixelsD1[i + 1];
+                    let b = pixelsD1[i + 2];
+                    rList[parseInt(r / 50)][parseInt(g / 50)][parseInt(b / 50)].push([r, g, b]);
+                }
+
+                var firstList = [];
+                for (var r in rList) {
+                    for (var g in gList) {
+                        for (var b in bList) {
+                            if (rList[r][g][b].length > 0) {
+                                firstList.push(parseInt(rList[r][g][b].length));
+                            }
                         }
                     }
                 }
-
-                ToolSelector.project.layerManager.needRefleshRect = true;
-                GUI.refleshCanvas();
-            } else {
-                if (mask) {
-                    for (var h = top; h < bottom; h++) {
-                        const pixelRow = pixels[h], activeRow = active[h], maskRow = mask[h];
-                        for (var w = left * 4; w < right * 4; w += 4) {
-                            if (maskRow[w + 0] === 0) continue;
-                            pixelRow[w + 0] = colorList[pixelRow[w + 0]];
-                            pixelRow[w + 1] = colorList[pixelRow[w + 1]];
-                            pixelRow[w + 2] = colorList[pixelRow[w + 2]];
-                            pixelRow[w + 3] = pixelRow[w + 3];
-                        }
-                    }
-                } else {
-                    for (var h = top; h < bottom; h++) {
-                        const pixelRow = pixels[h], activeRow = active[h];
-                        for (var w = left * 4; w < right * 4; w += 4) {
-                            pixelRow[w + 0] = colorList[pixelRow[w + 0]];
-                            pixelRow[w + 1] = colorList[pixelRow[w + 1]];
-                            pixelRow[w + 2] = colorList[pixelRow[w + 2]];
-                            pixelRow[w + 3] = pixelRow[w + 3];
+                var firstListColor = [];
+                var firstList2 = firstList.sort((a, b) => a - b).reverse();
+                for (var f in firstList2) {
+                    for (var r in rList) {
+                        for (var g in gList) {
+                            for (var b in bList) {
+                                if (rList[r][g][b].length == firstList2[f]) {
+                                    if (f < K_value) {//8
+                                        firstListColor.push([r, g, b]);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
+                var centers = [];
+                for (var colorList1 of firstListColor) {
+                    var colorList = rList[colorList1[0]][colorList1[1]][colorList1[2]];
+                    var r_count = 0, g_count = 0, b_count = 0;
+                    for (var color of colorList) {
+                        r_count += color[0];
+                        g_count += color[1];
+                        b_count += color[2];
+                    }
+                    var r_avg = parseInt(r_count / colorList.length);
+                    var g_avg = parseInt(g_count / colorList.length)
+                    var b_avg = parseInt(b_count / colorList.length);
+                    centers.push({ r: r_avg, g: g_avg, b: b_avg });
+                }
 
-                GUI.refleshSandwichAndFullCanvas();
+                var MinCenters = new Array(K_value);
+                if (preview) {
+                    if (mask) {
+                        for (var h = top; h < bottom; h++) {
+                            const pixelRow = pixels[h], activeRow = active[h], maskRow = mask[h];
+                            for (var w = left * 4; w < right * 4; w += 4) {
+                                if (maskRow[w + 0] === 0) continue;
+                                for (var k = 0; k < K_value; k++) {
+                                    MinCenters[k] = [centers[k].r - pixelRow[w + 0], centers[k].g - pixelRow[w + 1], centers[k].b - pixelRow[w + 2]]
+                                }
+                                var minCenter = Math.min(MinCenters);
+                                activeRow[w + 0] = centers[minCenter].r / 255.0;
+                                activeRow[w + 1] = centers[minCenter].g / 255.0;
+                                activeRow[w + 2] = centers[minCenter].b / 255.0;
+                                activeRow[w + 3] = pixelRow[w + 3] / 255.0;
+                            }
+                        }
+                    } else {
+                        for (var h = top; h < bottom; h++) {
+                            const pixelRow = pixels[h], activeRow = active[h];
+                            for (var w = left * 4; w < right * 4; w += 4) {
+                                for (var k = 0; k < K_value; k++) {
+                                    MinCenters[k] = (centers[k].r - pixelRow[w + 0]) ** 2 + (centers[k].g - pixelRow[w + 1]) ** 2 + (centers[k].b - pixelRow[w + 2]) ** 2;
+                                }
+                                var minCenter = MinCenters.indexOf(Math.min(...MinCenters));
+                                activeRow[w + 0] = centers[minCenter].r / 255.0;
+                                activeRow[w + 1] = centers[minCenter].g / 255.0;
+                                activeRow[w + 2] = centers[minCenter].b / 255.0;
+                                activeRow[w + 3] = pixelRow[w + 3] / 255.0;
+                            }
+                        }
+                    }
+
+                    ToolSelector.project.layerManager.needRefleshRect = true;
+                    GUI.refleshCanvas();
+                } else {
+                    if (mask) {
+                        for (var h = top; h < bottom; h++) {
+                            const pixelRow = pixels[h], maskRow = mask[h];
+                            for (var w = left * 4; w < right * 4; w += 4) {
+                                if (maskRow[w + 0] === 0) continue;
+                                for (var k = 0; k < K_value; k++) {
+                                    MinCenters[k] = [centers[k].r - pixelRow[w + 0], centers[k].g - pixelRow[w + 1], centers[k].b - pixelRow[w + 2]]
+                                }
+                                var minCenter = Math.min(MinCenters);
+                                pixelRow[w + 0] = centers[minCenter].r;
+                                pixelRow[w + 1] = centers[minCenter].g;
+                                pixelRow[w + 2] = centers[minCenter].b;
+                                pixelRow[w + 3] = pixelRow[w + 3];
+                            }
+                        }
+                    } else {
+                        for (var h = top; h < bottom; h++) {
+                            const pixelRow = pixels[h];
+                            for (var w = left * 4; w < right * 4; w += 4) {
+                                for (var k = 0; k < K_value; k++) {
+                                    MinCenters[k] = (centers[k].r - pixelRow[w + 0]) ** 2 + (centers[k].g - pixelRow[w + 1]) ** 2 + (centers[k].b - pixelRow[w + 2]) ** 2;
+                                }
+                                var minCenter = MinCenters.indexOf(Math.min(...MinCenters));
+                                pixelRow[w + 0] = centers[minCenter].r;
+                                pixelRow[w + 1] = centers[minCenter].g;
+                                pixelRow[w + 2] = centers[minCenter].b;
+                                pixelRow[w + 3] = pixelRow[w + 3];
+                            }
+                        }
+                    }
+                    GUI.refleshSandwichAndFullCanvas();
+                }
             }
         }
     }
@@ -1575,12 +1810,13 @@ class Filter {
         ],
     }
     static Posterization = {
-        name: "色調分離",
+        name: "色調分離·改",
         parm: { "色彩數": 8 },
         preview: false,
         lock: false,
         UIs: [
-            { type: "slider", name: "色彩數", min: 2, max: 128, value: 8, default: 8 }, { type: "br", name: "換行", }, { type: "br", name: "換行", },
+            { type: "slider", name: "色彩數", min: 2, max: 64, value: 8, default: 8 }, { type: "br", name: "換行", }, { type: "br", name: "換行", },
+            { type: "bool", name: "關鍵色", min: 0, max: 1, value: 0, default: 0 }, { type: "br", name: "換行", }, { type: "br", name: "換行", },
             { type: "button", name: "取消❌", target: "cancel", },
             { type: "button", name: "確定✔️", target: "filter", }
         ],
@@ -1607,6 +1843,17 @@ class Filter {
             { type: "button", name: "確定✔️", target: "filter", }
         ],
     }
+    /*static smooth = {
+        name: "平滑化",
+        parm: { "強度": 5 },
+        preview: false,
+        lock: false,
+        UIs: [
+            { type: "slider", name: "強度", min: 1, max: 10, value: 5, default: 5 }, { type: "br", name: "換行", }, { type: "br", name: "換行", },
+            { type: "button", name: "取消❌", target: "cancel", },
+            { type: "button", name: "確定✔️", target: "filter", }
+        ],
+    }*/
     static tile = {
         name: "磁磚",
         parm: { "大小": 60 },
