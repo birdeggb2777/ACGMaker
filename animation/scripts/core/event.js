@@ -118,9 +118,18 @@ getByid("canvas_area").pointermove = function (e) {
 getByid("canvas_area").onwheel = function (e) {
     var point = new Point(e.pageX - this.getBoundingClientRect().left - 0, e.pageY - this.getBoundingClientRect().top - 0);// new Point(e.pageX - 0, e.pageY - 0);
     var currentPoint = Canvas.getCurrentPoint(point);
+    GUI.setStatusText("目前座標：(" + currentPoint.x + ", " + currentPoint.y + ")");
 
-    Canvas.scale.x += e.deltaY * -0.001;
-    Canvas.scale.y += e.deltaY * -0.001;
+    if (currentPoint.x < 0) point.x -= currentPoint.x * Canvas.scale.x;
+    if (currentPoint.y < 0) point.y -= currentPoint.y * Canvas.scale.y;
+    if (currentPoint.x >= Canvas.width) point.x -= (currentPoint.x - Canvas.width) * Canvas.scale.x;
+    if (currentPoint.y >= Canvas.height) point.y -= (currentPoint.y - Canvas.height) * Canvas.scale.y;
+
+    var currentPoint = Canvas.getCurrentPoint(point);
+    const weight = 0.5;
+
+    Canvas.scale.x += e.deltaY * -0.001 * weight;
+    Canvas.scale.y += e.deltaY * -0.001 * weight
     Canvas.scale.x = clamp(Canvas.scale.x, 0.05, 5);
     Canvas.scale.y = clamp(Canvas.scale.y, 0.05, 5);
 
@@ -130,7 +139,6 @@ getByid("canvas_area").onwheel = function (e) {
     if (currentPoint.x > Canvas.width) Canvas.center.x -= (Canvas.width - currentPoint.x) * Canvas.scale.x;
     if (currentPoint.y > Canvas.height) Canvas.center.y -= (Canvas.height - currentPoint.y) * Canvas.scale.y;
 
-    GUI.setStatusText("目前座標：(" + currentPoint.x + ", " + currentPoint.y + ")");
 
     Canvas.translate.x = -(currentPoint.x - Canvas.center.x);
     Canvas.translate.y = -(currentPoint.y - Canvas.center.y);
