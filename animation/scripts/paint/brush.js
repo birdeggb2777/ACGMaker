@@ -140,6 +140,9 @@ getByid("fillType").onchange = function () {
     enableBtnWithId(["oilTypeValue1", "oilTypeValue2"], false);
     if ("" + this.value == "油漆桶") enableBtnWithId(["oilTypeValue1"], true);
     if ("" + this.value == "填充線") enableBtnWithId(["oilTypeValue2"], true);
+
+    //if ("" + this.value == "油漆桶") getByid("oilColorDiffLabel").style.display = getByid("oilColorDiffNum").style.display = getByid("oilColorDiffSize").style.display = "";
+    //if ("" + this.value == "填充線") getByid("oilColorDiffLabel").style.display = getByid("oilColorDiffNum").style.display = getByid("oilColorDiffSize").style.display = "none";
 }
 getByid("oilTypeValue1").parentNode.onclick = function () {
     getByid("fillType").value = "油漆桶";
@@ -153,6 +156,27 @@ getByid("oilTypeValue2").parentNode.onclick = function () {
 getByid("selectTool2DiffNum").oninput = getByid("selectTool2Diff").oninput = function () {
     selectTool2.ColorDiff = parseInt(this.value);
     getByid("selectTool2DiffNum").value = getByid("selectTool2Diff").value = this.value;
+}
+getByid("selectTool2SizeNum").oninput = getByid("selectTool2Size").oninput = function () {
+    selectTool2.size = parseInt(this.value);
+    getByid("selectTool2SizeNum").value = getByid("selectTool2Size").value = this.value;
+    Canvas.cursor.style.width = Canvas.cursor.style.height = `${selectTool2.size}px`;
+}
+getByid("magicType").onchange = function () {
+    selectTool2.magicType = "" + this.value;
+    enableBtnWithId(["magicTypeValue1", "magicTypeValue2"], false);
+    if ("" + this.value == "魔術棒") enableBtnWithId(["magicTypeValue1"], true);
+    if ("" + this.value == "仙女棒") enableBtnWithId(["magicTypeValue2"], true);
+    if ("" + this.value == "魔術棒") getByid("selectTool2SizeLabel").style.display = getByid("selectTool2SizeNum").style.display = getByid("selectTool2Size").style.display = "none";
+    if ("" + this.value == "仙女棒") getByid("selectTool2SizeLabel").style.display = getByid("selectTool2SizeNum").style.display = getByid("selectTool2Size").style.display = "";
+}
+getByid("magicTypeValue1").parentNode.onclick = function () {
+    getByid("magicType").value = "魔術棒";
+    getByid("magicType").onchange();
+}
+getByid("magicTypeValue2").parentNode.onclick = function () {
+    getByid("magicType").value = "仙女棒";
+    getByid("magicType").onchange();
 }
 
 getByid("lineToolShape").onchange = function () {
@@ -331,7 +355,9 @@ lineTool.size = 8;
 lineTool.antiAliasing = 1;
 var gradientTool = new Brush(); gradientTool.id = "gradientTool";
 var selectTool2 = new Brush(); selectTool2.id = "selectTool2";
-selectTool2.ColorDiff = 10;
+selectTool2.ColorDiff = 20;
+selectTool2.size = 50;
+selectTool2.magicType = "魔術棒";
 var eggTool = new Brush(); eggTool.id = "eggTool";
 var dropperTool = new Brush(); dropperTool.id = "dropperTool";
 dropperTool.source = "layer";
@@ -430,12 +456,11 @@ function invokeSelectTool2() {
     var temp = new PixelData(ToolSelector.layer.width, ToolSelector.layer.height, 4);
     var [left, top, right, bottom] = [layer.x, layer.y, layer.x + layer.width, layer.y + layer.height];
 
-    // 前一次畫過的不再拿出來 
-    var point = Canvas.mouseClickPoint;
-    var ColorDifference = selectTool2.ColorDiff;
+    if (selectTool2.magicType == "魔術棒") {
+        var point = Canvas.mouseClickPoint;
+        var ColorDifference = selectTool2.ColorDiff;
 
-    //建立參照表，數值小於它就可以填充
-    if (true) {
+        //建立參照表，數值小於它就可以填充
         var [clickColorR, clickColorG, clickColorB, clickColorA] = getRgbaByPointFromPixelData(point, ToolSelector.layer.pixelData)
 
         for (var h = top; h < bottom; h++) {
@@ -447,17 +472,108 @@ function invokeSelectTool2() {
                 temp.d2[h][w + 0] = temp.d2[h][w + 1] = temp.d2[h][w + 2] = temp.d2[h][w + 3] = gap;
             }
         }
+    } else if (selectTool2.magicType == "仙女棒") {
+        var size = selectTool2.size;
+        var point = Canvas.mouseClickPoint;
+        var ColorDifference = selectTool2.ColorDiff;
+
+        //建立參照表，數值小於它就可以填充
+        var K_value = 5;
+        const pixelsD2 = layer.pixelData.d2;
+        var rList = [];
+        for (var r = 0; r <= 255; r += 50) {
+            var gList = [];
+            for (var g = 0; g <= 255; g += 50) {
+                var bList = [];
+                for (var b = 0; b <= 255; b += 50) bList.push([]);
+                gList.push(bList);
+            }
+            rList.push(gList);
+        }
+
+        function distance(p1, p2) {
+            let r = p1.r - p2.r, g = p1.g - p2.g, b = p1.b - p2.b;
+            return Math.sqrt(r * r + g * g + b * b);
+        }
+
+        var [left_, top_, right_, bottom_] = [point.x - size, point.y - size, point.x + size, point.y + size];
+        left_ = left_ < 0 ? 0 : (left_ > root.width ? root.width : left_);
+        right_ = right_ < 0 ? 0 : (right_ > root.width ? root.width : right_);
+        top_ = top_ < 0 ? 0 : (top_ > root.height ? root.height : top_);
+        bottom_ = bottom_ < 0 ? 0 : (bottom_ > root.height ? root.height : bottom_);
+
+        for (var h = top_; h < bottom_; h++) {
+            const pixelRow = pixels[h];
+            for (var w = left_ * 4; w < right_ * 4; w += 4) {
+                let r = pixelsD2[h][w], g = pixelsD2[h][w + 1], b = pixelsD2[h][w + 2];
+                rList[parseInt(r / 50)][parseInt(g / 50)][parseInt(b / 50)].push([r, g, b]);
+            }
+        }
+
+        var firstList = [];
+        for (var r in rList) {
+            for (var g in gList) {
+                for (var b in bList) {
+                    if (rList[r][g][b].length > 0) {
+                        firstList.push(parseInt(rList[r][g][b].length));
+                    }
+                }
+            }
+        }
+        var firstListColor = [];
+        var firstList2 = firstList.sort((a, b) => a - b).reverse();
+        for (var f in firstList2) {
+            for (var r in rList) {
+                for (var g in gList) {
+                    for (var b in bList) {
+                        if (rList[r][g][b].length == firstList2[f]) {
+                            if (f < K_value) firstListColor.push([r, g, b]);
+                        }
+                    }
+                }
+            }
+        }
+        var centers = [];
+        for (var colorList1 of firstListColor) {
+            var colorList = rList[colorList1[0]][colorList1[1]][colorList1[2]];
+            var r_count = 0, g_count = 0, b_count = 0;
+            for (var color of colorList) {
+                r_count += color[0];
+                g_count += color[1];
+                b_count += color[2];
+            }
+            var r_avg = parseInt(r_count / colorList.length);
+            var g_avg = parseInt(g_count / colorList.length)
+            var b_avg = parseInt(b_count / colorList.length);
+            centers.push({ r: r_avg, g: g_avg, b: b_avg });
+        }
+        K_value = centers.length;
 
         for (var h = top; h < bottom; h++) {
-            const pixelRow = pixels[h], cacheRow = cache[h];
             for (var w = left * 4; w < right * 4; w += 4) {
-                cacheRow[w + 0] = 0;
-                cacheRow[w + 1] = 0;
-                cacheRow[w + 2] = 0;
-                cacheRow[w + 3] = 0;
+                var currentColor = pixels[h][w + 0] + pixels[h][w + 1] + pixels[h][w + 2] + pixels[h][w + 3];
+                //var clickColor = clickColorR + clickColorG + clickColorB + clickColorA;
+                var gap = 99999999;
+                for (var k = 0; k < K_value; k++) {
+                    var gap_temp = ((pixels[h][w + 0] - centers[k].r) ** 2 + (pixels[h][w + 1] - centers[k].g) ** 2 + (pixels[h][w + 2] - centers[k].b) ** 2) ** 0.5;
+                    if (gap > gap_temp) gap = gap_temp;
+                }
+
+                temp.d2[h][w + 0] = temp.d2[h][w + 1] = temp.d2[h][w + 2] = temp.d2[h][w + 3] = gap;
             }
         }
     }
+
+    for (var h = top; h < bottom; h++) {
+        const pixelRow = pixels[h], cacheRow = cache[h];
+        for (var w = left * 4; w < right * 4; w += 4) {
+            cacheRow[w + 0] = 0;
+            cacheRow[w + 1] = 0;
+            cacheRow[w + 2] = 0;
+            cacheRow[w + 3] = 0;
+        }
+    }
+    //////////////////////
     function CrossWater2(arr) {
         var nextArr = [];
         for (var i = 0; i < arr.length; i++) {
@@ -500,6 +616,7 @@ function invokeSelectTool2() {
 
     var PointArr = [point];
     while (PointArr.length > 0) PointArr = CrossWater2(PointArr);
+
 
     ToolSelector.selection = new Selection("pixel", new PixelData(layer.width, layer.height, 4));
     var map = ToolSelector.selection.content;
@@ -1460,6 +1577,7 @@ function setGradientTool() {
 
 function setSelectTool2() {
     ToolSelector.brush = selectTool2;
+    Canvas.cursor.style.width = Canvas.cursor.style.height = `${selectTool2.size}px`;
 }
 
 function setEggTool() {

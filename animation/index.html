@@ -195,9 +195,34 @@
                                 <hr>
                             </div>
                             <div id="selectTool2Panel" class="panel" style="display: none">
+                                <label style="color: white; line-height: 30px;">選取工具:　</label>
+                                <select class="darkInput" id="magicType">
+                                    <option value="魔術棒">魔術棒</option>
+                                    <option value="仙女棒">仙女棒</option>
+                                </select><br>
+                                <table style="width: 100%">
+                                    <tr>
+                                        <th scope="col">
+                                            <div style="border-radius: 15px;background:#d6def8;padding-top: 2px;">
+                                                <img width="64" height="64" src="./image/magicwand.png" id="magicTypeValue1" style="border: 2px solid #000000;">
+                                                <br>魔術棒
+                                            </div>
+                                        </th>
+                                        <th scope="col">
+                                            <div style="border-radius: 15px;background:#b6bac4;padding-top: 2px;">
+                                                <img width="64" height="64" src="./image/fairywand.png" id="magicTypeValue2" style="border: 2px solid #000000;">
+                                                <br>仙女棒(實驗性功能)
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </table>
+                                <hr>
                                 <label style="color: white; line-height: 30px;">顏色誤差：</label>
-                                <input type="number" min="1" max="100" value="10" id="selectTool2DiffNum" style="top:5px;width:50px"><br>
-                                <input type="range" min="1" max="100" value="10" id="selectTool2Diff" style="top:5px;width:85%"><br>
+                                <input type="number" min="1" max="100" value="20" id="selectTool2DiffNum" style="top:5px;width:50px"><br>
+                                <input type="range" min="1" max="100" value="20" id="selectTool2Diff" style="top:5px;width:85%"><br>
+                                <label style="color: white; line-height: 30px;display: none;" id="selectTool2SizeLabel">大小(取範圍內5色):</label>
+                                <input type="number" min="20" max="100" value="50" id="selectTool2SizeNum" style="top:5px;width:50px;display: none;"><br>
+                                <input type="range" min="20" max="100" value="50" id="selectTool2Size" style="top:5px;width:85%;display: none;"><br>
                             </div>
                             <div id="pencilToolPanel" class="panel" style="display: none">
                                 <label style="color: white; line-height: 30px;">筆的種類:　</label>
