@@ -37,7 +37,6 @@ getByid("colorpalette").onclick = function (e) {
     else ColorWindow.DisplayColorWindow(e);
 }
 
-
 getByid("createNewProject").onclick = function (e) {
     new createProjectWindow();
 }

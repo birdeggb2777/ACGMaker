@@ -140,6 +140,9 @@ class GUI {
         //關閉所有抽屜
         for (var drawer of getClass("drawer")) drawer.style.display = "none";
     }
+    static closeColorPalette() {
+        if (getByid("ColorWindow")) getByid("canvas_area").removeChild(getByid("ColorWindow"));
+    }
     static displayDrawer() {
         // menu指向哪，哪個就是開的，其他的都是關的，邏輯就這麼簡單
         for (var drawer of getClass("drawer")) {

@@ -6,8 +6,9 @@ getByid("addNewLayer").onclick = function () {
 ///////////////////////////////
 ///////////////////////////////
 
-getByid("workspace").onpointerdown = function () {
+getByid("workspace").onpointerdown = function (e) {
     GUI.closeAllDrawer();
+    if (getByid(e.target.id).parentNode.id != "colorpalette" && getByid(e.target.id).id != "colorpalette") GUI.closeColorPalette();
 }
 
 getByid("canvas_area").onpointerdown = function (e) {

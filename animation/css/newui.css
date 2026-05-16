@@ -20,7 +20,8 @@
     /* 變大縮小時的平滑過度 */
 }
 
-#canvas_area {
+/*#canvas_area*/
+#PictureContainer{
     cursor: none;
 }
 
