@@ -23,11 +23,7 @@ class GUI {
             [label.className, label.innerText, label.project] = ["white fullheight projectlabel", project.name, project];
             if (ToolSelector.project == project) label.classList.add("selectedProject");
             label.onclick = function () {
-                ToolSelector.project = this.project;
-                GUI.refleshProjectBar();
-                ToolSelector.layer = ToolSelector.project.layerManager.layers[0]; // 指派選取的圖層
-                GUI.refleshSandwichAndFullCanvas();
-                GUI.displayLayerDrawer();
+                switchProject(this.project);
             }
             getByid("project_block").appendChild(label);
         }

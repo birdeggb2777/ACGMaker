@@ -73,7 +73,6 @@ getByid("openFromFile").onclick = function () {
             img.onload = function () {
                 var project = new Project();
                 ACGM.projects.push(project);
-                ToolSelector.project = project;
 
                 project.layerManager = new LayerManager(img.width, img.height, 1);
                 var layer = new Layer(0, 0, 0, img.width, img.height, 1); layer.opacity = 1.0;
@@ -85,11 +84,10 @@ getByid("openFromFile").onclick = function () {
                 var data = ctx.getImageData(0, 0, img.width, img.height).data;
                 ///////////////
                 for (var i = 0; i < layer.pixelData.d1.length; i++)layer.pixelData.d1[i] = data[i];
-                ToolSelector.layer = layer;
+                project.layer = layer;
                 project.layerManager.layers.push(layer);
-                project.layerManager.needRefleshRect = true;
-                createSandwich();
-                GUI.refleshGUI();
+
+                switchProject(project);
                 Canvas.AutoFitTransform();
                 // 記憶體釋放
                 URL.revokeObjectURL(url);
@@ -105,7 +103,7 @@ getByid("pasteLayerFromClip").onclick = function () {
     function CreateProject(blob) {
         const img = createElem("img");
         img.onload = function () {
-        var root = ToolSelector.project.layerManager;
+            var root = ToolSelector.project.layerManager;
             var canvas = createElem("canvas"), ctx = canvas.getContext('2d');
             canvas.width = img.width; canvas.height = img.height
             ctx.drawImage(img, 0, 0);
@@ -119,8 +117,7 @@ getByid("pasteLayerFromClip").onclick = function () {
             createFullSandwich();
             GUI.refleshGUI();
             this.window.closeWindow();
-            // 記憶體釋放
-            URL.revokeObjectURL(blob);
+            URL.revokeObjectURL(blob); // 記憶體釋放
         }
         img.src = URL.createObjectURL(blob);
     }
@@ -135,7 +132,6 @@ getByid("createProjectFromClip").onclick = function () {
         img.onload = function () {
             var project = new Project();
             ACGM.projects.push(project);
-            ToolSelector.project = project;
 
             project.layerManager = new LayerManager(img.width, img.height, 1);
             var layer = new Layer(0, 0, 0, img.width, img.height, 1); layer.opacity = 1.0;
@@ -147,14 +143,12 @@ getByid("createProjectFromClip").onclick = function () {
             var data = ctx.getImageData(0, 0, img.width, img.height).data;
             ///////////////
             for (var i = 0; i < layer.pixelData.d1.length; i++)layer.pixelData.d1[i] = data[i];
-            ToolSelector.layer = layer;
+            project.layer = layer;
             project.layerManager.layers.push(layer);
-            project.layerManager.needRefleshRect = true;
-            createSandwich();
-            GUI.refleshGUI();
+
+            switchProject(project);
             Canvas.AutoFitTransform();
-            // 記憶體釋放
-            URL.revokeObjectURL(blob);
+            URL.revokeObjectURL(blob); // 記憶體釋放
         }
         img.src = URL.createObjectURL(blob);
     }
@@ -171,7 +165,6 @@ function createProjectByPath(url) {
     img.onload = function () {
         var project = new Project();
         ACGM.projects.push(project);
-        ToolSelector.project = project;
 
         project.layerManager = new LayerManager(img.width, img.height, 1);
         var layer = new Layer(0, 0, 0, img.width, img.height, 1); layer.opacity = 1.0;
@@ -183,11 +176,9 @@ function createProjectByPath(url) {
         var data = ctx.getImageData(0, 0, img.width, img.height).data;
         ///////////////
         for (var i = 0; i < layer.pixelData.d1.length; i++)layer.pixelData.d1[i] = data[i];
-        ToolSelector.layer = layer;
+        project.layer = layer;
         project.layerManager.layers.push(layer);
-        project.layerManager.needRefleshRect = true;
-        createSandwich();
-        GUI.refleshGUI();
+        switchProject(project);
         Canvas.AutoFitTransform();
         // 記憶體釋放
         URL.revokeObjectURL(url);

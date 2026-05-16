@@ -192,7 +192,6 @@ class pasteImgWindow {
         ProjectButton.onclick = function () {
             var project = new Project();
             ACGM.projects.push(project);
-            ToolSelector.project = project;
 
             project.layerManager = new LayerManager(img.width, img.height, 1);
             var layer = new Layer(0, 0, 0, img.width, img.height, 1); layer.opacity = 1.0;
@@ -204,11 +203,10 @@ class pasteImgWindow {
             var data = ctx.getImageData(0, 0, img.width, img.height).data;
             ///////////////
             for (var i = 0; i < layer.pixelData.d1.length; i++)layer.pixelData.d1[i] = data[i];
-            ToolSelector.layer = layer;
+            project.layer = layer;
             project.layerManager.layers.push(layer);
-            project.layerManager.needRefleshRect = true;
-            createSandwich();
-            GUI.refleshGUI();
+
+            switchProject(project);
             Canvas.AutoFitTransform()
             this.window.closeWindow();
         }

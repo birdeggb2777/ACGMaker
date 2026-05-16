@@ -11,6 +11,11 @@ class Project {
             this.type = "paint";
             this.name = "影像";
             this.layerManager = null;
+            //暫存，供切換專案時使用
+            this.selection = null;
+            this.layer = 0;
+            this.translate = new Size(0, 0);
+            this.scale = new Size(1, 1);
         }
     }
 }
@@ -43,6 +48,26 @@ function createANewProject(projectName = "預設專案", width = 512, height = 5
     Canvas.AutoFitTransform();
 }
 
+function switchProject(project) {
+    // 切換前
+    ToolSelector.project.layer = ToolSelector.layer;
+    ToolSelector.project.selection = ToolSelector.selection;
+    ToolSelector.project.scale = Canvas.scale;
+    ToolSelector.project.translate = Canvas.translate;
+    // 開始切換
+    ToolSelector.project = project;
+    ToolSelector.layer = project.layer;
+    ToolSelector.selection = project.selection;
+    Canvas.scale = ToolSelector.project.scale ? ToolSelector.project.scale : new Size(1, 1);
+    Canvas.translate = ToolSelector.project.translate ? ToolSelector.project.translate : new Size(0, 0);
+    //ToolSelector.layer = ToolSelector.project.layerManager.layers[0]; // 指派選取的圖層
+    // 切換後
+    GUI.refleshProjectBar();
+    GUI.refleshSandwichAndFullCanvas();
+    GUI.displayLayerDrawer();
+    Canvas.setTransform();
+}
+
 function initACGM() {
     setHandTool();
     createANewProject();
@@ -50,7 +75,7 @@ function initACGM() {
     //ACGM.projects.push(project);
     //ToolSelector.project = project;
     createProjectByPath("./image/example.jpg");
-    var project = ToolSelector.project;
+    //var project = ToolSelector.project;
 
     ToolSelector.前背透色 = [new Color(128, 164, 221, 255), new Color(255, 255, 255, 255), new Color(0, 0, 0, 0)];
     ToolSelector.colorIndex = 0;
