@@ -406,6 +406,12 @@ function invokeSelectTool1() {
     var left = startPoint.x < endPoint.x ? startPoint.x : endPoint.x;
     var right = startPoint.x > endPoint.x ? startPoint.x : endPoint.x;
 
+    // 防止超出範圍
+    left = left < 0 ? 0 : (left > Canvas.width ? Canvas.width : left);
+    right = right < 0 ? 0 : (right > Canvas.width ? Canvas.width : right);
+    top = top < 0 ? 0 : (top > Canvas.height ? Canvas.height : top);
+    bottom = bottom < 0 ? 0 : (bottom > Canvas.height ? Canvas.height : bottom);
+
     if (top == bottom || left == right) ToolSelector.selection = null;
     else ToolSelector.selection = new Selection("rect", new Rect(left, top, right, bottom));
     GUI.refleshMarkCanvas();
@@ -683,10 +689,10 @@ function createHoleCircle(halfSize, rgbaList, edgeWidth = 0, lineWidth = 1) {
     Brush.cache = new F32PixelData(halfSize * 2 + 1, halfSize * 2 + 1, 4);
 
     var rsq = halfSize * halfSize;
-    var minY = point.y - halfSize < 0 ? -point.y : -halfSize;
-    var minX = point.x - halfSize < 0 ? -point.x : -halfSize;
-    var maxY = point.y + halfSize >= Canvas.height ? (Canvas.height - 1) - point.y : halfSize;
-    var maxX = point.x + halfSize >= Canvas.width ? (Canvas.width - 1) - point.x : halfSize;
+    var minY = -halfSize;
+    var minX = -halfSize;
+    var maxY = halfSize;
+    var maxX = halfSize;
     var [r, g, b, a] = rgbaList;
     for (var y = minY; y <= maxY; y++) {
         for (var x = minX; x <= maxX; x++) {
@@ -738,10 +744,10 @@ function createCircle(halfSize, rgbaList, edgeWidth = 0) {
     Brush.cache = new F32PixelData(halfSize * 2 + 1, halfSize * 2 + 1, 4);
 
     var rsq = halfSize * halfSize;
-    var minY = point.y - halfSize < 0 ? -point.y : -halfSize;
-    var minX = point.x - halfSize < 0 ? -point.x : -halfSize;
-    var maxY = point.y + halfSize >= Canvas.height ? (Canvas.height - 1) - point.y : halfSize;
-    var maxX = point.x + halfSize >= Canvas.width ? (Canvas.width - 1) - point.x : halfSize;
+    var minY = -halfSize;
+    var minX = -halfSize;
+    var maxY = halfSize;
+    var maxX = halfSize;
     var [r, g, b, a] = rgbaList;
     for (var y = minY; y <= maxY; y++) {
         for (var x = minX; x <= maxX; x++) {

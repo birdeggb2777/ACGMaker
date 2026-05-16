@@ -327,6 +327,10 @@ function layers2flData(layers, d2) {
     if (root.cache.needReflesh == true) root.cache.needReflesh = new Rect(0, 0, root.width, root.height);
     // 需要更新的區域、並防止超出範圍
     var [left, top, right, bottom] = root.cache.needReflesh.toList();
+    left = left < 0 ? 0 : (left > root.width ? root.width : left);
+    right = right < 0 ? 0 : (right > root.width ? root.width : right);
+    top = top < 0 ? 0 : (top > root.height ? root.height : top);
+    bottom = bottom < 0 ? 0 : (bottom > root.height ? root.height : bottom);
 
     for (var i = 0; i < layers.length; i++) {
         var layer = layers[i];

@@ -895,7 +895,7 @@ function invokeFilter(filterName) {
             }
         }
     }
-   
+
     if (filterName == "玻璃模糊") {
         if (layer.type == 圖層類型.影像) {
             var preview = ToolSelector.filter.preview, 強度 = parseFloat(ToolSelector.filter.強度);
@@ -1443,8 +1443,9 @@ function invokeFilter(filterName) {
                     var b_avg = parseInt(b_count / colorList.length);
                     centers.push({ r: r_avg, g: g_avg, b: b_avg });
                 }
-
+                K_value = centers.length;
                 var MinCenters = new Array(K_value);
+                
                 if (preview) {
                     if (mask) {
                         for (var h = top; h < bottom; h++) {
@@ -1452,9 +1453,9 @@ function invokeFilter(filterName) {
                             for (var w = left * 4; w < right * 4; w += 4) {
                                 if (maskRow[w + 0] === 0) continue;
                                 for (var k = 0; k < K_value; k++) {
-                                    MinCenters[k] = [centers[k].r - pixelRow[w + 0], centers[k].g - pixelRow[w + 1], centers[k].b - pixelRow[w + 2]]
+                                    MinCenters[k] = (centers[k].r - pixelRow[w + 0]) ** 2 + (centers[k].g - pixelRow[w + 1]) ** 2 + (centers[k].b - pixelRow[w + 2]) ** 2;
                                 }
-                                var minCenter = Math.min(MinCenters);
+                                var minCenter = MinCenters.indexOf(Math.min(...MinCenters));
                                 activeRow[w + 0] = centers[minCenter].r / 255.0;
                                 activeRow[w + 1] = centers[minCenter].g / 255.0;
                                 activeRow[w + 2] = centers[minCenter].b / 255.0;
@@ -1486,9 +1487,9 @@ function invokeFilter(filterName) {
                             for (var w = left * 4; w < right * 4; w += 4) {
                                 if (maskRow[w + 0] === 0) continue;
                                 for (var k = 0; k < K_value; k++) {
-                                    MinCenters[k] = [centers[k].r - pixelRow[w + 0], centers[k].g - pixelRow[w + 1], centers[k].b - pixelRow[w + 2]]
+                                    MinCenters[k] = (centers[k].r - pixelRow[w + 0]) ** 2 + (centers[k].g - pixelRow[w + 1]) ** 2 + (centers[k].b - pixelRow[w + 2]) ** 2;
                                 }
-                                var minCenter = Math.min(MinCenters);
+                                var minCenter = MinCenters.indexOf(Math.min(...MinCenters));
                                 pixelRow[w + 0] = centers[minCenter].r;
                                 pixelRow[w + 1] = centers[minCenter].g;
                                 pixelRow[w + 2] = centers[minCenter].b;
