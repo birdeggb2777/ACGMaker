@@ -296,7 +296,13 @@ function invokeFilter(filterName) {
                     for (var h = top; h < bottom; h++) {
                         const activeRow = active[h], cacheRow = fcache[h], maskRow = mask[h];
                         for (var w = left * 4; w < right * 4; w += 4) {
-                            if (maskRow[w + 0] === 0) continue;
+                            if (maskRow[w + 0] === 0) {
+                                activeRow[w + 0] = cacheRow[w + 0] / 255.0;
+                                activeRow[w + 1] = cacheRow[w + 1] / 255.0;
+                                activeRow[w + 2] = cacheRow[w + 2] / 255.0;
+                                activeRow[w + 3] = cacheRow[w + 3] / 255.0;
+                                continue;
+                            }
                             const grayColor = (0.114 * cacheRow[w + 0] + 0.587 * cacheRow[w + 1] + 0.299 * cacheRow[w + 2]) | 0;
                             if (grayColor > 門檻值) {
                                 activeRow[w + 0] = color1.r / 255.0;
@@ -392,7 +398,13 @@ function invokeFilter(filterName) {
                     for (var h = top; h < bottom; h++) {
                         const activeRow = active[h], cacheRow = fcache[h], maskRow = mask[h];
                         for (var w = left * 4, w0 = left; w < right * 4; w += 4, w0++) {
-                            if (maskRow[w + 0] === 0) continue;
+                            if (maskRow[w + 0] === 0) {
+                                activeRow[w + 0] = cacheRow[w + 0] / 255.0;
+                                activeRow[w + 1] = cacheRow[w + 1] / 255.0;
+                                activeRow[w + 2] = cacheRow[w + 2] / 255.0;
+                                activeRow[w + 3] = cacheRow[w + 3] / 255.0;
+                                continue;
+                            }
                             x = (Math.random() * 距離 * 2 - 距離) | 0, y = (Math.random() * 距離 * 2 - 距離) | 0;
                             y = h + y < 0 ? -h : (h + y >= height ? height - h - 1 : y);
                             x = w0 + x < 0 ? -w0 : (w0 + x >= width ? width - w0 - 1 : x);
@@ -609,7 +621,13 @@ function invokeFilter(filterName) {
                         for (var h = top; h < bottom; h++) {
                             const activeRow = active[h], cacheRow = fcache[h], maskRow = mask[h];
                             for (var w = left * 4, w0 = left; w < right * 4; w += 4, w0++) {
-                                if (maskRow[w + 0] === 0) continue;
+                                if (maskRow[w + 0] === 0) {
+                                    activeRow[w + 0] = cacheRow[w + 0] / 255.0;
+                                    activeRow[w + 1] = cacheRow[w + 1] / 255.0;
+                                    activeRow[w + 2] = cacheRow[w + 2] / 255.0;
+                                    activeRow[w + 3] = cacheRow[w + 3] / 255.0;
+                                    continue;
+                                }
                                 if (h + y < 0 || w0 + x < 0 || h + y >= height || w0 + x >= width)
                                     var gray = 0.114 * cacheRow[w] + 0.587 * cacheRow[w + 1] + 0.299 * cacheRow[w + 2];
                                 else
@@ -631,7 +649,13 @@ function invokeFilter(filterName) {
                         for (var h = top; h < bottom; h++) {
                             const pixelRow = pixels[h], activeRow = active[h], cacheRow = fcache[h], maskRow = mask[h];
                             for (var w = left * 4, w0 = left; w < right * 4; w += 4, w0++) {
-                                if (maskRow[w + 0] === 0) continue;
+                                if (maskRow[w + 0] === 0) {
+                                    activeRow[w + 0] = cacheRow[w + 0] / 255.0;
+                                    activeRow[w + 1] = cacheRow[w + 1] / 255.0;
+                                    activeRow[w + 2] = cacheRow[w + 2] / 255.0;
+                                    activeRow[w + 3] = cacheRow[w + 3] / 255.0;
+                                    continue;
+                                }
                                 if (h + y < 0 || w0 + x < 0 || h + y >= height || w0 + x >= width) {
                                     activeRow[w + 0] = (((255 - fcache[h][w]) + fcache[h][w]) / 2) / 255.0;
                                     activeRow[w + 1] = (((255 - fcache[h][w + 1]) + fcache[h][w + 1]) / 2) / 255.0;
@@ -780,7 +804,6 @@ function invokeFilter(filterName) {
                     for (var h = top; h < bottom; h += kernel) {
                         const pixelRow = pixels[h], maskRow = mask[h];
                         for (var w = left * 4; w < right * 4; w += 4 * kernel) {
-                            if (maskRow[w + 0] === 0) continue;
                             B = G = R = count = 0;
                             for (var kh = 0; kh < kernel; kh++) {
                                 for (var kw = 0; kw < kernel * 4; kw += 4) {
@@ -795,6 +818,13 @@ function invokeFilter(filterName) {
                             for (var kh = 0; kh < kernel; kh++) {
                                 for (var kw = 0; kw < kernel * 4; kw += 4) {
                                     if (h + kh >= height || w + kw >= width * 4) continue;
+                                    if (mask[(h + kh)][(w + kw) + 0] === 0) {
+                                        active[(h + kh)][(w + kw) + 0] = pixels[h + kh][(w + kw) + 0] / 255.0;
+                                        active[(h + kh)][(w + kw) + 1] = pixels[h + kh][(w + kw) + 1] / 255.0;
+                                        active[(h + kh)][(w + kw) + 2] = pixels[h + kh][(w + kw) + 2] / 255.0;
+                                        active[(h + kh)][(w + kw) + 3] = pixels[h + kh][(w + kw) + 3] / 255.0;
+                                        continue;
+                                    }
                                     active[(h + kh)][(w + kw) + 0] = B / 255.0;
                                     active[(h + kh)][(w + kw) + 1] = G / 255.0;
                                     active[(h + kh)][(w + kw) + 2] = R / 255.0;
@@ -955,7 +985,13 @@ function invokeFilter(filterName) {
                     for (var h = top; h < bottom; h++) {
                         const activeRow = active[h], pixelRow = pixels[h], cacheRow = cache[h], maskRow = mask[h];
                         for (var w = left * 4, w0 = 0; w < right * 4; w += 4, w0++) {
-                            if (maskRow[w + 0] === 0) continue;
+                            if (maskRow[w + 0] === 0) {
+                                activeRow[w + 0] = pixelRow[w + 0] / 255.0;
+                                activeRow[w + 1] = pixelRow[w + 1] / 255.0;
+                                activeRow[w + 2] = pixelRow[w + 2] / 255.0;
+                                activeRow[w + 3] = pixelRow[w + 3] / 255.0;
+                                continue;
+                            }
                             activeRow[w + 0] = cacheRow[w + 0] / 255.0;
                             activeRow[w + 1] = cacheRow[w + 1] / 255.0;
                             activeRow[w + 2] = cacheRow[w + 2] / 255.0;
@@ -1018,7 +1054,13 @@ function invokeFilter(filterName) {
                     for (var h = top; h < bottom; h++) {
                         const activeRow = active[h], cacheRow = fcache[h], stride = h * width, maskRow = mask[h];
                         for (var w = left * 4, w0 = 0; w < right * 4; w += 4, w0++) {
-                            if (maskRow[w + 0] === 0) continue;
+                            if (maskRow[w + 0] === 0) {
+                                activeRow[w + 0] = cacheRow[w + 0] / 255.0;
+                                activeRow[w + 1] = cacheRow[w + 1] / 255.0;
+                                activeRow[w + 2] = cacheRow[w + 2] / 255.0;
+                                activeRow[w + 3] = cacheRow[w + 3] / 255.0;
+                                continue;
+                            }
                             activeRow[w + 0] = ((cacheRow[w + 0] * (1 - 強度)) + (noiseListR[stride + w0] * 255 * 強度)) / 255.0;
                             activeRow[w + 1] = ((cacheRow[w + 1] * (1 - 強度)) + (noiseListG[stride + w0] * 255 * 強度)) / 255.0;
                             activeRow[w + 2] = ((cacheRow[w + 2] * (1 - 強度)) + (noiseListB[stride + w0] * 255 * 強度)) / 255.0;
@@ -1080,7 +1122,13 @@ function invokeFilter(filterName) {
                     for (var h = top; h < bottom; h++) {
                         const activeRow = active[h], cacheRow = fcache[h], maskRow = mask[h];
                         for (var w = left * 4; w < right * 4; w += 4) {
-                            if (maskRow[w + 0] === 0) continue;
+                            if (maskRow[w + 0] === 0) {
+                                activeRow[w + 0] = cacheRow[w + 0] / 255.0;
+                                activeRow[w + 1] = cacheRow[w + 1] / 255.0;
+                                activeRow[w + 2] = cacheRow[w + 2] / 255.0;
+                                activeRow[w + 3] = cacheRow[w + 3] / 255.0;
+                                continue;
+                            }
                             activeRow[w + 0] = (cacheRow[w + 0] * 白平衡R) / 255.0;
                             activeRow[w + 1] = (cacheRow[w + 1] * 白平衡G) / 255.0;
                             activeRow[w + 2] = (cacheRow[w + 2] * 白平衡B) / 255.0;
@@ -1141,7 +1189,13 @@ function invokeFilter(filterName) {
                     for (var h = top; h < bottom; h++) {
                         const pixelRow = pixels[h], activeRow = active[h], cacheRow = fcache[h], maskRow = mask[h];
                         for (var w = left * 4; w < right * 4; w += 4) {
-                            if (maskRow[w + 0] === 0) continue;
+                            if (maskRow[w + 0] === 0) {
+                                activeRow[w + 0] = cacheRow[w + 0] / 255.0;
+                                activeRow[w + 1] = cacheRow[w + 1] / 255.0;
+                                activeRow[w + 2] = cacheRow[w + 2] / 255.0;
+                                activeRow[w + 3] = cacheRow[w + 3] / 255.0;
+                                continue;
+                            }
                             activeRow[w + 0] = clamp01((cacheRow[w + 0] + R) / 255.0);
                             activeRow[w + 1] = clamp01((cacheRow[w + 1] + G) / 255.0);
                             activeRow[w + 2] = clamp01((cacheRow[w + 2] + B) / 255.0);
@@ -1236,7 +1290,13 @@ function invokeFilter(filterName) {
                     for (var h = top; h < bottom; h++) {
                         const pixelRow = pixels[h], activeRow = active[h], cacheRow = fcache[h], maskRow = mask[h];
                         for (var w = left * 4; w < right * 4; w += 4) {
-                            if (maskRow[w + 0] === 0) continue;
+                            if (maskRow[w + 0] === 0) {
+                                activeRow[w + 0] = cacheRow[w + 0] / 255.0;
+                                activeRow[w + 1] = cacheRow[w + 1] / 255.0;
+                                activeRow[w + 2] = cacheRow[w + 2] / 255.0;
+                                activeRow[w + 3] = cacheRow[w + 3] / 255.0;
+                                continue;
+                            }
                             var [H, S, V] = rgb2hsv(cacheRow[w + 0], cacheRow[w + 1], cacheRow[w + 2])
                             H = H + 色相, S = S + 飽和度, V = V + 明度;
                             H = H % 360 < 0 ? (H % 360) + 360 : H % 360, S = S < 0 ? 0 : (S > 1 ? 1 : S), V = V < 0 ? 0 : (V > 255 ? 255 : V);
@@ -1326,7 +1386,13 @@ function invokeFilter(filterName) {
                         for (var h = top; h < bottom; h++) {
                             const pixelRow = pixels[h], activeRow = active[h], maskRow = mask[h];
                             for (var w = left * 4; w < right * 4; w += 4) {
-                                if (maskRow[w + 0] === 0) continue;
+                                if (maskRow[w + 0] === 0) {
+                                    activeRow[w + 0] = pixelRow[w + 0] / 255.0;
+                                    activeRow[w + 1] = pixelRow[w + 1] / 255.0;
+                                    activeRow[w + 2] = pixelRow[w + 2] / 255.0;
+                                    activeRow[w + 3] = pixelRow[w + 3] / 255.0;
+                                    continue;
+                                }
                                 activeRow[w + 0] = colorList[pixelRow[w + 0]] / 255.0;
                                 activeRow[w + 1] = colorList[pixelRow[w + 1]] / 255.0;
                                 activeRow[w + 2] = colorList[pixelRow[w + 2]] / 255.0;
@@ -1445,13 +1511,19 @@ function invokeFilter(filterName) {
                 }
                 K_value = centers.length;
                 var MinCenters = new Array(K_value);
-                
+
                 if (preview) {
                     if (mask) {
                         for (var h = top; h < bottom; h++) {
                             const pixelRow = pixels[h], activeRow = active[h], maskRow = mask[h];
                             for (var w = left * 4; w < right * 4; w += 4) {
-                                if (maskRow[w + 0] === 0) continue;
+                                if (maskRow[w + 0] === 0) {
+                                    activeRow[w + 0] = pixelRow[w + 0] / 255.0;
+                                    activeRow[w + 1] = pixelRow[w + 1] / 255.0;
+                                    activeRow[w + 2] = pixelRow[w + 2] / 255.0;
+                                    activeRow[w + 3] = pixelRow[w + 3] / 255.0;
+                                    continue;
+                                }
                                 for (var k = 0; k < K_value; k++) {
                                     MinCenters[k] = (centers[k].r - pixelRow[w + 0]) ** 2 + (centers[k].g - pixelRow[w + 1]) ** 2 + (centers[k].b - pixelRow[w + 2]) ** 2;
                                 }
@@ -1543,7 +1615,13 @@ function invokeFilter(filterName) {
                     for (var h = top; h < bottom; h++) {
                         const pixelRow = pixels[h], activeRow = active[h], cacheRow = fcache[h], maskRow = mask[h];
                         for (var w = left * 4; w < right * 4; w += 4) {
-                            if (maskRow[w + 0] === 0) continue;
+                            if (maskRow[w + 0] === 0) {
+                                activeRow[w + 0] = cacheRow[w + 0] / 255.0;
+                                activeRow[w + 1] = cacheRow[w + 1] / 255.0;
+                                activeRow[w + 2] = cacheRow[w + 2] / 255.0;
+                                activeRow[w + 3] = cacheRow[w + 3] / 255.0;
+                                continue;
+                            }
                             activeRow[w + 0] = colorList[cacheRow[w + 0]] / 255.0;
                             activeRow[w + 1] = colorList[cacheRow[w + 1]] / 255.0;
                             activeRow[w + 2] = colorList[cacheRow[w + 2]] / 255.0;

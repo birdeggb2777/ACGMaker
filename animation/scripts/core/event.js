@@ -8,7 +8,7 @@ getByid("addNewLayer").onclick = function () {
 
 getByid("workspace").onpointerdown = function (e) {
     GUI.closeAllDrawer();
-    if (getByid(e.target.id).parentNode.id != "colorpalette" && getByid(e.target.id).id != "colorpalette") GUI.closeColorPalette();
+    if (getByid(e.target.id) && getByid(e.target.id).parentNode.id != "colorpalette" && getByid(e.target.id).id != "colorpalette") GUI.closeColorPalette();
 }
 
 getByid("canvas_area").onpointerdown = function (e) {
@@ -156,7 +156,7 @@ window.addEventListener('keydown', function (event) {
     if (!ctrl) return;
     const key = event.key.toLowerCase();
     if (key === 'z' || key === "y") event.preventDefault();
-    
+
     if (key === 'z') Command.cmd("undo", "");
     else if (key === 'y') Command.cmd("redo", "");
 });

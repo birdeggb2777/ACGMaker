@@ -21,7 +21,7 @@
 }
 
 /*#canvas_area*/
-#PictureContainer{
+#PictureContainer {
     cursor: none;
 }
 
@@ -31,9 +31,11 @@ button {
     border-radius: 5px;
     padding: 5px 15px 5px 10px;
 }
+
 button:hover {
-  background-color: #d6def8; /* 滑鼠移過後的背景色 */
-  color: #4e4e4e;
+    background-color: #d6def8;
+    /* 滑鼠移過後的背景色 */
+    color: #4e4e4e;
 }
 
 .inputText {
@@ -46,6 +48,15 @@ button:hover {
 label,
 input {
     user-drag: none;
+}
+
+#tools_block,
+.windowContent {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-user-drag: none;
 }
 
 canvas {
