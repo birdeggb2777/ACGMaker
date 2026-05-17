@@ -772,6 +772,7 @@ function beginPencilTool() {
 }
 
 function endPencilTool() {
+    Command.cmd("history", "");
     // 將active覆蓋到pixelData
     ActiveData2PixelData(ToolSelector.project.layerManager.cache.active, 0, 0, Canvas.width, Canvas.height, ToolSelector.layer.pixelData, 0, 0, Canvas.width, Canvas.height);
     GUI.refleshSandwichAndFullCanvas();

@@ -150,3 +150,13 @@ getByid("canvas_area").onwheel = function (e) {
     // Canvas.translate.x = -(120 - 43); Canvas.translate.y = -(120 - 66);
     // Canvas.scale.x = 1.0; Canvas.scale.y = 1.0; Canvas.setTransform();
 }
+
+window.addEventListener('keydown', function (event) {
+    const ctrl = event.ctrlKey || event.metaKey;
+    if (!ctrl) return;
+    const key = event.key.toLowerCase();
+    if (key === 'z' || key === "y") event.preventDefault();
+    
+    if (key === 'z') Command.cmd("undo", "");
+    else if (key === 'y') Command.cmd("redo", "");
+});

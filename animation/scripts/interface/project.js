@@ -11,6 +11,7 @@ class Project {
             this.type = "paint";
             this.name = "影像";
             this.layerManager = null;
+            this.history = new History();
             //暫存，供切換專案時使用
             this.selection = null;
             this.layer = 0;
@@ -66,6 +67,9 @@ function switchProject(project) {
     GUI.refleshSandwichAndFullCanvas();
     GUI.displayLayerDrawer();
     Canvas.setTransform();
+
+    getByid("redo").innerHTML = `重做(Ctrl+Y) (${ToolSelector.project.history.RedoStorage.length})`;
+    getByid("undo").innerHTML = `復原(Ctrl+Z) (${ToolSelector.project.history.UndoStorage.length})`;
 }
 
 function initACGM() {

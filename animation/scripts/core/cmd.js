@@ -27,8 +27,12 @@ class Command {
         if (main == "transform") Command.InvokeTransform(parm);
         if (main == "text") Command.InvokeText(parm);
         if (main == "layer") Command.InvokeLayer(parm);
+        if (main == "undo") Command.InvokeUndo(parm);
+        if (main == "redo") Command.InvokeRedo(parm);
+        if (main == "history") Command.InvokeHistory(parm);
     }
     static InvokeFilter(parm) {
+        if (!ToolSelector?.filter?.preview) Command.cmd("history", "");
         invokeFilter(parm);
     }
     static InvokeLayer(parm) {
@@ -74,6 +78,7 @@ class Command {
         if (ToolSelector.layer && ToolSelector.layer.display == false) GUI.setStatusAlert("請注意，您選擇的圖層不在顯示狀態，可能會看不見繪製的內容！！！");
     }
     static InvokeBrushEnd(parm) {
+        if (ToolSelector.brush == gradientTool) Command.cmd("history", "");
         if (ToolSelector.brush == gradientTool) invokeGradientTool();
     }
     static InvokeClickBrush(parm) {
@@ -88,4 +93,49 @@ class Command {
     static InvokeText(parm) {
 
     }
+    static InvokeHistory(parm) {
+        if (!ToolSelector?.project?.history?.UndoStorage) return;
+        if (!ToolSelector?.project?.history?.RedoStorage) return;
+        if (!ToolSelector?.layer?.pixelData) return;
+
+        ToolSelector.project.history.UndoStorage.push({ layer: ToolSelector.layer, pixelData: ToolSelector.layer.pixelData.clone() });
+        if (ToolSelector.project.history.UndoStorage.length > 15) ToolSelector.project.history.UndoStorage.shift();
+        ToolSelector.project.history.RedoStorage = [];
+        getByid("redo").innerHTML = `重做(Ctrl+Y) (${ToolSelector.project.history.RedoStorage.length})`;
+        getByid("undo").innerHTML = `復原(Ctrl+Z) (${ToolSelector.project.history.UndoStorage.length})`;
+    }
+    static InvokeUndo(parm) {
+        if (!ToolSelector?.project?.history?.UndoStorage?.length) return;
+
+        ToolSelector.project.history.RedoStorage.unshift({ layer: ToolSelector.layer, pixelData: ToolSelector.layer.pixelData.clone() });
+        var Data = ToolSelector.project.history.UndoStorage.pop();
+
+        Data.layer.pixelData.set(Data.pixelData);
+        GUI.refleshSandwichAndFullCanvas();
+
+        getByid("redo").innerHTML = `重做(Ctrl+Y) (${ToolSelector.project.history.RedoStorage.length})`;
+        getByid("undo").innerHTML = `復原(Ctrl+Z) (${ToolSelector.project.history.UndoStorage.length})`;
+    }
+    static InvokeRedo(parm) {
+        if (!ToolSelector?.project?.history?.RedoStorage?.length) return;
+
+        ToolSelector.project.history.UndoStorage.push({ layer: ToolSelector.layer, pixelData: ToolSelector.layer.pixelData.clone() });
+        var Data = ToolSelector.project.history.RedoStorage.shift();
+
+        Data.layer.pixelData.set(Data.pixelData);
+        GUI.refleshSandwichAndFullCanvas();
+
+        getByid("redo").innerHTML = `重做(Ctrl+Y) (${ToolSelector.project.history.RedoStorage.length})`;
+        getByid("undo").innerHTML = `復原(Ctrl+Z) (${ToolSelector.project.history.UndoStorage.length})`;
+    }
 }
+
+class History {
+    constructor() {
+        this.UndoStorage = [];
+        this.RedoStorage = [];
+    }
+}
+
+getByid("undo").onclick = function () { Command.cmd("undo", ""); }
+getByid("redo").onclick = function () { Command.cmd("redo", ""); }

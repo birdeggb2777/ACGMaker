@@ -105,6 +105,11 @@ class PixelData {
     }
     clear() { new Uint32Array(this.d1.buffer).fill(0x00000000); }
     set(inputPixelData) { this.d1.set(inputPixelData.d1); }
+    clone() {
+        var newPixelData = new PixelData(this.w, this.h, this.c);
+        for (var i = 0; i < this.d1.length; i++)newPixelData.d1[i] = this.d1[i];
+        return newPixelData;
+    }
 }
 
 class F32PixelData {
