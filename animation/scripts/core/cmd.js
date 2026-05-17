@@ -107,10 +107,11 @@ class Command {
     static InvokeUndo(parm) {
         if (!ToolSelector?.project?.history?.UndoStorage?.length) return;
 
-        ToolSelector.project.history.RedoStorage.unshift({ layer: ToolSelector.layer, pixelData: ToolSelector.layer.pixelData.clone() });
         var Data = ToolSelector.project.history.UndoStorage.pop();
+        ToolSelector.project.history.RedoStorage.unshift({ layer: Data.layer, pixelData: Data.layer.pixelData.clone() });
 
         Data.layer.pixelData.set(Data.pixelData);
+        ToolSelector.layer = Data.layer;
         GUI.refleshSandwichAndFullCanvas();
 
         getByid("redo").innerHTML = `重做(Ctrl+Y) (${ToolSelector.project.history.RedoStorage.length})`;
@@ -119,10 +120,11 @@ class Command {
     static InvokeRedo(parm) {
         if (!ToolSelector?.project?.history?.RedoStorage?.length) return;
 
-        ToolSelector.project.history.UndoStorage.push({ layer: ToolSelector.layer, pixelData: ToolSelector.layer.pixelData.clone() });
         var Data = ToolSelector.project.history.RedoStorage.shift();
+        ToolSelector.project.history.UndoStorage.push({ layer: Data.layer, pixelData: Data.layer.pixelData.clone() });
 
         Data.layer.pixelData.set(Data.pixelData);
+        ToolSelector.layer = Data.layer;
         GUI.refleshSandwichAndFullCanvas();
 
         getByid("redo").innerHTML = `重做(Ctrl+Y) (${ToolSelector.project.history.RedoStorage.length})`;
