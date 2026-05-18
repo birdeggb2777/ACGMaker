@@ -175,7 +175,7 @@ function ExportGAME() {
 
     var canvas = document.createElement("canvas");
     var context = canvas.getContext('2d');
-    for (var i = 0; i < objList.length; i++) {
+    for (var i = 1; i < objList.length; i++) {
         //objList[i].img = document.createElement("IMG");
         var width = AllObjList[i].img.width;
         var height = AllObjList[i].img.height;
