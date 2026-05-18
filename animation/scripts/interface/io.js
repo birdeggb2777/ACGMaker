@@ -195,6 +195,7 @@ window.addEventListener('copy', function (e) {
 
 // 偵測到貼上行為
 window.addEventListener('paste', function (e) {
+    if (WindowManager.enable) return;
     // 取得剪貼簿中的內容
     const items = (e.clipboardData || e.originalEvent.clipboardData).items;
 

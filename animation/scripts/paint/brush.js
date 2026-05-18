@@ -1002,7 +1002,6 @@ function invokeLineTool() {
 function invokeOilTool() {
     var fillType = oilTool.fillType;
     if (fillType == "油漆桶") {
-
         if (ToolSelector.path.length >= 1) return;
         // 這個是要直接修改的pixelData
         var pixelData = ToolSelector.layer.pixelData;

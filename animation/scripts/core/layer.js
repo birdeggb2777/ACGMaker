@@ -1,5 +1,4 @@
 
-
 class 圖層類型 {
     static 影像 = 0;
     static 顏色 = 50;

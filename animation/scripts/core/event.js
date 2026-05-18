@@ -82,16 +82,16 @@ getByid("canvas_area").onpointermove = function (e) {
         ToolSelector.path.push(currentPoint);
         if (e.pointerType === 'pen' && !isNaN(e.pressure)) ToolSelector.pressurePath.push(e.pressure);
         else ToolSelector.pressurePath.push(1.0);
-        if (FilterWindow.enable) Command.cmd("move", null);
+        if (WindowManager.enable) Command.cmd("move", null);
         else Command.cmd("brush", null);
     }
     // 滴管專用工具
-    if (Canvas.mouseDownRight && !Canvas.mouseDownLeft && !FilterWindow.enable) {
+    if (Canvas.mouseDownRight && !Canvas.mouseDownLeft && !WindowManager.enable) {
         ToolSelector.path.push(currentPoint);
         Command.cmd("brushRight", null);
     }
     // 移動專用工具
-    if (Canvas.mouseDownMiddle && !Canvas.mouseDownLeft && !FilterWindow.enable) {
+    if (Canvas.mouseDownMiddle && !Canvas.mouseDownLeft && !WindowManager.enable) {
         ToolSelector.path.push(currentPoint);
         Command.cmd("brushMiddle", null);
     }
@@ -156,6 +156,7 @@ window.addEventListener('keydown', function (event) {
     if (!ctrl) return;
     const key = event.key.toLowerCase();
     if (key === 'z' || key === "y") event.preventDefault();
+    if (WindowManager.enable) return;
 
     if (key === 'z') Command.cmd("undo", "");
     else if (key === 'y') Command.cmd("redo", "");

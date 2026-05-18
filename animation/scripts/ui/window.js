@@ -46,6 +46,7 @@ class createProjectWindow {
     static MouseDownPoint = null;
     constructor() {
         this.createWindow();
+        WindowManager.enable = true;
     }
 
     createWindow() {
@@ -141,6 +142,7 @@ class createProjectWindow {
         if (this.window) getByid("outer_div").removeChild(this.window);
         else removeChild(this.window);
         getByid("cover_div").style.display = "none";
+        WindowManager.enable = false;
     }
 }
 
@@ -150,6 +152,7 @@ class pasteImgWindow {
     static MouseDownPoint = null;
     constructor(img) {
         this.createWindow(img);
+        WindowManager.enable = true;
     }
 
     createWindow(img) {
@@ -262,6 +265,7 @@ class pasteImgWindow {
         if (this.window) getByid("outer_div").removeChild(this.window);
         else removeChild(this.window);
         getByid("cover_div").style.display = "none";
+        WindowManager.enable = false;
     }
 }
 
@@ -413,11 +417,15 @@ class ColorWindow {
     }
 }
 
+class WindowManager {
+    static enable = false;
+}
+
 class FilterWindow {
-    static enable = false;;
 
     constructor(content) {
         this.createWindow(content);
+        WindowManager.enable = true;
     }
 
     createWindow(content) {
@@ -481,7 +489,6 @@ class FilterWindow {
             if (ACGM.temp.length > 0) ACGM.temp = [];
         }
         createCacheForFilter();
-        FilterWindow.enable = true;
     }
 
     addElem(content) {
@@ -562,7 +569,7 @@ class FilterWindow {
         if (this.window) getByid("outer_div").removeChild(this.window);
         else removeChild(this.window);
         getByid("cover_div").style.display = "none";
-        FilterWindow.enable = false;
+        WindowManager.enable = false;
         Filter.cache = null;
     }
 
@@ -573,7 +580,7 @@ class FilterWindow {
         if (this.window) getByid("outer_div").removeChild(this.window);
         else removeChild(this.window);
         getByid("cover_div").style.display = "none";
-        FilterWindow.enable = false;
+        WindowManager.enable = false;
         Filter.cache = null;
     }
 }
