@@ -49,6 +49,7 @@ getByid("canvas_area").onpointerup = function (e) {
     Command.cmd("brushEnd", null);
     // 可放到其他程式碼區域
     if (ToolSelector.brush == pencilTool || ToolSelector.brush == waterpenTool || ToolSelector.brush == erasorTool || ToolSelector.brush == sprayTool || ToolSelector.brush == lineTool) endPencilTool();
+    if (ToolSelector.brush == oilTool && oilTool.fillType == "填充線") endPencilTool();
     if (ToolSelector.brush == selectTool1 && ToolSelector?.selection?.type == "rect") {
         ToolSelector.selection.rect2pixel();
         GUI.refleshMarkCanvas();
