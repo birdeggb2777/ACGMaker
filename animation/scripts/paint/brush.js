@@ -107,6 +107,10 @@ getByid("handToolAlignValue3").parentNode.onclick = function () {
     getByid("handToolAlign").value = "Cursor position";
     getByid("handToolAlign").onchange();
 }
+getByid("scaledWithPixelated").onchange = function () {
+    if (this.checked) getByid("picture").style["image-rendering"] = "pixelated";
+    else getByid("picture").style["image-rendering"] = "";
+}
 
 getByid("eggToolImgEggValue1").parentNode.onclick = function () {
     enableBtnWithId(["eggToolImgEggValue1", "eggToolImgEggValue2", "eggToolImgEggValue3"], false);
