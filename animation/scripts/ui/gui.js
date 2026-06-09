@@ -160,9 +160,9 @@ class GUI {
             var label_block = createElem("div");
             var label_eye = createElem("img", null, "layerImg");
             var label_pen = createElem("img", null, "layerImg");
+            var nameInput = createElem("input", null, "white layerdark layerNameInput");
             [label_eye.width, label_eye.height, label_eye.src] = ["35", "35", "./image/eye.png"];
             [label_pen.width, label_pen.height, label_pen.src] = ["35", "35", "./image/rect.png"];
-            var nameInput = createElem("input", null, "white layerdark layerNameInput");
             nameInput.type = "text";
             nameInput.value = layer.name;
             getByid("layers_container").appendChild(label_block);
@@ -182,9 +182,7 @@ class GUI {
             }
 
             label_block.index = count;
-            label_block.appendChild(label_eye);
-            label_block.appendChild(label_pen);
-            label_block.appendChild(nameInput);
+            appendChilds(label_block, [label_eye, label_pen, nameInput]);
             label_block.setAttribute("draggable", "true");
             label_block.ondragstart = function (e) {
                 e.dataTransfer.setData('text/plain', this.index);

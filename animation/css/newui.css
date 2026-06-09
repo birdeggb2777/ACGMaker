@@ -140,3 +140,20 @@ input:checked+label:after {
     left: calc(100% - 5px);
     transform: translateX(-100%);
 }
+
+.childWindow {
+    position: absolute;
+    z-index: 100;
+}
+
+.windowTitle {
+    user-select: none;
+}
+
+.ColorSlider {
+    width: 255px;
+    height: 25px;
+    position: absolute;
+    z-index: 1;
+    opacity: 0.0;
+}

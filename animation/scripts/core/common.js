@@ -16,10 +16,11 @@ function showClass(s, b = true) {
     }
 }
 
-function createElem(tagName = "div", id = null, className = null) {
+function createElem(tagName = "div", id = null, className = null, innerText = null) {
     var Elem = document.createElement(tagName);
     if (id != null) Elem.id = id;
     if (className != null) Elem.className = className;
+    if (innerText != null) Elem.innerText = innerText;
     return Elem;
 }
 
@@ -47,6 +48,15 @@ function log(s) {
 
 function clamp(value, min, max) {
     return Math.min(Math.max(value, min), max);
+}
+
+function appendChilds(parent, chinds) {
+    for (var child of chinds) parent.appendChild(child);
+}
+
+function setAttributesWithJson(elem, json) {
+    for (var [key, value] of Object.entries(json))
+        elem.setAttribute("" + key, "" + value);
 }
 
 ///////////////////

@@ -18,6 +18,12 @@ class Project {
             this.translate = new Size(0, 0);
             this.scale = new Size(1, 1);
         }
+        if (type == "game") {
+            this.type = "game";
+            this.name = "場景";
+            this.sceneManager = null;
+            //this.history = new History();
+        }
     }
 }
 
@@ -72,6 +78,11 @@ function switchProject(project) {
     getByid("undo").innerHTML = `復原(Ctrl+Z) (${ToolSelector.project.history.UndoStorage.length})`;
 }
 
+
+function initACGM2() {
+    
+}
+
 function initACGM() {
     setHandTool();
     createANewProject();
@@ -109,77 +120,3 @@ function initACGM() {
     ////////////////////////
 }
 window.addEventListener("load", initACGM);
-
-class Canvas {
-    static mouseDownLeft = false;
-    static mouseDownMiddle = false;
-    static mouseDownRight = false;
-
-    static mouseNowPoint = new Point(0, 0);
-    static mousePreviousPoint = new Point(0, 0);
-
-    static mouseClickPoint = new Point(0, 0);
-    static mouseEndPoint = new Point(0, 0);
-
-    static scale = new Size(1, 1);
-    static translate = new Point(0, 0);
-    static center = new Point(0, 0);
-
-    static pathCurrentIndex = 1;
-
-    static get width() { return getByid("picture").width; }
-    static get height() { return getByid("picture").height; }
-
-    static get cursor() { return getByid("circle-cursor"); }
-
-    static getCurrentPoint(point) {
-        function reverseTransform(transformOriginX, transformOriginY, translateX, translateY, scaleX, scaleY, dx, dy) {
-            const x = (dx - transformOriginX - scaleX * translateX) / scaleX + transformOriginX;
-            const y = (dy - transformOriginY - scaleY * translateY) / scaleY + transformOriginY;
-            return new Point(x | 0, y | 0);
-        }
-        return reverseTransform(Canvas.center.x, Canvas.center.y, Canvas.translate.x, Canvas.translate.y,
-            Canvas.scale.x, Canvas.scale.y, point.x, point.y);
-    }
-    static getRevertCurrentPoint(point) {
-        function forwardTransform(transformOriginX, transformOriginY, translateX, translateY, scaleX, scaleY, x, y) {
-            const dx = (x - transformOriginX) * scaleX + transformOriginX + scaleX * translateX;
-            const dy = (y - transformOriginY) * scaleY + transformOriginY + scaleY * translateY;
-            return new Point(dx | 0, dy | 0);
-        }
-        return forwardTransform(Canvas.center.x, Canvas.center.y, Canvas.translate.x, Canvas.translate.y,
-            Canvas.scale.x, Canvas.scale.y, point.x, point.y);
-    }
-
-    static AutoFitTransform() {
-        var canvasArea = getByid("canvas_area");
-        var layerManager = ToolSelector.project.layerManager;
-
-        // 計算縮放比例（等比例縮放，fit）
-        const scale = Math.min(canvasArea.clientWidth / layerManager.width, canvasArea.clientHeight / layerManager.height);
-
-        // 計算縮放後的寬高
-        const newWidth = layerManager.width * scale;
-        const newHeight = layerManager.height * scale;
-
-        // 計算置中所需的平移
-        const translateX = (canvasArea.clientWidth - newWidth) / 2;
-        const translateY = (canvasArea.clientHeight - newHeight) / 2;
-
-        Canvas.scale.x = scale;
-        Canvas.scale.y = scale;
-        Canvas.translate.x = translateX;
-        Canvas.translate.y = translateY;
-        Canvas.setTransform();
-    }
-    static setTransform() {
-        if (handTool.AlignBy == "Upper left corner") Canvas.center.x = Canvas.center.y = 0;
-        if (handTool.AlignBy == "Upper left corner") Canvas.translate.x = Canvas.translate.y = 0;
-        if (handTool.AlignBy == "center") Canvas.center.x = getByid("canvas_area").clientWidth / 2, Canvas.center.y = getByid("canvas_area").clientHeight / 2;
-        if (handTool.AlignBy == "center") Canvas.translate.x = getByid("canvas_area").clientWidth / 2 - Canvas.width / 2, Canvas.translate.y = getByid("canvas_area").clientHeight / 2 - Canvas.height / 2;
-        var container = getByid("PictureContainer");
-        container.style["transform-origin"] = `${Canvas.center.x}px ${Canvas.center.y}px`;
-        container.style["transform"] = `scale(${Canvas.scale.x} , ${Canvas.scale.y}) translate(${Canvas.translate.x}px , ${Canvas.translate.y}px)`;
-        GUI.refleshMarkCanvas();
-    }
-}

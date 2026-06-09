@@ -556,3 +556,5 @@ function addNewLayer() {
     GUI.refleshGUI();
     return layer;
 }
+
+getByid("addNewLayer").onclick = function () { addNewLayer(); }
