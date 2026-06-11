@@ -167,6 +167,9 @@ class pasteImgWindow {
 
         ProjectButton.style.margin = OnlyPasteButton.style.margin = "5px";
         ProjectButton.window = OnlyPasteButton.window = this;
+        // 註冊移動事件
+        getByid("outer_div").appendChild(this.window);
+        WindowManager.registerMoveWindow(this);
         // 註冊關閉視窗後的行為
         this.windowClose.onclick = () => this.closeWindow();
     }
