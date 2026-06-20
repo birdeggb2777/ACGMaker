@@ -20,6 +20,17 @@
     /* 變大縮小時的平滑過度 */
 }
 
+#layers_tab_block {
+    height: 35px;
+    background-color: #5e6165;
+    color: white;
+}
+
+#LayerOpacity {
+    margin-top: 5px;
+    width: 60px;
+}
+
 /*#canvas_area*/
 #PictureContainer {
     cursor: none;
@@ -156,4 +167,8 @@ input:checked+label:after {
     position: absolute;
     z-index: 1;
     opacity: 0.0;
+}
+
+.margin5px {
+    margin: 5px;
 }

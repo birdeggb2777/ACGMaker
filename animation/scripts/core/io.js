@@ -39,9 +39,9 @@ getByid("copyFullImg2clip").onclick = function () {
 getByid("copyLayerImg2clip").onclick = function () {
     // Source - https://stackoverflow.com/a/59462270
     var layer = ToolSelector.layer, pixels = layer.pixelData.d1;
-    var canvas = createElem("canvas");
-    canvas.width = layer.width, canvas.height = layer.height;
-    var ctx = canvas.getContext('2d'), ImgData = ctx.createImageData(layer.width, layer.height), data = ImgData.data;
+
+    var canvas = createCanvas(layer.width, layer.height), ctx = canvas.getContext('2d');
+    var ImgData = ctx.createImageData(layer.width, layer.height), data = ImgData.data;
     for (var i = 0; i < data.length; i++)data[i] = pixels[i];
     ctx.putImageData(ImgData, 0, 0);
     canvas.toBlob(blob => navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]));
@@ -78,8 +78,7 @@ getByid("openFromFile").onclick = function () {
                 var layer = new Layer(0, 0, 0, img.width, img.height, 1); layer.opacity = 1.0;
                 project.name = layer.name = fileName;
                 ///////////////
-                var canvas = createElem("canvas"), ctx = canvas.getContext('2d');
-                canvas.width = img.width; canvas.height = img.height
+                var canvas = createCanvas(img.width, img.height), ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0);
                 var data = ctx.getImageData(0, 0, img.width, img.height).data;
                 ///////////////
@@ -104,8 +103,7 @@ getByid("pasteLayerFromClip").onclick = function () {
         const img = createElem("img");
         img.onload = function () {
             var root = ToolSelector.project.layerManager;
-            var canvas = createElem("canvas"), ctx = canvas.getContext('2d');
-            canvas.width = img.width; canvas.height = img.height
+            var canvas = createCanvas(img.width, img.height), ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0);
             var data = ctx.getImageData(0, 0, img.width, img.height).data;
             var layer = addNewLayer();
@@ -137,8 +135,7 @@ getByid("createProjectFromClip").onclick = function () {
             var layer = new Layer(0, 0, 0, img.width, img.height, 1); layer.opacity = 1.0;
             project.name = layer.name = "剪貼簿";
             ///////////////
-            var canvas = createElem("canvas"), ctx = canvas.getContext('2d');
-            canvas.width = img.width; canvas.height = img.height
+            var canvas = createCanvas(img.width, img.height), ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0);
             var data = ctx.getImageData(0, 0, img.width, img.height).data;
             ///////////////
@@ -154,9 +151,6 @@ getByid("createProjectFromClip").onclick = function () {
     }
     getByid("fileMenu").style.display = "none";
     IO.getImageBlobByClip(CreateProject);
-
-    //關閉所有抽屜
-    //GUI.closeAllDrawer();
 }
 
 // 輸入影像自路徑
@@ -170,8 +164,7 @@ function createProjectByPath(url) {
         var layer = new Layer(0, 0, 0, img.width, img.height, 1); layer.opacity = 1.0;
         project.name = layer.name = "影像";
         ///////////////
-        var canvas = createElem("canvas"), ctx = canvas.getContext('2d');
-        canvas.width = img.width; canvas.height = img.height
+        var canvas = createCanvas(img.width, img.height), ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0);
         var data = ctx.getImageData(0, 0, img.width, img.height).data;
         ///////////////

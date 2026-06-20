@@ -209,7 +209,7 @@ function pastePixelData(來源, sx, sy, sWidth, sHeight, 目標, dx, dy, dWidth,
                 break;
             case 混合模式.筆刷:
                 for (let h = top; h < bottom; h++) {
-                    const 來源Y = clamp((sy + (h - dy) * 比例Y) | 0, 0, 來源.h);
+                    const 來源Y = clamp((sy + (h - dy) * 比例Y) | 0, 0, 來源.h - 1);
                     const target = 目標.d2[h], 來源Row = 來源.d2[來源Y];
                     for (let w = left, w4 = left * 4; w < right; w++, w4 += 4) {
                         const v = (sx + (w - dx) * 比例X) | 0;
@@ -557,4 +557,9 @@ function addNewLayer() {
     return layer;
 }
 
-getByid("addNewLayer").onclick = function () { addNewLayer(); }
+function deleteLayer() {
+
+}
+
+getByid("addNewLayer").onclick = () => addNewLayer();
+getByid("deleteLayer").onclick = () => deleteLayer(); 

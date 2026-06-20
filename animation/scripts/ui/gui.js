@@ -1,31 +1,33 @@
-
+// 要由ViewModel呼叫
 class GUI {
     static menu = null;
     static refleshGUI() {
         GUI.refleshProjectBar();    // project優先
         GUI.displayDrawer();        // 抽屜重要性低
         GUI.refleshBrushBar();      // 左側工具
+        GUI.relfeshCursor();        // 游標
         GUI.refleshMarkCanvas();    // 上層的暫時標記
         GUI.displayLayerDrawer();   // 圖層抽屜很難處理
         GUI.refleshCanvas();        // 圖片最後，效能關鍵
     }
-    static refleshBrushBar() {
-        for (var elem of getClass("left_icon")) {
-            if (elem.id == ToolSelector.brush.id) elem.style["background-color"] = "rgb(68, 68, 153)";
-            else elem.style["background-color"] = "";
-        }
+    // 游標
+    static relfeshCursor() {
+
     }
+    // 筆刷工具的底色
+    static refleshBrushBar() {
+        for (var elem of getClass("left_icon"))
+            elem.style.backgroundColor = (elem.id == ToolSelector.brush.id) ? "rgb(68, 68, 153)" : "";
+    }
+    // 專案表
     static refleshProjectBar() {
         // 不必每次都清除重建、可以再做效能改善
         getByid("project_block").innerHTML = null;
-        for (var project of ACGM.projects) {
-            var label = createElem("label");
-            [label.className, label.innerText, label.project] = ["white fullheight projectlabel", project.name, project];
+        for (const project of ACGM.projects) {
+            var label = createElem("label", null, "white fullheight projectlabel", project.name);
             if (ToolSelector.project == project) label.classList.add("selectedProject");
-            label.onclick = function () {
-                switchProject(this.project);
-            }
-            getByid("project_block").appendChild(label);
+            getByid("project_block").appendChild(label); // label.project = project;
+            label.onclick = () => switchProject(project);
         }
     }
 
@@ -117,7 +119,7 @@ class GUI {
         if (ToolSelector.project.type == "paint") {
             if (ToolSelector.project.layerManager) {
                 // 取得所有圖層的像素資料
-                refleshLayerManager(ToolSelector.project.layerManager);//ToolSelector.project.layerManager.refleshResult();
+                refleshLayerManager(ToolSelector.project.layerManager); // ToolSelector.project.layerManager.refleshResult();
                 var resultData = ToolSelector.project.layerManager.result.d1;
                 // 長寬不符就更新
                 var pictrue = getByid("picture"), pictureContainer = getByid("PictureContainer");
@@ -134,96 +136,54 @@ class GUI {
             }
         }
     }
+    // 關閉所有抽屜 
     static closeAllDrawer() {
-        // 將選擇的menu指向null
-        GUI.menu = null;
-        //關閉所有抽屜
         for (var drawer of getClass("drawer")) drawer.style.display = "none";
     }
+    // 關閉調色盤 
     static closeColorPalette() {
         if (getByid("ColorWindow")) getByid("canvas_area").removeChild(getByid("ColorWindow"));
     }
+    // 顯示/隱藏抽屜 
     static displayDrawer() {
         // menu指向哪，哪個就是開的，其他的都是關的，邏輯就這麼簡單
-        for (var drawer of getClass("drawer")) {
-            if (drawer == GUI.menu) drawer.style.display = "";
-            else drawer.style.display = "none";
-        }
+        for (var drawer of getClass("drawer")) drawer.style.display = (drawer == GUI.menu) ? "" : "none";
     }
 
-    //顯示圖層
+    // 顯示圖層 
     static displayLayerDrawer() {
         getByid("layers_container").innerHTML = "";
-        var count = 0;
-        //新增圖層
-        for (var layer of ToolSelector.project.layerManager.layers) {
+        // 新增圖層
+        for (const layer of ToolSelector.project.layerManager.layers) {
+            // 產生圖層抽屜、眼睛、筆、圖層名稱
             var label_block = createElem("div");
             var label_eye = createElem("img", null, "layerImg");
             var label_pen = createElem("img", null, "layerImg");
             var nameInput = createElem("input", null, "white layerdark layerNameInput");
-            [label_eye.width, label_eye.height, label_eye.src] = ["35", "35", "./image/eye.png"];
-            [label_pen.width, label_pen.height, label_pen.src] = ["35", "35", "./image/rect.png"];
-            nameInput.type = "text";
-            nameInput.value = layer.name;
+            nameInput.type = "text", nameInput.value = layer.name;
+            [label_eye.width, label_eye.height, label_eye.src] = ["35", "35", (layer.display) ? "./image/eye.png" : "./image/rect.png"];
+            [label_pen.width, label_pen.height, label_pen.src] = ["35", "35", (layer == ToolSelector.layer) ? "./image/pen.png" : "./image/rect.png"];
             getByid("layers_container").appendChild(label_block);
-            // 選擇的處理
-            if (layer == ToolSelector.layer) label_pen.src = "./image/pen.png";
-            if (!layer.display) label_eye.src = "./image/rect.png";
-            label_eye.layer = label_pen.layer = layer;
-            label_eye.onclick = function () {
-                this.layer.display = !this.layer.display;
-                GUI.displayLayerDrawer();
-                GUI.refleshSandwichAndFullCanvas();
-            }
-            label_pen.onclick = function () {
-                ToolSelector.layer = this.layer;
-                createFullSandwich();
-                GUI.displayLayerDrawer();
-            }
-
-            label_block.index = count;
+            // 註冊觸發的動作
+            label_eye.onclick = () => toggleLayerDisplay(layer);
+            label_pen.onclick = () => switchLayer(layer);
             appendChilds(label_block, [label_eye, label_pen, nameInput]);
-            label_block.setAttribute("draggable", "true");
-            label_block.ondragstart = function (e) {
-                e.dataTransfer.setData('text/plain', this.index);
+            // ondrag暫時先移除
+            // 圖層不透明度及混合模式
+            if (layer == ToolSelector.layer) {
+                getByid("LayerOpacity").value = (layer.opacity * 100) | 0;
+                getByid("layer_MixBlendMode").value = "" + "普通"; // layer.mixBlendMode;
             }
-            label_block.ondragenter = function (e) {
-                e.preventDefault();
-                this.style['border-top'] = '5px solid red';
-            };
-            label_block.ondragleave = function (e) {
-                e.preventDefault();
-                this.style['border-top'] = '';
-            };
-            label_block.dragover = function (e) {
-                e.preventDefault(); // dragover: 必須阻止預設行為，才能允許 drop
-            };
-            label_block.ondrop = function (e) {
-                e.preventDefault(); // 阻止瀏覽器開啟連結或圖片的預設行為
-                var sourceIndex = e.dataTransfer.getData('text/plain');
-                function moveElementAfter(arr, fromIndex, toIndex) {
-                    const [removed] = arr.splice(fromIndex, 1);
-                    arr.splice(toIndex + 1, 0, removed);
-                    return arr;
-                }
-                ToolSelector.project.layerManager.layers = moveElementAfter(ToolSelector.project.layerManager.layers, parseInt(sourceIndex), this.index);
-                GUI.displayLayerDrawer();
-            };
-            count++;
         }
+
         const children = Array.from(getByid("layers_container").children);
         children.reverse().forEach(child => { getByid("layers_container").appendChild(child); });
-        `
-        <div class="layer_block">
-        <img class="layerImg" width="35" height="35" src="./image/eye.png">
-        <img class="layerImg" width="35" height="35" src="./image/pen.png">
-        <input class="white layerdark layerNameInput" type="text" name="圖片">
-        </div>
-    `
     }
+    // 顯示狀態列 
     static setStatusText(str) {
         getByid("status_text").innerText = str;
     }
+    // 警示狀態列 
     static setStatusAlert(str) {
         getByid("status_text").innerHTML = `<span style="color: orange;">${str}</span>`;
     }
@@ -250,3 +210,33 @@ function setMenuTrigger() {
     }
 }
 setMenuTrigger();
+
+///////////////////////////////
+///////////////////////////////
+
+function updateColor(r, g, b, a) {
+    if (ToolSelector.colorIndex == 2) ToolSelector.colorIndex = 0;
+    if (ToolSelector.colorIndex == 0) {
+        ToolSelector.前背透色[0].r = r;
+        ToolSelector.前背透色[0].g = g;
+        ToolSelector.前背透色[0].b = b;
+        getByid("foregroundColorDiv").style.backgroundColor = `rgb(${r},${g},${b})`;
+    }
+    if (ToolSelector.colorIndex == 1) {
+        ToolSelector.前背透色[1].r = r;
+        ToolSelector.前背透色[1].g = g;
+        ToolSelector.前背透色[1].b = b;
+        getByid("backgroundColorDiv").style.backgroundColor = `rgb(${r},${g},${b})`;
+    }
+}
+
+function updateCursorSize(size) {
+    Canvas.cursor.style.width = Canvas.cursor.style.height = `${size}px`;
+}
+function updateCursorPoint(x, y) {
+    Canvas.cursor.style.left = x + 'px';
+    Canvas.cursor.style.top = y + 'px';
+}
+function enableCursor(b) {
+    Canvas.cursor.style.display = b == true ? "" : "none";
+}

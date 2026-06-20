@@ -47,7 +47,10 @@ class Command {
         else if (parm == "sprayTool") setSprayTool();
         else if (parm == "waterpenTool") setWaterpenTool();
         else if (parm == "erasorTool") setErasorTool();
-        else if (parm == "lineTool") setLineTool();
+        else if (parm == "shapeTool") setShapeTool();
+        else if (parm == "operateTool") setOperateTool();
+        else if (parm == "textTool") setTextTool();
+        else if (parm == "sealTool") setSealTool();
         else if (parm == "gradientTool") setGradientTool();
         else if (parm == "selectTool2") setSelectTool2();
         else if (parm == "eggTool") setEggTool();
@@ -71,9 +74,12 @@ class Command {
         if (ToolSelector.brush == dropperTool) invokeDropperTool();
         if (ToolSelector.brush == erasorTool) invokeErasorTool();
         if (ToolSelector.brush == sprayTool) invokeSprayTool();
-        if (ToolSelector.brush == lineTool) invokeLineTool();
+        if (ToolSelector.brush == textTool) invokeTextTool();
+        if (ToolSelector.brush == shapeTool) invokeShapeTool();
+        if (ToolSelector.brush == sealTool) invokeSealTool();
         if (ToolSelector.brush == gradientTool) invokeGradientTool();
         if (ToolSelector.brush == oilTool) invokeOilTool();
+        if (ToolSelector.brush == operateTool) invokeOperateTool();
 
         if (ToolSelector.layer && ToolSelector.layer.display == false) GUI.setStatusAlert("請注意，您選擇的圖層不在顯示狀態，可能會看不見繪製的內容！！！");
     }
@@ -83,6 +89,8 @@ class Command {
     }
     static InvokeClickBrush(parm) {
         if (ToolSelector.brush == oilTool) invokeOilTool();
+        if (ToolSelector.brush == operateTool) invokeOperateTool();
+        if (ToolSelector.brush == sealTool) invokeSealTool();
         if (ToolSelector.brush == selectTool1) invokeSelectTool1();
         if (ToolSelector.brush == selectTool2) invokeSelectTool2();
         if (ToolSelector.brush == dropperTool) invokeDropperTool();

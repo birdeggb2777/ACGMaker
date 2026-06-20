@@ -23,6 +23,34 @@ class Selection {
             }
         }
     }
+    move(point) {
+        this.rect2pixel();
+        const width = this.content.w, height = this.content.h;
+        var temp = new PixelData(Canvas.width, Canvas.height, 4);
+
+        for (var h = 0; h < height; h++) {
+            const pixelRow = this.content.d2[h], tempRow = temp.d2[h];
+            for (var w = 0; w < width * 4; w += 4) {
+                tempRow[w + 0] = pixelRow[w + 0];
+                tempRow[w + 1] = pixelRow[w + 1];
+                tempRow[w + 2] = pixelRow[w + 2];
+                tempRow[w + 3] = pixelRow[w + 3];
+            }
+        } 
+        for (var h = 0; h < height; h++) {
+            const pixelRow = this.content.d2[h], tempRow = temp.d2[h + point.y];
+            for (var w = 0, w0 = 0; w < width * 4; w += 4, w0++) {
+                if (!tempRow || w0 + point.x < 0 || w0 + point.x >= width) {
+                    pixelRow[w + 0] = pixelRow[w + 1] = pixelRow[w + 2] = pixelRow[w + 3] = 0;
+                    continue;
+                }
+                pixelRow[w + 0] = tempRow[w + (point.x * 4) + 0];
+                pixelRow[w + 1] = tempRow[w + (point.x * 4) + 1];
+                pixelRow[w + 2] = tempRow[w + (point.x * 4) + 2];
+                pixelRow[w + 3] = tempRow[w + (point.x * 4) + 3];
+            }
+        }
+    }
     getMap() {
         if (this.map) return this.map;
         if (this.type == "pixel" && this.content) {
@@ -68,15 +96,17 @@ class Path {
 
 class PixelData {
     constructor(w, h, c) {
-        this.d1 = new Uint8ClampedArray(w * h * 4), this.d2 = new Array(h);
         this.w = w, this.h = h, this.c = c;
+        this.d1 = new Uint8ClampedArray(w * h * 4), this.d2 = new Array(h);
         for (var i = 0; i < h; i++)this.d2[i] = new Uint8ClampedArray(this.d1.buffer, i * w * 4, w * 4);
+        this.D1 = new Uint32Array(this.d1.buffer), this.D2 = new Array(h);
+        for (var i = 0; i < h; i++)this.D2[i] = new Uint32Array(this.D1.buffer, i * w * 4, w);
     }
     fillColor(inputColor) {
         const color = ((inputColor.a << 24) | (inputColor.b << 16) | (inputColor.g << 8) | inputColor.r) >>> 0;
         new Uint32Array(this.d1.buffer).fill(color);
     }
-    clear() { new Uint32Array(this.d1.buffer).fill(0x00000000); }
+    clear() { new Uint32Array(this.d1.buffer).fill(0x00000000); return this; }
     set(inputPixelData) { this.d1.set(inputPixelData.d1); }
     clone() {
         var newPixelData = new PixelData(this.w, this.h, this.c);
@@ -99,7 +129,7 @@ class F32PixelData {
             this.d1[i + 0] = r, this.d1[i + 1] = g, this.d1[i + 2] = b, this.d1[i + 3] = a;
         }
     }
-    clear() { new Float32Array(this.d1.buffer).fill(0x00000000); }
+    clear() { new Float32Array(this.d1.buffer).fill(0x00000000); return this; }
     set(inputPixelData) { this.d1.set(inputPixelData.d1); }
 }
 
@@ -114,9 +144,11 @@ class Layer {
         this.width = w; this.height = h; this.deep = d;
         /////////////
         this.pixelData = new PixelData(w, h, 4);
-        this.style = 混合模式.普通;
         this.opacity = 1; //可超過一百甚至為負值
         this.display = true;
+        /////////////
+        this.mixBlendMode = "普通";
+        this.tag = "預設標籤";
         /////////////
         this.color = new Color(128, 128, 128, 255);
     }

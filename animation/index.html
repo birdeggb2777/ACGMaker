@@ -30,7 +30,7 @@
             </span>
             <span class="menuspan" id="OpenEditMenu">
                 <label class="menulabel">編輯</label>
-                <div class="childmenu drawer" id="editMenu" style="display: none;left: 61px;">
+                <div class="childmenu drawer" id="editMenu" style="display: none;left: 58px;">
                     <span class="childMenuBlock" id="copyFullImg2clip">複製完整圖片影像</span>
                     <span class="childMenuBlock" id="copyLayerImg2clip">複製目前圖層影像</span>
                     <span class="childMenuBlock" id="pasteLayerFromClip">貼上</span>
@@ -38,9 +38,16 @@
                     <span class="childMenuBlock" id="redo">重做</span>
                 </div>
             </span>
+            <span class="menuspan" id="OpenLayerMenu">
+                <label class="menulabel">圖層</label>
+                <div class="childmenu drawer" id="layerMenu" style="display: none;left: 113px;"><!--left: 301px;-->
+                    <span class="childMenuBlock" id="addNewLayer">新圖層</span>
+                    <span class="childMenuBlock" id="deleteLayer" style="color: gray;">刪除圖層</span>
+                </div>
+            </span>
             <span class="menuspan" id="OpenImageMenu">
                 <label class="menulabel">影像</label>
-                <div class="childmenu drawer" id="imageMenu" style="display: none;left: 113px;">
+                <div class="childmenu drawer" id="imageMenu" style="display: none;left: 170px;">
                     <span class="childMenuBlock filter" id="invertColor">色彩反轉</span>
                     <span class="childMenuBlock filter" id="grayScale">灰階化</span>
                     <span class="childMenuBlock prefilter" id="binarization">二值化...</span>
@@ -56,7 +63,7 @@
             </span>
             <span class="menuspan" id="OpenFilterMenu">
                 <label class="menulabel">濾鏡</label>
-                <div class="childmenu drawer" id="filterMenu" style="display: none;left: 165px;">
+                <div class="childmenu drawer" id="filterMenu" style="display: none;left: 225px;">
                     <!--<span class="childMenuBlock prefilter" id="blur">模糊...</span>-->
                     <span class="childMenuBlock prefilter" id="glassBlur">玻璃模糊...</span>
                     <span class="childMenuBlock filter" id="overexposed">過度曝光</span>
@@ -71,8 +78,9 @@
             </span>
             <span class="menuspan" id="selectMenu">
                 <label class="menulabel">範圍選擇</label>
-                <div class="childmenu drawer" id="selectMenu" style="display: none;left: 217px;">
+                <div class="childmenu drawer" id="selectMenu" style="display: none;left: 282px;">
                     <span class="childMenuBlock" id="selectEmpty">解除選擇</span>
+                    <span class="childMenuBlock" id="selectAll">全部影像</span>
                     <span class="childMenuBlock" id="reverseEmpty">反轉選擇範圍</span>
                 </div>
             </span>
@@ -89,12 +97,6 @@
                     <span class="childMenuBlock">WindowLevel</span>
                 </div>
             </span>-->
-            <span class="menuspan" id="OpenLayerMenu">
-                <label class="menulabel">圖層</label>
-                <div class="childmenu drawer" id="layerMenu" style="display: none;left: 301px;"><!--left: 301px;-->
-                    <span class="childMenuBlock" id="addNewLayer">新圖層</span>
-                </div>
-            </span>
             <!--<span class="menuspan" id="OpenAutoMenu">
                 <label class="menulabel">自動機</label>
                 <div class="childmenu drawer" id="autoMenu" style="display: none;left: 353px;">
@@ -116,14 +118,17 @@
                 <div id="tool_choiser">
                     <div id="left_icon_div">
                         <img id="handTool" class="left_icon" src="./image/hand.png" style="background-color: rgb(68, 68, 153);">
+                        <img id="operateTool" class="left_icon" src="./image/operate.png">
                         <img id="selectTool1" class="left_icon" src="./image/dotted_rect.png">
                         <img id="pencilTool" class="left_icon" src="./image/pencil2.png">
                         <img id="oilTool" class="left_icon" src="./image/oil.png">
                         <img id="sprayTool" class="left_icon" src="./image/spray.png">
                         <img id="waterpenTool" class="left_icon" src="./image/waterpen.png">
                         <img id="erasorTool" class="left_icon" src="./image/erasor.png">
-                        <img id="lineTool" class="left_icon" src="./image/line.png">
+                        <img id="sealTool" class="left_icon" src="./image/seal2.png">
+                        <img id="shapeTool" class="left_icon" src="./image/shape.png">
                         <img id="gradientTool" class="left_icon" src="./image/gradient.png">
+                        <img id="textTool" class="left_icon" src="./image/text.png">
                         <img id="selectTool2" class="left_icon" src="./image/fairywand.png">
                         <img id="eggTool" class="left_icon" src="./image/eastereggs.png">
                         <img id="dropperTool" class="left_icon" src="./image/dropper.png">
@@ -194,7 +199,7 @@
                                 </table>
                                 <hr>
                                 <label style="color: white; line-height: 30px;">使用鋸齒縮放：</label>
-                                <input type="checkbox" id="scaledWithPixelated"  />
+                                <input type="checkbox" id="scaledWithPixelated" />
                                 <label for="scaledWithPixelated" class="checklabel"> </label>
                             </div>
                             <div id="selectTool2Panel" class="panel" style="display: none">
@@ -280,6 +285,11 @@
                                 <label style="color: white; line-height: 30px;">顏料量：</label>
                                 <input type="number" min="0" max="100" value="25" id="waterpenPigmentNum" style="top:5px;width:50px"><br>
                                 <input type="range" min="0" max="100" value="25" id="waterpenPigment" style="top:5px;width:85%"><br>
+                            </div>
+                            <div id="sealToolPanel" class="panel" style="display: none">
+                                <label style="color: white; line-height: 30px;">大小：</label>
+                                <input type="number" min="5" max="100" value="50" id="sealSizeNum" style="top:5px;width:50px"><br>
+                                <input type="range" min="5" max="100" value="50" id="sealSize" style="top:5px;width:85%"><br>
                             </div>
                             <div id="erasorToolPanel" class="panel" style="display: none">
                                 <label style="color: white; line-height: 30px;">大小：</label>
@@ -373,9 +383,9 @@
                                     </tr>
                                 </table>
                             </div>
-                            <div id="lineToolPanel" class="panel" style="display: none">
+                            <div id="shapeToolPanel" class="panel" style="display: none">
                                 <label style="color: white; line-height: 30px;">形狀：</label>
-                                <select class="darkInput" id="lineToolShape">
+                                <select class="darkInput" id="shapeToolShape">
                                     <option value="circle" selected>圓形</option>
                                     <option value="rect">矩形</option>
                                     <option value="line">直線</option>
@@ -385,19 +395,19 @@
                                     <tr>
                                         <th scope="col">
                                             <div style="border-radius: 15px;background:#d6def8;padding-top: 2px;">
-                                                <img width="50" height="50" src="./image/btn/circle.png" id="lineToolShapeValue1" style="border: 2px solid #000000;">
+                                                <img width="50" height="50" src="./image/btn/circle.png" id="shapeToolShapeValue1" style="border: 2px solid #000000;">
                                                 <br>圓形
                                             </div>
                                         </th>
                                         <th scope="col">
                                             <div style="border-radius: 15px;background:#b6bac4;padding-top: 2px;">
-                                                <img width="50" height="50" src="./image/btn/rect.png" id="lineToolShapeValue2" style="border: 2px solid #000000;">
+                                                <img width="50" height="50" src="./image/btn/rect.png" id="shapeToolShapeValue2" style="border: 2px solid #000000;">
                                                 <br>矩形
                                             </div>
                                         </th>
                                         <th scope="col">
                                             <div style="border-radius: 15px;background:#b6bac4;padding-top: 2px;">
-                                                <img width="50" height="50" src="./image/btn/line.png" id="lineToolShapeValue3" style="border: 2px solid #000000;">
+                                                <img width="50" height="50" src="./image/btn/line.png" id="shapeToolShapeValue3" style="border: 2px solid #000000;">
                                                 <br>直線
                                             </div>
                                         </th>
@@ -405,7 +415,7 @@
                                 </table>
                                 <hr>
                                 <label style="color: white; line-height: 30px;">對齊方式：</label>
-                                <select class="darkInput" id="lineToolAlign">
+                                <select class="darkInput" id="shapeToolAlign">
                                     <option value="center" selected>中心點</option>
                                     <option value="twice">兩端</option>
                                 </select><br>
@@ -413,13 +423,13 @@
                                     <tr>
                                         <th scope="col">
                                             <div style="border-radius: 15px;background:#d6def8;padding-top: 2px;">
-                                                <img width="50" height="50" src="./image/btn/shape_center.png" id="lineToolAlignValue1" style="border: 2px solid #000000;">
+                                                <img width="50" height="50" src="./image/btn/shape_center.png" id="shapeToolAlignValue1" style="border: 2px solid #000000;">
                                                 <br>中心點
                                             </div>
                                         </th>
                                         <th scope="col">
                                             <div style="border-radius: 15px;background:#b6bac4;padding-top: 2px;">
-                                                <img width="50" height="50" src="./image/btn/shape_twice.png" id="lineToolAlignValue2" style="border: 2px solid #000000;">
+                                                <img width="50" height="50" src="./image/btn/shape_twice.png" id="shapeToolAlignValue2" style="border: 2px solid #000000;">
                                                 <br>兩端
                                             </div>
                                         </th>
@@ -438,8 +448,30 @@
                                 <hr>
                             </div>
                         </div>
+
                         <!-- 圖層 -->
                         <div id="layers_block">
+                            <div id="layers_tab_block">
+                                <select class="darkInput" id="layer_MixBlendMode">
+                                    <option value="普通">普通</option>
+                                    <option value="變暗">變暗</option>
+                                    <option value="相乘">相乘</option>
+                                    <option value="加深顏色">加深顏色</option>
+                                    <option value="變亮">變亮</option>
+                                    <option value="濾色">濾色</option>
+                                    <option value="加亮顏色">加亮顏色</option>
+                                    <option value="覆蓋">覆蓋</option>
+                                    <option value="柔光">柔光</option>
+                                    <option value="實光">實光</option>
+                                    <option value="差異化">差異化</option>
+                                    <option value="排除">排除</option>
+                                    <option value="色相">色相</option>
+                                    <option value="彩度">彩度</option>
+                                    <option value="顏色">顏色</option>
+                                    <option value="輝度">輝度</option>
+                                </select>
+                                &ensp;不透明度 <input type="number" min="0" max="100" value="100" id="LayerOpacity">
+                            </div>
                             <div id="layers_container">
                                 <!--<div class="layer_block">
                                     <img class="layerImg" width="35" height="35" src="./image/eye.png">
@@ -460,15 +492,17 @@
     <script src="./scripts/core/struct/paint.js"></script>
     <script src="./scripts/core/layer.js"></script>
 
-    <script src="./scripts/core/event.js"></script>
+    <script src="./scripts/core/paint/color.js"></script>
+    <script src="./scripts/core/paint/brush.js"></script>
+    <script src="./scripts/core/paint/filter.js"></script>
+
     <script src="./scripts/core/cmd.js"></script>
     <script src="./scripts/ui/gui.js"></script>
     <script src="./scripts/ui/window.js"></script>
+    <script src="./scripts/ui/tools.js"></script>
+    <script src="./scripts/ui/event.js"></script>
 
-    <script src="./scripts/paint/tools.js"></script>
-    <script src="./scripts/paint/color.js"></script>
-    <script src="./scripts/paint/brush.js"></script>
-    <script src="./scripts/paint/filter.js"></script>
+    <script src="./scripts/Intermediate/display.js"></script>
 
     <script src="./scripts/core/project.js"></script>
     <script src="./scripts/core/io.js"></script>

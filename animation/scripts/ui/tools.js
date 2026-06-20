@@ -1,85 +1,7 @@
 
-class Brush {
-    constructor() {
-        this.id = null;
-        this.size = 20;
-        this.opacity = 95;
-        this.antiAliasing = 5;
-    }
-    // static Painting = false; //代表已經下筆 
-    static cache = null;
-    // 材料
-    static pencilMaterial = [];
-    static waterpenMaterial = [];
-};
-
-function loadPencilMaterial() {
-    Brush.pencilMaterial = [0, 0, 0, 0]
-    const img0 = new Image(), img1 = new Image(), img2 = new Image(), img3 = new Image();
-    img0.src = "./image/material/pencil1.png"; img1.src = "./image/material/pencil2.png";
-    img2.src = "./image/material/pencil3.png"; img3.src = "./image/material/pencil4.png";
-
-    img0.onload = () => {
-        const canvas = document.createElement('canvas'), ctx = canvas.getContext('2d');
-        canvas.width = img0.width, canvas.height = img0.height;
-        ctx.drawImage(img0, 0, 0);
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        Brush.pencilMaterial[0] = new F32PixelData(img0.width, img0.height, 4);
-        for (var i = 0; i < Brush.pencilMaterial[0].d1.length; i++) Brush.pencilMaterial[0].d1[i] = imageData.data[i];
-    };
-    img1.onload = () => {
-        const canvas = document.createElement('canvas'), ctx = canvas.getContext('2d');
-        canvas.width = img1.width, canvas.height = img1.height;
-        ctx.drawImage(img1, 0, 0);
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        Brush.pencilMaterial[1] = new F32PixelData(img1.width, img1.height, 4);
-        for (var i = 0; i < Brush.pencilMaterial[1].d1.length; i++) Brush.pencilMaterial[1].d1[i] = imageData.data[i];
-    };
-    img2.onload = () => {
-        const canvas = document.createElement('canvas'), ctx = canvas.getContext('2d');
-        canvas.width = img2.width, canvas.height = img2.height;
-        ctx.drawImage(img2, 0, 0);
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        Brush.pencilMaterial[2] = new F32PixelData(img2.width, img2.height, 4);
-        for (var i = 0; i < Brush.pencilMaterial[2].d1.length; i++) Brush.pencilMaterial[2].d1[i] = imageData.data[i];
-    };
-    img3.onload = () => {
-        const canvas = document.createElement('canvas'), ctx = canvas.getContext('2d');
-        canvas.width = img3.width, canvas.height = img3.height;
-        ctx.drawImage(img3, 0, 0);
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        Brush.pencilMaterial[3] = new F32PixelData(img3.width, img3.height, 4);
-        for (var i = 0; i < Brush.pencilMaterial[3].d1.length; i++) Brush.pencilMaterial[3].d1[i] = imageData.data[i];
-    };
-}
-loadPencilMaterial();
-
-function loadWaterpenMaterial() {
-    Brush.waterpenMaterial = [0]
-    const img0 = new Image();
-    img0.src = "./image/material/waterpen1.png";
-
-    img0.onload = () => {
-        const canvas = document.createElement('canvas'), ctx = canvas.getContext('2d');
-        canvas.width = img0.width, canvas.height = img0.height;
-        ctx.drawImage(img0, 0, 0);
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        Brush.waterpenMaterial[0] = new F32PixelData(img0.width, img0.height, 4);
-        for (var i = 0; i < Brush.waterpenMaterial[0].d1.length; i++) Brush.waterpenMaterial[0].d1[i] = imageData.data[i];
-    };
-}
-loadWaterpenMaterial();
-
 function enableBtnWithId(idList, enable = true) {
-    if (enable == true) {
-        for (var elem of idList) {
-            getByid(elem).parentNode.style.background = "#d6def8";
-        }
-    } else {
-        for (var elem of idList) {
-            getByid(elem).parentNode.style.background = "#b6bac4";
-        }
-    }
+    for (var elem of idList)
+        getByid(elem).parentNode.style.background = (enable == true) ? "#d6def8" : "#b6bac4";
 }
 
 getByid("handToolAlign").onchange = function () {
@@ -159,7 +81,7 @@ getByid("selectTool2DiffNum").oninput = getByid("selectTool2Diff").oninput = fun
 getByid("selectTool2SizeNum").oninput = getByid("selectTool2Size").oninput = function () {
     selectTool2.size = parseInt(this.value);
     getByid("selectTool2SizeNum").value = getByid("selectTool2Size").value = this.value;
-    Canvas.cursor.style.width = Canvas.cursor.style.height = `${selectTool2.size}px`;
+    updateCursorSize(selectTool2.size);
 }
 getByid("magicType").onchange = function () {
     selectTool2.magicType = "" + this.value;
@@ -178,39 +100,39 @@ getByid("magicTypeValue2").parentNode.onclick = function () {
     getByid("magicType").onchange();
 }
 
-getByid("lineToolShape").onchange = function () {
-    lineTool.shape = "" + this.value;
-    enableBtnWithId(["lineToolShapeValue1", "lineToolShapeValue2", "lineToolShapeValue3"], false);
-    if ("" + this.value == "circle") enableBtnWithId(["lineToolShapeValue1"], true);
-    if ("" + this.value == "rect") enableBtnWithId(["lineToolShapeValue2"], true);
-    if ("" + this.value == "line") enableBtnWithId(["lineToolShapeValue3"], true);
+getByid("shapeToolShape").onchange = function () {
+    shapeTool.shape = "" + this.value;
+    enableBtnWithId(["shapeToolShapeValue1", "shapeToolShapeValue2", "shapeToolShapeValue3"], false);
+    if ("" + this.value == "circle") enableBtnWithId(["shapeToolShapeValue1"], true);
+    if ("" + this.value == "rect") enableBtnWithId(["shapeToolShapeValue2"], true);
+    if ("" + this.value == "line") enableBtnWithId(["shapeToolShapeValue3"], true);
 }
-getByid("lineToolShapeValue1").parentNode.onclick = function () {
-    getByid("lineToolShape").value = "circle";
-    getByid("lineToolShape").onchange();
+getByid("shapeToolShapeValue1").parentNode.onclick = function () {
+    getByid("shapeToolShape").value = "circle";
+    getByid("shapeToolShape").onchange();
 }
-getByid("lineToolShapeValue2").parentNode.onclick = function () {
-    getByid("lineToolShape").value = "rect";
-    getByid("lineToolShape").onchange();
+getByid("shapeToolShapeValue2").parentNode.onclick = function () {
+    getByid("shapeToolShape").value = "rect";
+    getByid("shapeToolShape").onchange();
 }
-getByid("lineToolShapeValue3").parentNode.onclick = function () {
-    getByid("lineToolShape").value = "line";
-    getByid("lineToolShape").onchange();
+getByid("shapeToolShapeValue3").parentNode.onclick = function () {
+    getByid("shapeToolShape").value = "line";
+    getByid("shapeToolShape").onchange();
 }
 
-getByid("lineToolAlign").onchange = function () {
-    lineTool.AlignBy = "" + this.value;
-    enableBtnWithId(["lineToolAlignValue1", "lineToolAlignValue2"], false);
-    if ("" + this.value == "center") enableBtnWithId(["lineToolAlignValue1"], true);
-    if ("" + this.value == "twice") enableBtnWithId(["lineToolAlignValue2"], true);
+getByid("shapeToolAlign").onchange = function () {
+    shapeTool.AlignBy = "" + this.value;
+    enableBtnWithId(["shapeToolAlignValue1", "shapeToolAlignValue2"], false);
+    if ("" + this.value == "center") enableBtnWithId(["shapeToolAlignValue1"], true);
+    if ("" + this.value == "twice") enableBtnWithId(["shapeToolAlignValue2"], true);
 }
-getByid("lineToolAlignValue1").parentNode.onclick = function () {
-    getByid("lineToolAlign").value = "center";
-    getByid("lineToolAlign").onchange();
+getByid("shapeToolAlignValue1").parentNode.onclick = function () {
+    getByid("shapeToolAlign").value = "center";
+    getByid("shapeToolAlign").onchange();
 }
-getByid("lineToolAlignValue2").parentNode.onclick = function () {
-    getByid("lineToolAlign").value = "twice";
-    getByid("lineToolAlign").onchange();
+getByid("shapeToolAlignValue2").parentNode.onclick = function () {
+    getByid("shapeToolAlign").value = "twice";
+    getByid("shapeToolAlign").onchange();
 }
 
 getByid("pencilOpacityPressure").onchange = function () {
@@ -238,7 +160,7 @@ getByid("pencilTypeValue3").parentNode.onclick = function () {
 getByid("pencilSizeNum").oninput = getByid("pencilSize").oninput = function () {
     pencilTool.size = parseInt(this.value);
     getByid("pencilSizeNum").value = getByid("pencilSize").value = this.value;
-    Canvas.cursor.style.width = Canvas.cursor.style.height = `${pencilTool.size}px`;
+    updateCursorSize(pencilTool.size);
 }
 getByid("pencilOpacityNum").oninput = getByid("pencilOpacity").oninput = function () {
     pencilTool.opacity = parseInt(this.value);
@@ -252,7 +174,7 @@ getByid("pencilAntiAliasingNum").oninput = getByid("pencilAntiAliasing").oninput
 getByid("waterpenSizeNum").oninput = getByid("waterpenSize").oninput = function () {
     waterpenTool.size = parseInt(this.value);
     getByid("waterpenSizeNum").value = getByid("waterpenSize").value = this.value;
-    Canvas.cursor.style.width = Canvas.cursor.style.height = `${waterpenTool.size}px`;
+    updateCursorSize(waterpenTool.size);
 }
 getByid("waterpenOpacityNum").oninput = getByid("waterpenOpacity").oninput = function () {
     waterpenTool.opacity = parseInt(this.value);
@@ -263,10 +185,16 @@ getByid("waterpenPigmentNum").oninput = getByid("waterpenPigment").oninput = fun
     getByid("waterpenPigmentNum").value = getByid("waterpenPigment").value = this.value;
 }
 
+getByid("sealSizeNum").oninput = getByid("sealSize").oninput = function () {
+    sealTool.size = parseInt(this.value);
+    getByid("sealSizeNum").value = getByid("sealSize").value = this.value;
+    updateCursorSize(sealTool.size);
+}
+
 getByid("spraySizeNum").oninput = getByid("spraySize").oninput = function () {
     sprayTool.size = parseInt(this.value);
     getByid("spraySizeNum").value = getByid("spraySize").value = this.value;
-    Canvas.cursor.style.width = Canvas.cursor.style.height = `${sprayTool.size * 2}px`;
+    updateCursorSize(sprayTool.size * 2);
 }
 getByid("sprayRangeNum").oninput = getByid("sprayRange").oninput = function () {
     sprayTool.range = parseInt(this.value);
@@ -275,23 +203,23 @@ getByid("sprayRangeNum").oninput = getByid("sprayRange").oninput = function () {
 
 
 getByid("lineSizeNum").oninput = getByid("lineSize").oninput = function () {
-    lineTool.size = parseInt(this.value);
+    shapeTool.size = parseInt(this.value);
     getByid("lineSizeNum").value = getByid("lineSize").value = this.value;
-    Canvas.cursor.style.width = Canvas.cursor.style.height = `${lineTool.size}px`;
+    updateCursorSize(shapeTool.size);
 }
 getByid("lineOpacityNum").oninput = getByid("lineOpacity").oninput = function () {
-    lineTool.opacity = parseInt(this.value);
+    shapeTool.opacity = parseInt(this.value);
     getByid("lineOpacityNum").value = getByid("lineOpacity").value = this.value;
 }
 getByid("lineAntiAliasingNum").oninput = getByid("lineAntiAliasing").oninput = function () {
-    lineTool.antiAliasing = parseInt(this.value);
+    shapeTool.antiAliasing = parseInt(this.value);
     getByid("lineAntiAliasingNum").value = getByid("lineAntiAliasing").value = this.value;
 }
 
 getByid("erasorSizeNum").oninput = getByid("erasorSize").oninput = function () {
     erasorTool.size = parseInt(this.value);
     getByid("erasorSizeNum").value = getByid("erasorSize").value = this.value;
-    Canvas.cursor.style.width = Canvas.cursor.style.height = `${erasorTool.size}px`;
+    updateCursorSize(erasorTool.size);
 }
 getByid("erasorOpacityNum").oninput = getByid("erasorOpacity").oninput = function () {
     erasorTool.opacity = parseInt(this.value);
@@ -349,20 +277,23 @@ waterpenTool.opacity = 95;
 waterpenTool.pigment = 25;
 var erasorTool = new Brush(); erasorTool.id = "erasorTool";
 erasorTool.opacityWithPressure = true;
-var lineTool = new Brush(); lineTool.id = "lineTool";
-lineTool.AlignBy = "center";
-lineTool.shape = "circle";
-lineTool.size = 8;
-lineTool.antiAliasing = 1;
+var shapeTool = new Brush(); shapeTool.id = "shapeTool";
+shapeTool.AlignBy = "center";
+shapeTool.shape = "circle";
+shapeTool.size = 8;
+shapeTool.antiAliasing = 1;
 var gradientTool = new Brush(); gradientTool.id = "gradientTool";
+var textTool = new Brush(); textTool.id = "textTool";
 var selectTool2 = new Brush(); selectTool2.id = "selectTool2";
 selectTool2.ColorDiff = 20;
 selectTool2.size = 50;
 selectTool2.magicType = "魔術棒";
 var eggTool = new Brush(); eggTool.id = "eggTool";
+var sealTool = new Brush(); sealTool.id = "sealTool";
+sealTool.size = 50;
 var dropperTool = new Brush(); dropperTool.id = "dropperTool";
 dropperTool.source = "layer";
-
+var operateTool = new Brush(); operateTool.id = "operateTool";
 
 function setHandTool() {
     ToolSelector.brush = handTool;
@@ -374,37 +305,50 @@ function setSelectTool1() {
 
 function setPencilTool() {
     ToolSelector.brush = pencilTool;
-    Canvas.cursor.style.width = Canvas.cursor.style.height = `${pencilTool.size}px`;
+    updateCursorSize(ToolSelector.brush.size);
 }
 
 function setOilTool() {
     ToolSelector.brush = oilTool;
-    Canvas.cursor.style.width = Canvas.cursor.style.height = `${5}px`;
+    updateCursorSize(5);
 }
 
 function setDropperTool() {
     ToolSelector.brush = dropperTool;
-    Canvas.cursor.style.width = Canvas.cursor.style.height = `${5}px`;
+    updateCursorSize(5);
 }
 
 function setSprayTool() {
     ToolSelector.brush = sprayTool;
-    Canvas.cursor.style.width = Canvas.cursor.style.height = `${sprayTool.size * 2}px`;
+    updateCursorSize(ToolSelector.brush.size * 2);
 }
 
 function setWaterpenTool() {
     ToolSelector.brush = waterpenTool;
-    Canvas.cursor.style.width = Canvas.cursor.style.height = `${waterpenTool.size}px`;
+    updateCursorSize(ToolSelector.brush.size);
 }
 
 function setErasorTool() {
     ToolSelector.brush = erasorTool;
-    Canvas.cursor.style.width = Canvas.cursor.style.height = `${erasorTool.size}px`;
+    updateCursorSize(ToolSelector.brush.size);
 }
 
-function setLineTool() {
-    ToolSelector.brush = lineTool;
-    Canvas.cursor.style.width = Canvas.cursor.style.height = `${lineTool.size}px`;
+function setShapeTool() {
+    ToolSelector.brush = shapeTool;
+    updateCursorSize(ToolSelector.brush.size);
+}
+
+function setOperateTool() {
+    ToolSelector.brush = operateTool;
+}
+
+function setTextTool() {
+    ToolSelector.brush = textTool;
+}
+
+function setSealTool() {
+    ToolSelector.brush = sealTool;
+    updateCursorSize(ToolSelector.brush.size);
 }
 
 function setGradientTool() {
@@ -413,28 +357,37 @@ function setGradientTool() {
 
 function setSelectTool2() {
     ToolSelector.brush = selectTool2;
-    Canvas.cursor.style.width = Canvas.cursor.style.height = `${selectTool2.size}px`;
+    updateCursorSize(ToolSelector.brush.size);
 }
 
 function setEggTool() {
     ToolSelector.brush = eggTool;
 }
 
-getByid("handTool").onmousemove = function () { GUI.setStatusText("移動工具 (可以移動圖片位置，預設可用滑鼠中鍵移動)"); }
-getByid("selectTool1").onmousemove = function () { GUI.setStatusText("範圍選擇 (框選住的地方才能編輯)"); }
-getByid("pencilTool").onmousemove = function () { GUI.setStatusText("鉛筆 (一種筆)"); }
-getByid("oilTool").onmousemove = function () { GUI.setStatusText("油漆桶 (類似小畫家的油漆桶，改良版)"); }
-getByid("sprayTool").onmousemove = function () { GUI.setStatusText("酒精噴霧 (一種筆)"); }
-getByid("waterpenTool").onmousemove = function () { GUI.setStatusText("水彩筆 (一種筆)"); }
-getByid("erasorTool").onmousemove = function () { GUI.setStatusText("橡皮擦 (將劃過的地方變成透明)"); }
-getByid("lineTool").onmousemove = function () { GUI.setStatusText("形狀 (繪製常見形狀)"); }
-getByid("gradientTool").onmousemove = function () { GUI.setStatusText("漸層工具 (從選取色到背景色)"); }
-getByid("selectTool2").onmousemove = function () { GUI.setStatusText("仙女棒 (魔術棒的升級版)"); }
-getByid("eggTool").onmousemove = function () { GUI.setStatusText("瑞典復活節彩蛋"); }
-getByid("dropperTool").onmousemove = function () { GUI.setStatusText("滴管工具 (選擇色彩用，預設可用滑鼠右鍵選擇)"); }
+getByid("handTool").onmousemove = () => GUI.setStatusText("移動工具 (可以移動圖片位置，預設可用滑鼠中鍵移動)");
+getByid("selectTool1").onmousemove = () => GUI.setStatusText("範圍選擇 (框選住的地方才能編輯)");
+getByid("operateTool").onmousemove = () => GUI.setStatusText("操作工具 (可以移動、縮放選取的區域)");
+getByid("pencilTool").onmousemove = () => GUI.setStatusText("鉛筆 (一種筆)");
+getByid("oilTool").onmousemove = () => GUI.setStatusText("油漆桶 (類似小畫家的油漆桶，改良版)");
+getByid("sprayTool").onmousemove = () => GUI.setStatusText("酒精噴霧 (一種筆)");
+getByid("waterpenTool").onmousemove = () => GUI.setStatusText("水彩筆 (一種筆)");
+getByid("erasorTool").onmousemove = () => GUI.setStatusText("橡皮擦 (將劃過的地方變成透明)");
+getByid("shapeTool").onmousemove = () => GUI.setStatusText("形狀 (繪製常見形狀)");
+getByid("textTool").onmousemove = () => GUI.setStatusText("文字工具 (準備中)");
+getByid("sealTool").onmousemove = () => GUI.setStatusText("複製工具 (按住alt並點擊影像可以複製為印章，沒有印章就怎麼按都不會有反應)");
+getByid("gradientTool").onmousemove = () => GUI.setStatusText("漸層工具 (從選取色到背景色)");
+getByid("selectTool2").onmousemove = () => GUI.setStatusText("仙女棒 (魔術棒的升級版)");
+getByid("eggTool").onmousemove = () => GUI.setStatusText("瑞典復活節彩蛋");
+getByid("dropperTool").onmousemove = () => GUI.setStatusText("滴管工具 (選擇色彩用，預設可用滑鼠右鍵選擇)");
 
 getByid("selectEmpty").onclick = function () {
     ToolSelector.selection = null;
+    GUI.refleshMarkCanvas();
+}
+
+getByid("selectAll").onclick = function () {
+    ToolSelector.selection = new Selection("rect", new Rect(0, 0, Canvas.width, Canvas.height));
+    ToolSelector.selection.rect2pixel();
     GUI.refleshMarkCanvas();
 }
 
@@ -443,6 +396,7 @@ getByid("reverseEmpty").onclick = function () {
     GUI.refleshMarkCanvas();
 }
 
+getByid("colorpalette").onmousemove = function () { GUI.setStatusText("調色盤"); }
 getByid("foregroundColorDiv").onmousemove = function () { GUI.setStatusText("前景色"); }
 getByid("backgroundColorDiv").onmousemove = function () { GUI.setStatusText("背景色"); }
 getByid("alphaColorDiv").onmousemove = function () { GUI.setStatusText("透明色"); }
@@ -472,19 +426,4 @@ getByid("alphaColorDiv").onclick = function (e) {
     getByid("backgroundColorDiv").style.scale = "0.6";
     getByid("alphaColorDiv").style.scale = "0.8";
     ToolSelector.colorIndex = 2;
-}
-function updateColor(r, g, b, a) {
-    if (ToolSelector.colorIndex == 2) ToolSelector.colorIndex = 0;
-    if (ToolSelector.colorIndex == 0) {
-        ToolSelector.前背透色[0].r = r;
-        ToolSelector.前背透色[0].g = g;
-        ToolSelector.前背透色[0].b = b;
-        getByid("foregroundColorDiv").style.backgroundColor = `rgb(${r},${g},${b})`;
-    }
-    if (ToolSelector.colorIndex == 1) {
-        ToolSelector.前背透色[1].r = r;
-        ToolSelector.前背透色[1].g = g;
-        ToolSelector.前背透色[1].b = b;
-        getByid("backgroundColorDiv").style.backgroundColor = `rgb(${r},${g},${b})`;
-    }
 }

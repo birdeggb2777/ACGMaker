@@ -24,6 +24,12 @@ function createElem(tagName = "div", id = null, className = null, innerText = nu
     return Elem;
 }
 
+function createCanvas(w, h) {
+    const canvas = document.createElement('canvas');
+    canvas.width = w, canvas.height = h;
+    return canvas;
+}
+
 function deepCloneJSON(json) {
     return JSON.parse(JSON.stringify(json));
 }

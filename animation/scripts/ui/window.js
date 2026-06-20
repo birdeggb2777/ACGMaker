@@ -4,7 +4,6 @@ class WindowManager {
 
     static registerMoveWindow(windowObject) {
         getByid("cover_div").style.display = "block";
-
         const windowTitle = windowObject.windowTitle;
         windowTitle.onmousedown = function (e) {
             this.mouseDown = true;
@@ -47,7 +46,6 @@ class createProjectWindow {
         // 視窗標題、圖示
         this.windowTitle.innerText = "新建";
         this.windowTitle.window = this.windowClose.window = this.window;
-        this.windowClose.closeWindow = this.closeWindow;
         this.windowClose.src = "./image/close.png";
         // 加入到HTML
         this.window.appendChild(this.windowTitle);
@@ -64,17 +62,14 @@ class createProjectWindow {
         this.projectHeight = createElem("label", null, null, "高度：");
         this.projectWidthTextBox = createElem("input", null, "inputText");
         this.projectHeightTextBox = createElem("input", null, "inputText");
-        this.projectWidthTextBox.type = "number", this.projectWidthTextBox.value = "1024";
-        this.projectHeightTextBox.type = "number", this.projectHeightTextBox.value = "768";
+        this.projectWidthTextBox.type = this.projectHeightTextBox.type = "number";
+        this.projectWidthTextBox.value = 1024, this.projectWidthTextBox.min = 10, this.projectWidthTextBox.max = 10000;
+        this.projectHeightTextBox.value = 768, this.projectHeightTextBox.min = 10, this.projectHeightTextBox.max = 10000;
         appendChilds(this.windowContent, [createElem("br"), this.projectWidth, this.projectWidthTextBox, createElem("br"), this.projectHeight, this.projectHeightTextBox, createElem("br"), createElem("br")]);
         // 「建立」按鈕
-        const btn = createElem("button", null, null, "建立");
-        btn.window = this, btn.projectNameTextBox = this.projectNameTextBox, btn.projectWidthTextBox = this.projectWidthTextBox, btn.projectHeightTextBox = this.projectHeightTextBox;
-        btn.onclick = function () {
-            if (parseInt(this.projectWidthTextBox.value) <= 10 || parseInt(this.projectHeightTextBox.value) <= 10) return GUI.setStatusAlert("長度與寬度請設在10以上！！！");
-            createANewProject("" + this.projectNameTextBox.value, parseInt(this.projectWidthTextBox.value), parseInt(this.projectHeightTextBox.value));
-            this.window.closeWindow();
-        }
+        const btn = createElem("button", null, null, "建立"), windowObj = this;
+        const projectNameTextBox = this.projectNameTextBox, projectWidthTextBox = this.projectWidthTextBox, projectHeightTextBox = this.projectHeightTextBox;
+        btn.onclick = () => createProjectWithCreateProjectWindow(projectNameTextBox.value, projectWidthTextBox.value, projectHeightTextBox.value, windowObj);
         this.windowContent.appendChild(btn);
         // 註冊移動事件
         getByid("outer_div").appendChild(this.window);
@@ -83,11 +78,8 @@ class createProjectWindow {
         this.windowClose.onclick = () => this.closeWindow();
     }
 
-    closeWindow(e) {
-        if (e) e.stopImmediatePropagation();
-        if (this.window.window) getByid("outer_div").removeChild(this.window.window);
-        if (this.window) getByid("outer_div").removeChild(this.window);
-        else removeChild(this.window);
+    closeWindow() {
+        getByid("outer_div").removeChild(this.window);
         getByid("cover_div").style.display = "none";
         WindowManager.enable = false;
     }
@@ -101,7 +93,6 @@ class pasteImgWindow {
     }
 
     createWindow(img) {
-        var root = ToolSelector.project.layerManager;
         var outer_div = getByid("outer_div");
         // 建立視窗樣板
         this.window = createElem("div", null, "childWindow");
@@ -123,50 +114,14 @@ class pasteImgWindow {
         this.windowTitle.appendChild(this.windowClose);
         // 添加內容
         this.normalLabel = createElem("label", null, null, "偵測到貼上圖片的動作，請從下方選擇其中一個：");
-        const ProjectButton = createElem("button", null, null, "使用剪貼簿影像，建立新的專案");
-        const OnlyPasteButton = createElem("button", null, null, "將剪貼簿影像，貼到目前專案的新圖層");
+        const ProjectButton = createElem("button", null, "margin5px", "使用剪貼簿影像，建立新的專案");
+        const OnlyPasteButton = createElem("button", null, "margin5px", "將剪貼簿影像，貼到目前專案的新圖層");
+        const windowObj = this, imgObj = img;
         appendChilds(this.windowContent, [this.normalLabel, createElem("br"), ProjectButton, OnlyPasteButton]);
-
-        ProjectButton.onclick = function () {
-            var project = new Project();
-            ACGM.projects.push(project);
-
-            project.layerManager = new LayerManager(img.width, img.height, 1);
-            var layer = new Layer(0, 0, 0, img.width, img.height, 1); layer.opacity = 1.0;
-            project.name = layer.name = "剪貼簿";
-            ///////////////
-            var canvas = createElem("canvas"), ctx = canvas.getContext('2d');
-            canvas.width = img.width; canvas.height = img.height
-            ctx.drawImage(img, 0, 0);
-            var data = ctx.getImageData(0, 0, img.width, img.height).data;
-            ///////////////
-            for (var i = 0; i < layer.pixelData.d1.length; i++)layer.pixelData.d1[i] = data[i];
-            project.layer = layer;
-            project.layerManager.layers.push(layer);
-
-            switchProject(project);
-            Canvas.AutoFitTransform()
-            this.window.closeWindow();
-        }
-
-        OnlyPasteButton.onclick = function () {
-            var canvas = createElem("canvas"), ctx = canvas.getContext('2d');
-            canvas.width = img.width; canvas.height = img.height
-            ctx.drawImage(img, 0, 0);
-            var data = ctx.getImageData(0, 0, img.width, img.height).data;
-            var layer = addNewLayer();
-            layer.name = "剪貼簿";
-            Brush.cache = new PixelData(img.width, img.height, 4);
-            for (var i = 0; i < Brush.cache.d1.length; i++)Brush.cache.d1[i] = data[i];
-            pastePixelData(Brush.cache, 0, 0, img.width, img.height, ToolSelector.layer.pixelData, 0, 0, img.width, img.height, 混合模式.完全覆蓋, 1.0);
-            root.needRefleshRect = true;
-            createFullSandwich();
-            GUI.refleshGUI();
-            this.window.closeWindow();
-        }
-
-        ProjectButton.style.margin = OnlyPasteButton.style.margin = "5px";
-        ProjectButton.window = OnlyPasteButton.window = this;
+        appendChilds(outer_div, [this.window]);
+        // 註冊按鈕觸發的動作
+        ProjectButton.onclick = () => createProjectWithPasteWindow(imgObj, windowObj);
+        OnlyPasteButton.onclick = () => pasteImgWithPasteWindow(imgObj, windowObj);
         // 註冊移動事件
         getByid("outer_div").appendChild(this.window);
         WindowManager.registerMoveWindow(this);
@@ -174,11 +129,8 @@ class pasteImgWindow {
         this.windowClose.onclick = () => this.closeWindow();
     }
 
-    closeWindow(e) {
-        if (e) e.stopImmediatePropagation();
-        if (this.window.window) getByid("outer_div").removeChild(this.window.window);
-        if (this.window) getByid("outer_div").removeChild(this.window);
-        else removeChild(this.window);
+    closeWindow() {
+        getByid("outer_div").removeChild(this.window);
         getByid("cover_div").style.display = "none";
         WindowManager.enable = false;
     }
@@ -196,7 +148,7 @@ class ColorWindow {
         canvas.width = 256, canvas.height = 256, canvas.div = div;
         canvas.style.top = "25px", canvas.style.position = "absolute";
         var ctx = canvas.getContext('2d'), imgData = ctx.createImageData(canvas.width, canvas.height);
-        
+
         var RowPixel = new Array(canvas.height);
         for (var h = 0; h < canvas.height; h++)
             RowPixel[h] = new Uint8ClampedArray(imgData.data.buffer, h * canvas.width * 4, canvas.width * 4);
@@ -429,18 +381,7 @@ class FilterWindow {
         }
     }
 
-    closeWindow(e) {
-        if (e) e.stopImmediatePropagation();
-        if (this.window.window) getByid("outer_div").removeChild(this.window.window);
-        if (this.window) getByid("outer_div").removeChild(this.window);
-        else removeChild(this.window);
-        getByid("cover_div").style.display = "none";
-        WindowManager.enable = false;
-        Filter.cache = null;
-    }
-
-    destroyWindow(e) {
-        if (e) e.stopImmediatePropagation();
+    closeWindow() {
         if (this.window.window) getByid("outer_div").removeChild(this.window.window);
         if (this.window) getByid("outer_div").removeChild(this.window);
         else removeChild(this.window);
@@ -455,6 +396,4 @@ getByid("colorpalette").onclick = function (e) {
     else ColorWindow.DisplayColorWindow(e);
 }
 
-getByid("createNewProject").onclick = function (e) {
-    new createProjectWindow();
-}
+getByid("createNewProject").onclick = () => new createProjectWindow();
