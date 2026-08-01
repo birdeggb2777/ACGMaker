@@ -181,3 +181,8 @@ window.addEventListener('keydown', function (e) {
     if (key === 'z') Command.cmd("undo", "");
     else if (key === 'y') Command.cmd("redo", "");
 });
+
+// 離開時詢問
+window.addEventListener('beforeunload', function (e) {
+    e.preventDefault();
+});
